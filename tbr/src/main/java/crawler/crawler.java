@@ -1,4 +1,4 @@
-package crawler;
+package test;
 
 import java.io.BufferedWriter;
 
@@ -18,15 +18,14 @@ public class crawler {
 		}
 	}
 
-	static String makeCorpus() {
+	static JSONArray makeCorpus() {
 		System.out.println("== 말뭉치 생성 시작 ==");
 		Selenium s = Selenium.start();
 		ArrayList<String> contents = new ArrayList<>();
 		JSONArray contentArray = new JSONArray();
-		String corpus = "";
 
 		try {
-			for (int i = 1; i < 100; i++) {
+			for (int i = 1; i < 10; i++) {
 				s.access("https://api.visitkorea.or.kr/guide/inforArea.do?langtype=KOR&arrange=A&mode=listOk&pageNo="
 						+ i);
 				sleep(4);
@@ -52,7 +51,7 @@ public class crawler {
 			s.quit();
 		}
 		System.out.println("== 말뭉치 생성 완료 ==");
-		return corpus;
+		return contentArray;
 	}
 
 	static void makeFile() throws IOException {
@@ -62,7 +61,7 @@ public class crawler {
 		try {
 			bWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("corpus_관광정보.txt"), "UTF-8"),
 					1024);
-			bWriter.write(makeCorpus());
+			bWriter.write(makeCorpus().toJSONString());
 		} finally {
 			bWriter.close();
 		}
