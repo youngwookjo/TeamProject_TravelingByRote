@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
+
 public class Crawling {
 	
 	public static void main(String[] args) {
 			
-			String locNum = "128771";
+			String locNum = "128780";
 			Selenium s = Selenium.start();
 			ArrayList<String> key = new ArrayList<>();
-			ArrayList<String> value = new ArrayList<>();
-			Map<String, String> info = new HashMap<>();
+			ArrayList<Object> value = new ArrayList<>();
+			Map<String, Object> info = new HashMap<String, Object>();
 
 			try {
 				s.access("http://data.visitkorea.or.kr/page/@".replace("@", locNum));
 //				sleep(1);
-				System.out.println("== key ==");
 				s.findAll("//*[@id=\"wrap\"]/table/tbody/tr/td[1]/a")
 				.stream().forEach(v -> key.add(v.getText()));			
-				System.out.println("== value ==");
 				s.findAll("//*[@id=\"wrap\"]/table/tbody/tr/td[2]")
 				.stream().forEach(v -> value.add(v.getText()));
 				
@@ -31,8 +31,9 @@ public class Crawling {
 			} finally {
 				s.quit();
 			}
-			System.out.println(info.toString());
-		
-		
+			
+			JSONObject json = new JSONObject();
+			json.putAll(info);
+			System.out.println(json.toString());
 	}
 }
