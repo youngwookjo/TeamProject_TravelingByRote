@@ -2,9 +2,11 @@ package tbr.service;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import tbr.model.dao.TbrUserRepository;
 import tbr.model.dto.TbrUser;
@@ -38,12 +40,15 @@ public class UserService implements ImplUserService {
 		return userRepository.findAll();
 	}
 	
-	//create와 update는 동일하게 save 쓴다고 나와있음. 중복느낌이라 add와 통일해줘도 무방
 	@Override
 	public void update(TbrUser user) {
 		System.out.println("====update in service====");
-        userRepository.save(user);
+		userRepository.findTbrUserByIdEquals(user.getId()).forEach(v -> {
+			v.setPw(user.getPw());
+			userRepository.save(v);
+		});
 	}
+	
 	
 	@Override
 	public void delete(TbrUser user) {
