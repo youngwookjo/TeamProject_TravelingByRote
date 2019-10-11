@@ -2,7 +2,7 @@ package main;
 
 import dto.Point;
 
-public class Main {
+public class Main { 
 	//두 좌표의 거리 구하기
 	public static void main(String[] args) {
 		Point pt1 = new Point(37.483327477565396, 127.02559779969133);//pt1에 mapx, mapy 좌표값을 저장

@@ -1,6 +1,6 @@
 
 package main;
-
+ 
 public class Mainother2 {
 	//두 좌표의 거리를 mile, meter, kilo로 표현, lat1 lon1을 기준으로 가고 싶은 위치 lat2 lon2를 입력.
 	public static void main(String[] args) {

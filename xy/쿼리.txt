@@ -9,7 +9,7 @@ SELECT *,
 	( 6371 * acos( cos( radians(lat1) ) * cos( radians( lat2 ) )
           * cos( radians( lon2 ) - radians(lon1) )
           + sin( radians(lat1) ) * sin( radians( lat2 ) ) ) ) AS distance
-FROM MAP_INFO
+FROM MAP_INFO 
 HAVING distance <= 0.5    
 ORDER BY distance 
 LIMIT 0,200

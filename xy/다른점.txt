@@ -4,7 +4,7 @@
 일반적으로 위도(lat) x, 경도(lng=lon) y.
 map = new google.maps.Map(document.getElementById('map'), {
 
-    center: {lat:mapX , lng:mapY },
+    center: {lat:mapX , lng:mapY }, 
 ------------------------  
 xy자바파일에서
 내가 구현한값은 x:위도, y:경도
