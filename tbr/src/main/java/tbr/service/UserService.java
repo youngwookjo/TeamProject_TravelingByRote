@@ -44,6 +44,7 @@ public class UserService implements ImplUserService {
 	public void update(TbrUser user) {
 		System.out.println("====update in service====");
 		userRepository.findTbrUserByIdEquals(user.getId()).forEach(v -> {
+			v.setId(user.getId());
 			v.setPw(user.getPw());
 			userRepository.save(v);
 		});

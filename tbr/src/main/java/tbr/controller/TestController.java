@@ -1,19 +1,18 @@
 package tbr.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import tbr.model.dto.TbrUser;
 import tbr.service.PlaceService;
 import tbr.service.UserService;
 
-@RestController
+@Controller
 public class TestController {
 	@Autowired
 	UserService userService;
@@ -23,7 +22,7 @@ public class TestController {
 	//1. 회원가입
 	//http://localhost:8000/addUser?id=tester1&pw=secretkey1
 	//http://localhost:8000/addUser?id=tester2&pw=secretkey2
-	@GetMapping("/addUser")
+	@RequestMapping("/addUser")
 	public String addUser(@RequestParam("id") String id, @RequestParam("pw") String pw){
 		TbrUser info = new TbrUser(id, pw);
 		String result = "가입 실패";
@@ -38,7 +37,7 @@ public class TestController {
 	//2. 회원정보 조회(개별)
 	//http://localhost:8000/getUser/tester1
 	//http://localhost:8000/getUser/tester3
-	@GetMapping("/getUser/{id}")
+	@RequestMapping("/getUser/{id}")
 	public String getUser(@PathVariable("id") String id){
 		TbrUser info = userService.get(id);
 		String result = info.toString();
@@ -48,28 +47,29 @@ public class TestController {
 
 	//3. 회원정보 조회(전체)
 	//http://localhost:8000/getAllUser
-	@GetMapping("/getAllUser")
+	@RequestMapping("/getAllUser")
 	public String getAllUser() {
 		Iterable<TbrUser> list = userService.getAll();
 		System.out.println(list.toString());
 		return "회원명부 넘길 주소값";
-	}
-	//4. 회원 pw 수정(addUser와 동일)
-	//http://localhost:8000/updateUser?id=tester2&pw=secretrevised
-	@GetMapping("/updateUser")
-	public String updateUser(@RequestParam("id") String id, @RequestParam("pw") String pw) {
+	}   
+	//4. 회원 pw 수정
+	//http://localhost:8000/updateUser?id=tester1&pw=revised
+	@GetMapping("/andrea/updateUser")
+	public String updateUser(@RequestParam("id") String id, @RequestParam("pw") String pw, Model model) {
 		try {
-			userService.update(new TbrUser(id, pw));
+			TbrUser userInfo = new TbrUser(id, pw);
+			userService.update(userInfo);
+			model.addAttribute("userInfo", userInfo);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("비밀번호 수정 완료");
-		return "비밀번호 수정 완료";
+		return "redirect:/andrea/contact.html";
 	
 	}
 	
 	//5. 회원 탈퇴
-	@GetMapping("/deleteUser")
+	@RequestMapping("/deleteUser")
 	//http://localhost:8000/deleteUser?id=tester1&pw=secretkey1
 	public String deleteUser(@RequestParam("id") String id, @RequestParam("pw") String pw) {
 		TbrUser info = new TbrUser(id, pw);
