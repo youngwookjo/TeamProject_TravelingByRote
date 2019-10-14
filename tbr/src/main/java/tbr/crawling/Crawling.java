@@ -22,32 +22,28 @@ import junit.framework.Test;
 
 public class Crawling {
 	@SuppressWarnings("unchecked")
-	public static void getUrl() throws IOException {
+	public static JSONArray getUrl() throws IOException {
 		String url = "https://api.visitkorea.or.kr/guide/inforArea.do?langtype=KOR&arrange=A&mode=listOk&pageNo=";
 		String regex = "contentId=(\\d*)&langtype=KOR&typeid=(\\d*)";
 		JSONArray array = new JSONArray();
 		BufferedWriter bWriter = null;
-		try {
-			for (int i = 1; i < 200; i++) {
-				System.out.println(url+i);
-				sleep(4);
-//				Jsoup.connect(url + i).get().select(".galleryList > li > a").stream()
-//				.map(v -> getRawData(findGroup(v.attr("href"), regex))).filter(v -> v.size() != 0)
-//				.forEach(v -> array.add(v));		
+		for (int i = 1; i < 2132; i++) {
+			System.out.println(url + i);
+			sleep(0.5);
+			try {
 				Jsoup.connect(url + i).get().select(".galleryList > li > a").stream()
-						.map(v -> result(findGroup(v.attr("href"), regex))).forEach(v -> array.add(v));
-				System.out.println(array);
-//				bWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("corpus_관광정보.txt"), "UTF-8"),
-//						1024);
-//				bWriter.write(array.toJSONString());
-				
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-//			bWriter.flush();
-//			bWriter.close();
+						.map(v -> getRawData(findGroup(v.attr("href"), regex))).filter(v -> v.size() != 0)
+						.forEach(v -> array.add(v));
+//				Jsoup.connect(url + i).get().select(".galleryList > li > a").stream()
+//						.map(v -> result(findGroup(v.attr("href"), regex))).forEach(v -> array.add(v));
+			} catch (IOException e) {
+				sleep(30);
+				continue;
+			} 
+
 		}
+
+		return array;
 	}
 
 //
@@ -61,19 +57,19 @@ public class Crawling {
 
 	}
 
-//	static void makeFile(JSONArray contentArray) throws IOException {
-//		BufferedWriter bWriter = null;
-//		try {
-//			bWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("corpus_관광정보.txt"), "UTF-8"),
-//					1024);
-//			bWriter.write(contentArray.toJSONString());
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} finally {
-//			bWriter.flush();
-//			bWriter.close();
-//		}
-//	}
+	static void makeFile(JSONArray contentArray) throws IOException {
+		BufferedWriter bWriter = null;
+		try {
+			bWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("corpus_관광정보4.json"), "UTF-8"),
+					1024);
+			bWriter.write(contentArray.toJSONString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			bWriter.flush();
+			bWriter.close();
+		}
+	}
 
 	public static List<String> findGroup(String text, String regex) {
 		Matcher m = Pattern.compile(regex).matcher(text);
@@ -132,10 +128,9 @@ public class Crawling {
 	public static void main(String[] args) {
 
 		try {
-			getUrl();
+			makeFile(getUrl());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
 }
