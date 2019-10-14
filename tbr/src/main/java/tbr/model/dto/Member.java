@@ -12,10 +12,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TbrUser {
+public class Member {
 	@Id // Java Persistance의 ID를 써야함
-	@Column(length=10)
+	@Column(name="member_id", length=10)
 	private String id;
 	@Column(length=10, nullable=false)
 	private String pw;
+	@Column(name="member_key", length=10)
+	private String key;
 }

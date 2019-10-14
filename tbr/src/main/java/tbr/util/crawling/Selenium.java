@@ -1,4 +1,4 @@
-﻿package tbr.crawling;
+﻿package tbr.util.crawling;
 
 import java.util.List;
 

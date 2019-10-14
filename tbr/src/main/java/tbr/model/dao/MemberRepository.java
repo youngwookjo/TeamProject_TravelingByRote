@@ -3,9 +3,9 @@ package tbr.model.dao;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import tbr.model.dto.TbrUser;
+import tbr.model.dto.Member;
 
 @Repository
-public interface TbrUserRepository extends CrudRepository<TbrUser, String> {
+public interface MemberRepository extends CrudRepository<Member, String> {
 
 }

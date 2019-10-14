@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableAutoConfiguration
-@ComponentScan({"tbr.controller","tbr.service"})
+@ComponentScan({"tbr.controller","tbr.service", "tbr.util.crawling"})
 @EnableJpaRepositories(basePackages="tbr.model.dao")
 @EntityScan("tbr.model.dto")
 public class TravelingByRoteApplication {
