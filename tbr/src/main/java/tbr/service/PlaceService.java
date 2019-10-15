@@ -1,14 +1,10 @@
 package tbr.service;
 
 import java.math.BigDecimal;
-
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import tbr.model.dao.PlaceRepository;
 import tbr.model.dto.Place;
@@ -32,12 +28,12 @@ public class PlaceService {
 	
 	//이름으로 비슷한 장소 검색
 	public List<Place> placeSearchByName(String name) {
-		return placeRepo.findPlaceByNameContainingOrderByTotalDesc(name);
+		return placeRepo.findPlaceByNameContaining(name);
 	}
 	
 	//타입 ID 검색
 	public List<Place> placeSearchByTypeId(BigDecimal typeid) {
-		return placeRepo.findPlaceByTypeIdEqualsOrderByTotalDesc(typeid);
+		return placeRepo.findPlaceByTypeidEquals(typeid);
 	}
 	
 	//이름으로 검색후 지우기

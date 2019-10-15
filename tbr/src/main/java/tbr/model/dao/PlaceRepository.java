@@ -12,7 +12,7 @@ import tbr.model.dto.Place;
 public interface PlaceRepository extends CrudRepository<Place, BigDecimal>{
 	
 	public Place findPlaceByNameEquals(String name);
-	public List<Place> findPlaceByNameContainingOrderByTotalDesc(String name);
-	public List<Place> findPlaceByTypeIdEqualsOrderByTotalDesc(BigDecimal typeid);
+	public List<Place> findPlaceByNameContaining(String name);
+	public List<Place> findPlaceByTypeidEquals(BigDecimal typeid);
 	
 }
