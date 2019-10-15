@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>Andrea - Free Bootstrap 4 Template by Colorlib</title>
     <meta charset="utf-8">
@@ -27,20 +28,29 @@
     <link rel="stylesheet" href="css/flaticon.css">
     <link rel="stylesheet" href="css/icomoon.css">
     <link rel="stylesheet" href="css/style.css">
+      
+    <script type="text/javascript">
+        
+        var user = userInfo.id;
+        document.getElementById("test") = ;
+        alert(user + "님, 환영합니다.")
+    </script>
   </head>
   <body>
 
-
+      <p id="test"></p>
 	<div id="colorlib-page">
 		<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
 		<aside id="colorlib-aside" role="complementary" class="js-fullheight">
 			<nav id="colorlib-main-menu" role="navigation">
 				<ul>
+                    <li><div th:text="${userInfo.id}">
+						</div></li>
 					<li class="colorlib-active"><a href="index.html">Home</a></li>
 					<li><a href="fashion.html">최근검색</a></li>
 					<li><a href="travel.html">찜하기</a></li>
-					<li><a href="about.html">회원정보</a></li>
-					<li><a href="contact.html">로그아웃</a></li>
+					<li><a href="contact.html">회원정보</a></li>
+					<li><a href="../login/index.html">로그아웃</a></li>
 				</ul>
 			</nav>
 

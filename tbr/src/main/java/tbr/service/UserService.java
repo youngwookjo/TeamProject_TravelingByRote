@@ -17,6 +17,17 @@ public class UserService implements ImplUserService {
 	TbrUserRepository userRepository;
 
 	@Override
+	public boolean login(TbrUser user) {
+		System.out.println("====login in service====");
+		boolean flag = false;
+		TbrUser userInfo = userRepository.findTbrUserByIdEquals(user.getId()).get(0); 	
+        if (user.getPw().equals(userInfo.getPw())) {
+        	flag = true;
+        }
+        return flag;
+	}
+	
+	@Override
 	public boolean add(TbrUser user) {
 		System.out.println("====add in service====");
 		boolean flag = false;
