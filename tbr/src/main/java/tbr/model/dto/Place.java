@@ -26,10 +26,7 @@ public class Place {
 	private BigDecimal mapx;//경도
 	@Column(precision=20, nullable=false)
 	private BigDecimal mapy;//위도
-	@Column(length=15)
-	private String phonenumber;//전화번호
 	private String homepage;//홈페이지
-	private String address;//주소
 	@Column
 	private String image;//이미지의 주소값
 }
