@@ -35,15 +35,15 @@ public class PlaceService {
 		return placeRepo.findPlaceByNameContainingOrderByTotalDesc(name);
 	}
 	
+	//타입 ID 검색
+	public List<Place> placeSearchByTypeId(BigDecimal typeid) {
+		return placeRepo.findPlaceByTypeIdEqualsOrderByTotalDesc(typeid);
+	}
+	
 	//이름으로 검색후 지우기
 	public String placeDelete(Place place) {
 		placeRepo.delete(place);
 		return "place delete";
-	}
-	
-	//타입 ID 검색
-	public List<Place> placeSearchByTypeId(BigDecimal typeid) {
-		return placeRepo.findPlaceByTypeIdEqualsOrderByTotalDesc(typeid);
 	}
 	
 	

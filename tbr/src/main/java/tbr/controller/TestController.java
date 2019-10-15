@@ -60,10 +60,11 @@ public class TestController {
 
 	//여행지 정확한 이름으로 하나 검색
 	@RequestMapping("/placeSearchOne")
-	public Place placeSearchOne(@RequestParam("name") String name, HttpServletRequest request){
+	public Place placeSearchOne(@RequestParam("name") String name, HttpServletResponse response){
 		Cookie setCookie = new Cookie("place", name);
 		setCookie.setMaxAge(60*60*24); // 기간을 하루로 지정
 		Place place = placeService.placeSearchOne(name);
+		response.addCookie(setCookie);
 		return place;
 	}
 	
@@ -81,6 +82,9 @@ public class TestController {
 		List<Place> place = placeService.placeSearchByTypeId(typeid);
 		return place;
 	}
+	
+	
+	
 	//여행지 이름으로 이름찾고 여행지있을경우 삭제
 	@RequestMapping("/placeDeleteByName")
 	public String placeDeleteByName(@RequestParam("name") String name) {
