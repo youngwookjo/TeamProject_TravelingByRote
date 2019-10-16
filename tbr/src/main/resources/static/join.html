@@ -27,11 +27,7 @@
    <link rel="stylesheet" type="text/css" href="css/main2.css">
 <!--===============================================================================================-->
 <style>
-    #ex {
-    font-family: 'Long Cang', cursive;
-        font-weight: normal;
-     font-size: 22px;
-    }
+   
     #colorlib-logo a {
       font-family: "Abril Fatface", cursive;
       display: inline-block;
@@ -57,11 +53,10 @@
    <div class="limiter">
       <div class="container-login100">
          <div class="wrap-login100">
-            <form action="index.html" class="login100-form validate-form">
+            <form action="/addUser" method="post" class="login100-form validate-form">
             <div><h1 id="colorlib-logo" class="mb-4"><a style="background-image: url(images/login.jpg);">Join Us<br> to Travel<br>  <span>by Rote.</span></a></h1></div>
                 <span></span>
-               <span id="ex" >
-               </span>
+               <span ></span>
                 <br>
 
                <div class="wrap-input100 validate-input" data-validate = "ID를 입력해 주세요.">
@@ -72,7 +67,7 @@
                
                
                <div class="wrap-input100 validate-input" data-validate="비밀번호를 입력해 주세요.">
-                  <input class="input100" type="text" name="pw">
+                  <input class="input100" type="password" name="pw">
                   <span class="focus-input100"></span>
                   <span class="label-input100">Password</span>
                </div>
@@ -85,6 +80,12 @@
                      Done!
                   </button>
                </div>
+                <br>
+               <div class="container-login100-form-btn">
+                  <button type=button onclick="location.href='login.html'" class="login100-form-btn" style="background-color: darkgrey">
+                     Back to Home
+                  </button>
+               </div> 
                 
                 
                <div class="text-center p-t-46 p-b-20">

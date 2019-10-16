@@ -38,8 +38,9 @@
 					<li><a href="index.html">Home</a></li>
 					<li><a href="fashion.html">최근검색</a></li>
 					<li><a href="travel.html">찜하기</a></li>
-					<li class="colorlib-active"><a href="contact.html">회원정보</a></li>
-					<li><a href="../login/index.html">로그아웃</a></li>
+					<li class="colorlib-active"><a href="about.html">회원정보</a></li>
+					<li><a href="login.html">로그아웃</a></li>
+					
 				</ul>
 			</nav>
 
@@ -51,21 +52,49 @@
 			</div>
 		</aside> <!-- END COLORLIB-ASIDE -->
 		<div id="colorlib-main">
-			<section class="ftco-about img ftco-section ftco-no-pt ftco-no-pb" id="about-section">
-	    	<div class="container-fluid px-0">
-	    		<div class="row d-flex">
-	    			<div class="col-md-6 d-flex">
-	    				<div class="img d-flex align-self-stretch align-items-center js-fullheight" style="background-image:url(images/about.jpg);">
-	    				</div>
-	    			</div>
-	    			<div class="col-md-6 d-flex align-items-center">
-	    				<div class="text px-4 pt-5 pt-md-0 px-md-4 pr-md-5 ftco-animate">
-		            <h2 class="mb-4">I'm <span>Andrea Moore</span> a Scotish Blogger &amp; Explorer</h2>
-		            <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
-	            </div>
-		        </div>
+			<section class="ftco-section contact-section px-md-4">
+	      <div class="container">
+	        <div class="row d-flex mb-5 contact-info">
+	          <div class="col-md-12 mb-4">
+	            <h2 class="h3">회원정보</h2>
+	          </div>
+	          <div class="w-100"></div>
+	          <div class="col-lg-6 col-xl-3 d-flex mb-4">
+	          	<div class="info bg-light p-4">
+		            <p><span>ID:</span> tester1</p>
+		          </div>
+	          </div>
+	          <div class="col-lg-6 col-xl-3 d-flex mb-4">
+	          	<div class="info bg-light p-4">
+		            <p><span>Password:</span> <a href="tel://1234567920">secretkey1</a></p>
+		          </div>
+	          </div>
+	         
 	        </div>
-	    	</div>
+	        <div class="row block-9">
+	          <div class="col-lg-6 d-flex">
+	            <form action="updateUser" method="post" class="bg-light p-5 contact-form">
+                    <p3>비밀번호 변경</p3>
+                    <hr>
+	              <div class="form-group">
+	                <input type="text" name="id" class="form-control" placeholder="현재 ID">
+	              </div>
+	              <div class="form-group">
+	                <input type="text" name="pw" class="form-control" placeholder="신규 Password">
+	              </div>
+	              
+	              <div class="form-group">
+	                <input type="submit" value="정보수정" class="btn btn-primary py-3 px-5">
+	              </div>
+	            </form>
+	          
+	          </div>
+
+	          <div class="col-lg-6 d-flex">
+	          	<div id="map" class="bg-light"></div>
+	          </div>
+	        </div>
+	      </div>
 	    </section>
 		</div><!-- END COLORLIB-MAIN -->
 	</div><!-- END COLORLIB-PAGE -->
