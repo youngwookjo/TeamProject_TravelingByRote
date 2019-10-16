@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin page</title>
+</head>
+<body>
+<h2>Admin 화면</h2>
+<button type="button" onclick="location.href='admin.html'">Logout</button>
+<hr>
+<img title="Admin 접속후" src="images/person_1.jpg" height="400" width="400">
+<hr>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script>
+//		function dbupdate() {
+//			axios.get("http://localhost:8000/stockAdd")
+//			.then(resData => {
+//				alert(resData.data);
+//			})
+//		}
+		function searchAll() {
+			axios.get("http://localhost:8000/getAllUser")
+			.then(resData => {
+				console.log(resData.data);
+				document.all.table.innerHTML = "<h3>전체 회원 리스트</<h3>"
+				let table = "<table border=1><tr><td><b>아이디</b></td><td><b>비밀번호</b></td></tr>"
+				for(let row of resData.data) {
+					console.log(row);
+					table += "<tr><td>" + row.id + "</td><td>" + row.pw + "</td></tr>"
+				}
+				table += "</table>"
+				document.all.table.innerHTML += table;
+			});			
+		}
+		function searchAccount(name) {
+			axios.get("http://localhost:8000/searchAccount?id="+name)
+			.then(resData => {
+				console.log(resData.data);
+				document.all.table.innerHTML = "<h3>회원 검색</<h3>"
+				let table = "<table border=1><tr><td><b>ID</b></td><td><b>비밀번호</b></td></tr>"
+				for(let row of resData.data) {
+					console.log(row);
+					table += "<tr><td>" + row.id + "</td><td>" + row.pw + "</td></tr>"
+				}
+				table += "</table>"
+				document.all.table.innerHTML += table;
+			});
+		}
+		function deleteAccount(name) {
+			axios.get("http://localhost:8000/deleteAccount?id="+name)
+			.then(resData => {
+				console.log(resData.data);
+			})			
+		}
+	</script>
+<!--	<button onclick="dbupdate()">DB Update</button>-->
+    <button onclick="searchAll()">전체 회원 리스트</button>
+	<input id="name" type="text">
+	<button onclick="searchAccount(document.all.name.value)">회원 검색</button>
+	<button onclick="deleteAccount(document.all.name.value)">회원 삭제</button>
+<hr>
+	<div id="table"></div>
+</body>
+</html>
