@@ -11,11 +11,9 @@ import tbr.model.dto.PlaceDTO;
 @Repository
 public interface PlaceRepository extends CrudRepository<PlaceDTO, BigDecimal>{
 
-	List<PlaceDTO> findPlaceByTypeId(BigDecimal typeId); // type id 검색
-	
-	List<PlaceDTO> findPlaceByAddressContaining(String location); // 주소 검색 (앞에 시.도)
-	
-	List<PlaceDTO> findPlaceByNameContaining(String name);
+	List<PlaceDTO> findPlaceByTypeId(BigDecimal typeId);
+	// type id 검색
 	
 	List<PlaceDTO> findPlaceByNameContainingOrAddressContainingOrDescriptionContaining(String kwd1, String kwd2, String kwd3);
+	// 키워드 검색 (이름, 주소, 설명)
 }
