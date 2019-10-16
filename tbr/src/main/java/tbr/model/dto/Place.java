@@ -16,14 +16,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Place {
 	@Id // Java Persistance의 ID를 써야함
-	@Column(name="place_id", precision=10)
+	@Column(precision=8)
 	private BigDecimal id;
-	@Column(precision=10, nullable=false)
-	private BigDecimal typeId;//타입 id
-	@Column(length=100, nullable=false)
-	private String name; // 장소명
-	@Column(precision=20)
+	@Column(precision=14)
 	private BigDecimal mapx;//경도
-	@Column(precision=20)
+	@Column(precision=14)
 	private BigDecimal mapy;//위도
 }
