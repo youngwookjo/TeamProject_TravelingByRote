@@ -24,9 +24,9 @@ public class PlaceDTO {
 	BigDecimal typeId;
 	String name;
 	String address;
-	@Column(precision=14)
+	@Column(precision=14, scale=10)
 	BigDecimal lat; // 위도
-	@Column(precision=14)
+	@Column(precision=14, scale=10)
 	BigDecimal lon; // 경도
 	String img;
 	@Lob

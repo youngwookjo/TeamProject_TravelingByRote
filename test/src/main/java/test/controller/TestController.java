@@ -13,6 +13,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import test.model.dao.PlaceRepository;
@@ -22,6 +24,32 @@ import test.model.dto.PlaceDTO;
 public class TestController {
 	@Autowired
 	PlaceRepository placeRepo;
+	
+	// http://127.0.0.1:8000/search_type_id/38
+	@GetMapping("/search_type_id/{typeId}")
+	public List<PlaceDTO> searchTypeId(@PathVariable String typeId) {
+		return placeRepo.findPlaceByTypeId(new BigDecimal(typeId));
+	}
+	
+	// http://127.0.0.1:8000/search_location?location=서울특별시
+	@GetMapping("/search_location")
+	public List<PlaceDTO> searchLocation(@RequestParam String location) {
+		System.out.println("location");
+		System.out.println(location);
+		return placeRepo.findPlaceByAddressContaining(location);
+	}
+	
+	// http://127.0.0.1:8000/search_name?name=송림
+	@GetMapping("/search_name")
+	public List<PlaceDTO> searchName(@RequestParam String name) {
+		return placeRepo.findPlaceByNameContaining(name);
+	}
+	
+	// htpp://127.0.0.1:8000/search_kwd?kwd=빌라
+	@GetMapping("/search_kwd")
+	public List<PlaceDTO> searchKwd(@RequestParam String kwd) {
+		return placeRepo.findPlaceByNameContainingOrAddressContainingOrDescriptionContaining(kwd, kwd, kwd);
+	}
 	
 	@GetMapping("/make_db")
 	public String makeDB() {
@@ -44,7 +72,7 @@ public class TestController {
 					.filter(v -> !findAll(v.attr("href"), "d=(\\d*)").get(1).contains("25"))
 					.forEach(v -> list.add(
 						new PlaceDTO(findAll(v.attr("href"), "d=(\\d*)"),
-						v.getElementsByTag("p").text().replace("[한국관광 품질인증/Korea Quality]", ""),
+						v.getElementsByTag("p").text().replace("[한국관광 품질인증/Korea Quality]", "").trim(),
 						v.getElementsByTag("img").attr("src")
 						)));
 //				break;
