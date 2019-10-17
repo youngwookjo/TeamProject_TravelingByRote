@@ -104,8 +104,8 @@ public class TBRService {
 	}
 
 	// * Place
-	public List<PlaceDTO> findPlaceByTypeId(String typeId) {
-		return placeRepo.findPlaceByTypeId(new BigDecimal(typeId));
+	public List<PlaceDTO> findPlaceByTypeId(BigDecimal typeId) {
+		return placeRepo.findPlaceByTypeId(typeId);
 	}
 	
 	public List<PlaceDTO> findPlaceByKwd(String kwd) {
@@ -116,10 +116,15 @@ public class TBRService {
 		return placeRepo.findById(id);
 	}
 	
-	public List<List<Object>> findPlaceByDistance(BigDecimal id, String typeId, double distance){
-		return placeRepo.findPlaceByDistance(id, typeId, distance)
-			.stream().map(v -> Arrays.asList(placeRepo.findById(new BigDecimal(v[0].toString())), v[1]))
-			.collect(Collectors.toList());
+	public List<List<Object>> findPlaceByDistance(BigDecimal id, BigDecimal typeId, double distance){
+		if(typeId == null) {
+			return placeRepo.findPlaceByDistance(id, distance).stream().map(v -> Arrays.asList(placeRepo.findById(new BigDecimal(v[0].toString())), v[1]))
+					.collect(Collectors.toList());
+		} else {			
+			return placeRepo.findPlaceByDistance(id, typeId, distance).stream().map(v -> Arrays.asList(placeRepo.findById(new BigDecimal(v[0].toString())), v[1]))
+					.collect(Collectors.toList());
+		}
+			
 	}
 
 	// * Member

@@ -137,21 +137,24 @@ public class TBRController {
 	}
 	
 	// * SEARCH
-	// http://127.0.0.1:8000/type_search/38
+	// http://127.0.0.1:8000/searchByType/typeId=38
 	@GetMapping("/searchByType")
-	public List<PlaceDTO> searchByType(@PathVariable String typeId) {
+	public List<PlaceDTO> searchByType(@RequestParam BigDecimal typeId) {
+		System.out.println("/searchByType");
 		return service.findPlaceByTypeId(typeId);
 	}
 
-	// http://127.0.0.1:8000/kwd_search?kwd=산
+	// http://127.0.0.1:8000/searchByKeyword?kwd=산
 	@GetMapping("/searchByKeyword")
 	public List<PlaceDTO> searchByKeyword(@RequestParam String kwd) {
+		System.out.println("/searchByKeyword");
 		return service.findPlaceByKwd(kwd);
 	}
 	
 	// http://127.0.0.1:8000/searchByDistance?id=319571&typeId=12&distance=10
 	@GetMapping("/searchByDistance")
-	public List<List<Object>> searchByDistance(@RequestParam BigDecimal id, @RequestParam String typeId, @RequestParam double distance){
+	public List<List<Object>> searchByDistance(@RequestParam BigDecimal id, @RequestParam BigDecimal typeId, @RequestParam double distance){
+		System.out.println("/searchByDistance");
 		return service.findPlaceByDistance(id, typeId, distance);
 	}
 	
