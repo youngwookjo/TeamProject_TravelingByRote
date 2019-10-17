@@ -2,6 +2,7 @@ package tbr.model.dao;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -18,6 +19,7 @@ public interface PlaceRepository extends CrudRepository<PlaceDTO, BigDecimal>{
 	
 	List<PlaceDTO> findPlaceByNameContainingOrAddressContainingOrDescriptionContaining(String kwd1, String kwd2, String kwd3);
 	// 키워드 검색 (이름, 주소, 설명)
+/*
 	@Query(value = "SELECT name,"
 	+"( 6371 * acos( cos( radians((select lat from place where name = :name)) ) * cos( radians( lat ) )"
 	+"* cos( radians(lon) - radians((select lon from place where name = :name)) )"
@@ -28,4 +30,12 @@ public interface PlaceRepository extends CrudRepository<PlaceDTO, BigDecimal>{
 	+"LIMIT 0,300;", nativeQuery = true)
 		List<PlaceDTO> findPlaceByNameParamsNative(
 	  @Param("name") String name);
+*/
+	
+	Optional<PlaceDTO> findPlaceById(BigDecimal id);
+	// id 검색
+	
+	List<PlaceDTO> findPlaceByAddressContaining(String shigu);
+	// 시, 구 정보로 장소 검색
+
 }

@@ -1,6 +1,7 @@
 package tbr.controller;
 
 import java.util.Arrays;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -153,10 +154,18 @@ public class TBRController {
 	public String dataCollect() {
 		return "실행 시간 : " + service.getIds() + "ms";
 	}
+
 	// http://127.0.0.1:8000/searchDistance?name=㈜강원심층수
 	@GetMapping("/searchDistance")
 	public List<PlaceDTO> searchDistance(@RequestParam String name){
 		System.out.println(name);
 		return service.findPlaceByPlaceNameParams(name);
+
+	//input parameter: 기준위치(위도, 경도), typeId, 거리
+	//return List<PlaceDTO> 
+	// http://127.0.0.1:8000/searchByDistance?id=1014477&typeId=39&distance=20
+	@GetMapping("/searchByDistance")
+	public List<PlaceDTO> searchByDistance(@RequestParam BigDecimal id, @RequestParam String typeId, @RequestParam int distance){
+		return service.findPlaceByDistance(id, typeId, distance);
 	}
 }
