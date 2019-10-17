@@ -1,0 +1,10 @@
+국문관광정보서비스에서 제공하는 mapy는 위도(lat), mapx는 경도(lng) 를 나타내고 있음.
+
+---------------------------------
+일반적으로 위도(lat) x, 경도(lng=lon) y.
+map = new google.maps.Map(document.getElementById('map'), {
+
+    center: {lat:mapX , lng:mapY }, 
+------------------------  
+xy자바파일에서
+내가 구현한값은 x:위도, y:경도

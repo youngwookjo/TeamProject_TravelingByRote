@@ -1,0 +1,28 @@
+참고용 메모
+
+1. 주소의 위도와 경도를 저장한다.
+
+2. 비교할 주소의 위도와 경도를 이용 아래 쿼리를 수행한다.
+
+SELECT *,
+
+	( 6371 * acos( cos( radians(lat1) ) * cos( radians( lat2 ) )
+          * cos( radians( lon2 ) - radians(lon1) )
+          + sin( radians(lat1) ) * sin( radians( lat2 ) ) ) ) AS distance
+FROM MAP_INFO 
+HAVING distance <= 0.5    
+ORDER BY distance 
+LIMIT 0,200
+
+//0.5는 현재 위치 주변의 반경 즉 500m
+//limit 0,200은 200개 한계설정
+//lat1, lon1은 현재 있는곳의 위도(x)예시 37, 경도(y)예시127 값
+//lat2, lon2은 가고자 하는 곳의 위도(x), 경도(y) 값
+//6371은 지구의 반지름 값으로 기본적으로 들어가는 값
+
+-----
+//위도, 경도, 반경거리, latitude, longitude, 주소간 거리측정
+
+--
+//위 경도  -> 격자 변환
+//https://fronteer.kr/service/kmaxy

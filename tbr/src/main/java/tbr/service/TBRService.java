@@ -4,8 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
@@ -118,5 +117,76 @@ public class TBRService {
 	public boolean addMember(MemberDTO m) {
 		return false;
 	}
+	
+	//이하 남세영 추가
+	public List<PlaceDTO> findPlaceByDistance(BigDecimal id, String typeId, int distance){
+		
+		List<PlaceDTO> result = new ArrayList<PlaceDTO>();
+		//기준장소의 경도, 위도, 주소값 구하기
+		Optional<PlaceDTO> place = placeRepo.findById(id);
+		double lat1 = place.get().getLat().doubleValue();
+		double lon1 = place.get().getLon().doubleValue();
+		String address1 = place.get().getAddress();
+		//주소값 string을 띄어쓰기 기준으로 잘라서 시, 구 단위 구하기
+		String[] array = address1.split(" ");
+		String shi = array[0];
+		String gu = array[1];
+		String shigu = shi + " " + gu;
+		//기준지역의 주소값내 시,구, 그리고 주어진 typeId와 일치하는 targetList 구하기
+		List<PlaceDTO> targetList = placeRepo.findPlaceByAddressContaining(shigu);
+		//targetList내 PlaceDTO 중 주어진 typeId와 일치하는 애들만 모아서 narrowedList 만들기
+		List<PlaceDTO> narrowedList = new ArrayList<PlaceDTO>();
+		for(int i=0; i<targetList.size(); i++) {
+			
+			String typeId2 = targetList.get(i).getTypeId().toString();
+			if(typeId.equals(typeId2)) {
+				narrowedList.add(targetList.get(i));
+			}
+		}
+		//narrowedList내 PlaceDTO 중 주어진 거리를 만족하는 애들만 솎아내기
+		for(int i=0; i<narrowedList.size(); i++) {
+			double lat2 = narrowedList.get(i).getLat().doubleValue();
+			double lon2 = narrowedList.get(i).getLon().doubleValue();
+			double distanceKilo = distance(lat1, lon1, lat2, lon2, "kilometer");
+			System.out.println(distanceKilo);
+			if(distanceKilo<distance) {
+				result.add(narrowedList.get(i));
+			}
+		}
+		return result;
+	}
+	
+	//distance 구하는 메소드
+    private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
+    	if ((lat1 == lat2) && (lon1 == lon2)) {
+			return 0;
+		}
+		else {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+         
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+         
+        if (unit == "kilometer") {
+            dist = dist * 1.609344;
+        } else if(unit == "meter"){
+            dist = dist * 1609.344;
+        }
+ 
+        return (dist);
+		}
+    }
+    
+    // This function converts decimal degrees to radians
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+     
+    // This function converts radians to decimal degrees
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
+    }
 	
 }
