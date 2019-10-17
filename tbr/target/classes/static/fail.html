@@ -59,36 +59,17 @@ h4 {
 		detail = (v) => {
 			$("#result").load("detail.html")
 		}
-		
 </script>
 
-<script type="text/javascript">
-    function cookieIdentify() {
-    	
-            alert(getCookie('id')+"님, 환영합니다.");
-    }
-    
-    var getCookie = function(name) {
-        var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-        return value? value[2] : null;
-    };
-</script>
-<script>
-	$(document).ready(function() { 
-		$('input[type="text"]').val(getCookie('id'));
-	});
-</script>
 
 </head>
-<body onload="cookieIdentify()">
+<body>
 
 	<div id="colorlib-page">
 		<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
 		<aside id="colorlib-aside" role="complementary" class="js-fullheight">
 			<nav id="colorlib-main-menu" role="navigation">
 				<ul>
-					
-					<li><input type="text" /></li>
 					<li class="colorlib-active"><a href="index.html">Home</a></li>
 					<li><a href="#" onclick="recentSearch()">최근검색</a></li>
 					<li><a href="#" onclick="wishlist()">찜하기</a></li>
@@ -118,65 +99,19 @@ h4 {
 		</aside>
 		<!-- END COLORLIB-ASIDE -->
 		<div id="colorlib-main">
-			<section class="ftco-section ftco-no-pt ftco-no-pb">
-				<div class="container">
-					<div class="row d-flex">
-						<div id="result" class="col-xl-8 py-5 px-md-5">
-						</div>
-
-						<div class="col-xl-4 sidebar ftco-animate bg-light pt-5">
-							<div class="sidebar-box pt-md-4">
-								<h4>키워드 검색</h4>
-								<form action="#" class="search-form">
-									<div class="form-group">
-										<span class="icon icon-search"></span> <input type="text"
-											class="form-control" placeholder="">
-									</div>
-								</form>
-							</div>
-							<div class="sidebar-box ftco-animate">
-								<h3 class="sidebar-heading">카테고리</h3>
-								<ul class="categories">
-									<li><a href="#">키워드 <span>(6)</span></a></li>
-									<li><a href="#">최근검색 <span>(8)</span></a></li>
-									<li><a href="#">찜하기 <span>(2)</span></a></li>
-									<li><a href="#">인스타 <span>(2)</span></a></li>
-								</ul>
-							</div>
-
-
-							<div class="sidebar-box ftco-animate">
-								<h3 class="sidebar-heading">Tag</h3>
-								<ul class="tagcloud">
-
-									<a href="#" class="tag-cloud-link">인스타</a>
-									<a href="#" class="tag-cloud-link">축제</a>
-									<a href="#" class="tag-cloud-link">관광지</a>
-									<a href="#" class="tag-cloud-link">사랑</a>
-									<a href="#" class="tag-cloud-link">효도</a>
-									<a href="#" class="tag-cloud-link">자아찾기</a>
-									<a href="#" class="tag-cloud-link">맛집</a>
-								</ul>
-							</div>
-
-
-							<div class="sidebar-box ftco-animate">
-								<h3 class="sidebar-heading">찜하기 랭킹</h3>
-								<ul class="categories">
-									<li><a href="#">Decob14 2018 <span>(10)</span></a></li>
-								</ul>
-							</div>
-						</div>
-						<!-- END COL -->
-					</div>
-				</div>
-			</section>
-
-		</div>
-		<!-- END COLORLIB-MAIN -->
-
-	</div>
-	<!-- END COLORLIB-PAGE -->
+		<br>
+		<br>
+		<br>
+<script>
+	// 페이지 로드시 콜백 함수
+	window.onload = function(){
+		alert("에러 입니다");
+	};
+		</script>
+		<br>
+		<a href="login.html">로그인으로 돌아가기</a><br>
+		<a href="menu.html">메뉴로 돌아가기</a><br>
+	
 
 
 	<!-- loader -->

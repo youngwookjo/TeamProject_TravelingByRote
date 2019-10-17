@@ -1,5 +1,7 @@
 package tbr.controller;
 
+import java.math.BigDecimal;
+import java.security.KeyStore.TrustedCertificateEntry;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -135,22 +138,40 @@ public class TBRController {
 		return new ModelAndView(vn);
 	}
 	
-	// * SEARCH
-	// http://127.0.0.1:8000/type_search/38
-	@GetMapping("/searchByType")
-	public List<PlaceDTO> searchByType(@PathVariable String typeId) {
-		return service.findPlaceByTypeId(typeId);
-	}
 
-	// http://127.0.0.1:8000/kwd_search?kwd=산
+		 // * SEARCH
+		 // http://127.0.0.1:8000/searchByType/38
+		 @GetMapping("/searchByType")
+		 public List<PlaceDTO> searchByType(@PathVariable String typeId) {
+			 return service.findPlaceByTypeId(typeId);
+		 }
+
+
+	// http://127.0.0.1:8000/searchByKeyword?kwd=산
 	@GetMapping("/searchByKeyword")
 	public List<PlaceDTO> searchByKeyword(@RequestParam String kwd) {
 		return service.findPlaceByKwd(kwd);
+	} 
+	
+	
+	// http://127.0.0.1:8000/searchByDistance?id=319571&typeId=12&distance=10
+	@GetMapping("/searchByDistance")
+	public List<List<Object>> searchByDistance(@RequestParam BigDecimal id, @RequestParam String typeId, @RequestParam double distance){
+		return service.findPlaceByDistance(id, typeId, distance);
 	}
-
-	// http://127.0.0.1:8000/data_collect
+	
+	// * DB
+	// http://127.0.0.1:8000/dataCollect
 	@GetMapping("/dataCollect")
 	public String dataCollect() {
 		return "실행 시간 : " + service.getIds() + "ms";
 	}
+	@ExceptionHandler
+	public String handling(Exception e) {
+		System.out.println("예외처리 전담");
+		return "redirect:/fail.html";
+	}
 }
+
+	
+

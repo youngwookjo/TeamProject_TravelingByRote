@@ -2,11 +2,12 @@ package tbr.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -14,6 +15,7 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.val;
 import tbr.model.dao.MemberRepository;
 import tbr.model.dao.PlaceRepository;
 import tbr.model.dto.MemberDTO;
@@ -27,7 +29,7 @@ public class TBRService {
 	@Autowired
 	MemberRepository memberRepo;
 
-	
+	// * DB
 	public long getIds() {
 		long start = System.currentTimeMillis(); // 실행 시간 측정
 		// (1) Resource Id 추출
@@ -101,14 +103,26 @@ public class TBRService {
 		return p;
 	}
 
-
+	// * Place
 	public List<PlaceDTO> findPlaceByTypeId(String typeId) {
 		return placeRepo.findPlaceByTypeId(new BigDecimal(typeId));
 	}
+	
 	public List<PlaceDTO> findPlaceByKwd(String kwd) {
 		return placeRepo.findPlaceByNameContainingOrAddressContainingOrDescriptionContaining(kwd, kwd, kwd);
 	}
+	
+	public Optional<PlaceDTO> findPlaceById(BigDecimal id) {
+		return placeRepo.findById(id);
+	}
+	
+	public List<List<Object>> findPlaceByDistance(BigDecimal id, String typeId, double distance){
+		return placeRepo.findPlaceByDistance(id, typeId, distance)
+			.stream().map(v -> Arrays.asList(placeRepo.findById(new BigDecimal(v[0].toString())), v[1]))
+			.collect(Collectors.toList());
+	}
 
+	// * Member
 	public boolean loginMember(MemberDTO m) throws Exception {
 		return checkMember(m.getId()) ? memberRepo.findById(m.getId()).get().getPw().equals(m.getPw()) : false;
 	}
@@ -124,5 +138,6 @@ public class TBRService {
 	public boolean checkMember(String id) {
 		return memberRepo.existsById(id);
 	}
+
 	
 }

@@ -59,16 +59,36 @@ h4 {
 		detail = (v) => {
 			$("#result").load("detail.html")
 		}
+		
+</script>
+
+<script type="text/javascript">
+    function cookieIdentify() {
+    	
+            alert(getCookie('id')+"님, 환영합니다.");
+    }
+    
+    var getCookie = function(name) {
+        var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return value? value[2] : null;
+    };
+</script>
+<script>
+	$(document).ready(function() { 
+		$('input[type="text"]').val(getCookie('id'));
+	});
 </script>
 
 </head>
-<body>
+<body onload="cookieIdentify()">
 
 	<div id="colorlib-page">
 		<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
 		<aside id="colorlib-aside" role="complementary" class="js-fullheight">
 			<nav id="colorlib-main-menu" role="navigation">
 				<ul>
+					
+					<li><input type="text" /></li>
 					<li class="colorlib-active"><a href="index.html">Home</a></li>
 					<li><a href="#" onclick="recentSearch()">최근검색</a></li>
 					<li><a href="#" onclick="wishlist()">찜하기</a></li>
