@@ -119,4 +119,8 @@ public class TBRService {
 		return false;
 	}
 	
+	public List<PlaceDTO> findPlaceByPlaceNameParams(String name){
+	return placeRepo.findPlaceByNameParamsNative(name);
+}
+	
 }

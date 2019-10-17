@@ -40,4 +40,5 @@ public class PlaceDTO {
 		this.img = img;
 	}
 
+	
 }
