@@ -40,42 +40,5 @@ public interface PlaceRepository extends CrudRepository<PlaceDTO, BigDecimal>{
 			@Param("typeId") String typeId,
 			@Param("distance") double distance);
 	// 거리 검색
-	
-	/*
-		@Query("SELECT u FROM User u WHERE u.status = :status and u.name = :name")
-		User findUserByStatusAndNameNamedParams(
-		@Param("status") Integer status, 
-		@Param("name") String name);
-	 */
-	
-	/* 
-	 * select id, distance
-		from (select id, ( 6371 * acos( cos( radians((select lat from place where id = 319571)) ) * cos( radians( lat ) )
-          * cos( radians(lon) - radians((select lon from place where id = 319571)) )
-          + sin( radians((select lat from place where id = 319571)) ) * sin( radians( lat ) ) ) ) as distance
-          from place)dt
-		where distance < 10 and distance > 0
-		order by distance;
-	 */
-	
-/*
-	@Query(value = "SELECT name,"
-	+"( 6371 * acos( cos( radians((select lat from place where name = :name)) ) * cos( radians( lat ) )"
-	+"* cos( radians(lon) - radians((select lon from place where name = :name)) )"
-	+"+ sin( radians((select lat from place where name = :name)) ) * sin( radians( lat ) ) ) ) AS distance"
-	+"FROM place "
-	+"HAVING distance <= 50.0 "
-	+"ORDER BY distance"
-	+"LIMIT 0,300;", nativeQuery = true)
-		List<PlaceDTO> findPlaceByNameParamsNative(
-	  @Param("name") String name);
-*/
-
-	
-//	Optional<PlaceDTO> findPlaceById(BigDecimal id);
-//	// id 검색
-//	
-//	List<PlaceDTO> findPlaceByAddressContaining(String shigu);
-//	// 시, 구 정보로 장소 검색
 
 }
