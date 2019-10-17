@@ -64,9 +64,10 @@ public class TBRService {
 //		System.out.println(list.size());
 		// (2) 세부 info 추출 -> 자세한 크롤링 내용 getInfos 참고
 		placeRepo
-			.saveAll(list.stream()
-			.map(this::getInfos)
-			.collect(Collectors.toList()));
+			.saveAll(
+					list.stream()
+						.map(this::getInfos)
+						.collect(Collectors.toList()));
 		return System.currentTimeMillis() - start;
 	}
 
@@ -108,15 +109,20 @@ public class TBRService {
 		return placeRepo.findPlaceByNameContainingOrAddressContainingOrDescriptionContaining(kwd, kwd, kwd);
 	}
 
-	public boolean loginMember(MemberDTO m) {
-		if(memberRepo.existsById(m.getId())) {
-			return memberRepo.findById(m.getId()).get().getPw().equals(m.getPw());
+	public boolean loginMember(MemberDTO m) throws Exception {
+		return checkMember(m.getId()) ? memberRepo.findById(m.getId()).get().getPw().equals(m.getPw()) : false;
+	}
+	
+	public boolean addMember(MemberDTO m) throws Exception {
+		if(!checkMember(m.getId())) {
+			memberRepo.save(m);
+			return true;
 		}
 		return false;
 	}
-	
-	public boolean addMember(MemberDTO m) {
-		return false;
+
+	public boolean checkMember(String id) {
+		return memberRepo.existsById(id);
 	}
 	
 }

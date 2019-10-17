@@ -18,4 +18,5 @@ public class MemberDTO {
 	private String id;
 	@Column(length = 10, nullable = false)
 	private String pw;
+//	private String key;
 }

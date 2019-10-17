@@ -56,9 +56,11 @@
    <script>
       // 즉시실행함수 : https://osxtip.tistory.com/635
       // 쿠키 : http://magic.wickedmiso.com/72
-      (function() {
-         console.log(document.cookie.split(";").map(v => v.trim().split("=")).filter(v => v[0] == "msg"))
-      })();
+      (() =>
+         console.log('쿠키');
+         // console.log(document.cookie.split(";").map(v => v.trim().split("=")).filter(v => v[0] == "msg"))
+         console.log(document.cookie.split(";").map(v => v.trim().split("="))
+      )();
    </script>
    <div class="limiter">
       <div class="container-login100">
@@ -78,7 +80,7 @@
                
                
                <div class="wrap-input100 validate-input">
-                  <input class="input100" type="text" name="pw"
+                  <input class="input100" type="password" name="pw"
                   required oninvalid="this.setCustomValidity('PW를 입력해주세요!')">
                   <span class="focus-input100"></span>
                   <span class="label-input100">Password</span>
@@ -124,4 +126,5 @@
    <script src="js/main.js"></script>
 
 </body>
+</frameset>
 </html>
