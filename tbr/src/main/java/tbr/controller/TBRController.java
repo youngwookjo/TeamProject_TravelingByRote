@@ -153,4 +153,10 @@ public class TBRController {
 	public String dataCollect() {
 		return "실행 시간 : " + service.getIds() + "ms";
 	}
+	// http://127.0.0.1:8000/searchDistance?name=㈜강원심층수
+	@GetMapping("/searchDistance")
+	public List<PlaceDTO> searchDistance(@RequestParam String name){
+		System.out.println(name);
+		return service.findPlaceByPlaceNameParams(name);
+	}
 }
