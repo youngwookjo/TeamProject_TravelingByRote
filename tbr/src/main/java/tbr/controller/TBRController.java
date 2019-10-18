@@ -168,7 +168,7 @@ public class TBRController {
 	// http://127.0.0.1:8000/searchByKeyword?kwd=산
 	@GetMapping("/searchByKeyword")
 	public List<PlaceDTO> searchByKeyword(@RequestParam String kwd) {
-		System.out.println("/searchByKeyword");
+		System.out.println("/searchByKeyword" + kwd );
 		return service.findPlaceByKwd(kwd);
 	}
 	
