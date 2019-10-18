@@ -42,7 +42,6 @@ h4 {
 </style>
 
 <script src="http://code.jquery.com/jquery-latest.js"></script>
-
 <script>
 		$(document).ready(function(){
 		$("#result").load("list.html")
@@ -53,13 +52,15 @@ h4 {
 		wishlist = (v) => {
 			$("#result").load("list.html")
 		}
-		privacy = (v) => {
-			$("#result").load("privacy.html")
-		}
 		detail = (v) => {
 			$("#result").load("detail.html")
 		}
+<<<<<<< HEAD
 		
+=======
+        
+        
+>>>>>>> origin/interim_youjin
 </script>
 
 <!-- 화면 우측 상단에 접속정보 띄우기 -->
@@ -84,26 +85,34 @@ h4 {
 
 
 </head>
+<<<<<<< HEAD
 <body onload="cookieIdentify()">
 
+=======
+<body>
+>>>>>>> origin/interim_youjin
 	<div id="colorlib-page">
 		<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
 		<aside id="colorlib-aside" role="complementary" class="js-fullheight">
 			<nav id="colorlib-main-menu" role="navigation">
 				<ul>
+<<<<<<< HEAD
 					<li><p id="user"></p></li>
 					<li/>
 					<li class="colorlib-active"><a href="index.html">Home</a></li>
+=======
+					<li><a href="menu.html">Home</a></li>
+>>>>>>> origin/interim_youjin
 					<li><a href="#" onclick="recentSearch()">최근검색</a></li>
 					<li><a href="#" onclick="wishlist()">찜하기</a></li>
-					<li><a href="#" onclick="privacy()">회원정보</a></li>
+					<li><a href="privacy.html">회원정보</a></li>
 					<li><a href="/logout">로그아웃</a></li>
 				</ul>
 			</nav>
 
 			<div class="colorlib-footer">
 				<h2 id="colorlib-logo" class="mb-4">
-					<a href="index.html"
+					<a href="menu.html"
 						style="background-image: url(images/bg_1.jpg);">KeyWord <span>Search</span></a>
 				</h2>
 				<div class="mb-4"></div>
@@ -121,12 +130,16 @@ h4 {
 			</div>
 		</aside>
 		<!-- END COLORLIB-ASIDE -->
+		
+		
 		<div id="colorlib-main">
 			<section class="ftco-section ftco-no-pt ftco-no-pb">
 				<div class="container">
 					<div class="row d-flex">
-						<div id="result" class="col-xl-8 py-5 px-md-5">
-						</div>
+                        
+                        
+						<div id="result" class="col-xl-8 py-5 px-md-5"></div>
+
 
 						<div class="col-xl-4 sidebar ftco-animate bg-light pt-5">
 							<div class="sidebar-box pt-md-4">
@@ -142,8 +155,8 @@ h4 {
 								<h3 class="sidebar-heading">카테고리</h3>
 								<ul class="categories">
 									<li><a href="#">키워드 <span>(6)</span></a></li>
-									<li><a href="#">최근검색 <span>(8)</span></a></li>
-									<li><a href="#">찜하기 <span>(2)</span></a></li>
+									<li><a href="#" onclick="recentSearch()">최근검색 <span>(8)</span></a></li>
+									<li><a href="#" onclick="wishlist()">찜하기 <span>(2)</span></a></li>
 									<li><a href="#">인스타 <span>(2)</span></a></li>
 								</ul>
 							</div>

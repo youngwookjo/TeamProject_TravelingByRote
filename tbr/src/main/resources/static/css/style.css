@@ -8371,7 +8371,17 @@ h1, h2, h3, h4, h5,
   @media (min-width: 992px) {
     #colorlib-main {
       width: 75%; } }
-
+#colorlib-main2 {
+  width: 100%;
+  float: right;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  -ms-transition: all 0.5s ease;
+  transition: all 0.5s ease; }
+  @media (min-width: 992px) {
+    #colorlib-main2 {
+      width: 100%; } }
 .colorlib-nav-toggle {
   cursor: pointer;
   text-decoration: none; }
