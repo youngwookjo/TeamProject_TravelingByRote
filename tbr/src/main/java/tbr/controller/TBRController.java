@@ -11,20 +11,25 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import tbr.model.dto.MemberDTO;
 import tbr.model.dto.PlaceDTO;
 import tbr.service.TBRService;
 
 @CrossOrigin(origins= {"http://127.0.0.1:8000", "http://localhost:8000"})
+@Controller
 @RestController
 public class TBRController {
 	// 에러 핸들러 & 에러 페이지 개발 필요
@@ -140,36 +145,63 @@ public class TBRController {
 	
 
 		 // * SEARCH
-		 // http://127.0.0.1:8000/searchByType/38
+		 // http://127.0.0.1:8000/searchByType?typeId=12
 		 @GetMapping("/searchByType")
 		 public List<PlaceDTO> searchByType(@PathVariable String typeId) {
+			 try {
 			 return service.findPlaceByTypeId(typeId);
+			 } catch (RuntimeException e) {
+				 return null;
+			 }
 		 }
 
 
 	// http://127.0.0.1:8000/searchByKeyword?kwd=산
 	@GetMapping("/searchByKeyword")
 	public List<PlaceDTO> searchByKeyword(@RequestParam String kwd) {
+		try {
 		return service.findPlaceByKwd(kwd);
+		} catch (RuntimeException e) {
+			return null;
+		}
 	} 
-	
 	
 	// http://127.0.0.1:8000/searchByDistance?id=319571&typeId=12&distance=10
 	@GetMapping("/searchByDistance")
 	public List<List<Object>> searchByDistance(@RequestParam BigDecimal id, @RequestParam String typeId, @RequestParam double distance){
+		try {
 		return service.findPlaceByDistance(id, typeId, distance);
+		} catch (RuntimeException e) {
+			return null;
+		}
 	}
 	
 	// * DB
 	// http://127.0.0.1:8000/dataCollect
 	@GetMapping("/dataCollect")
 	public String dataCollect() {
-		return "실행 시간 : " + service.getIds() + "ms";
-	}
-	@ExceptionHandler
-	public String handling(Exception e) {
+		try {
+			return "실행 시간 : " + service.getIds() + "ms";
+		} catch (RuntimeException e) {
+			return null;
+		}
+}
+	
+	/*// 에러 테스트 코드  http://127.0.0.1:8000/dataCollecta -> http://127.0.0.1:8000/fail.html
+	// http://127.0.0.1:8000/dataCollecta
+	@RequestMapping("/dataCollecta") 
+	public String dataCollecta()  {
+		System.out.println(1);
+		if(true) {
+			throw new RuntimeException();
+		}
+		return null;
+	}*/
+	
+	@ExceptionHandler(RuntimeException.class)
+	public RedirectView handling(RuntimeException e, RedirectAttributes redirectAttributes) {
 		System.out.println("예외처리 전담");
-		return "redirect:/fail.html";
+		return new RedirectView("http://127.0.0.1:8000/fail.html");
 	}
 }
 

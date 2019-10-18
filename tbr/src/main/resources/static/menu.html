@@ -62,9 +62,16 @@ h4 {
 		
 </script>
 
+<!-- 화면 우측 상단에 접속정보 띄우기 -->
+<script>
+	$(document).ready(function() { 
+		$('#user').text(getCookie('id')+"님, 환영합니다.");
+	});
+</script>
+
+<!-- 접속 후 팝업창 띄우기 -->
 <script type="text/javascript">
     function cookieIdentify() {
-    	
             alert(getCookie('id')+"님, 환영합니다.");
     }
     
@@ -73,11 +80,7 @@ h4 {
         return value? value[2] : null;
     };
 </script>
-<script>
-	$(document).ready(function() { 
-		$('input[type="text"]').val(getCookie('id'));
-	});
-</script>
+
 
 </head>
 <body onload="cookieIdentify()">
@@ -87,8 +90,8 @@ h4 {
 		<aside id="colorlib-aside" role="complementary" class="js-fullheight">
 			<nav id="colorlib-main-menu" role="navigation">
 				<ul>
-					
-					<li><input type="text" /></li>
+					<li><p id="user"></p></li>
+					<li/>
 					<li class="colorlib-active"><a href="index.html">Home</a></li>
 					<li><a href="#" onclick="recentSearch()">최근검색</a></li>
 					<li><a href="#" onclick="wishlist()">찜하기</a></li>
