@@ -59,16 +59,40 @@ h4 {
 		detail = (v) => {
 			$("#result").load("detail.html")
 		}
+		
 </script>
 
+<!-- 화면 우측 상단에 접속정보 띄우기 -->
+<script>
+	$(document).ready(function() { 
+		$('#user').text(getCookie('id')+"님, 환영합니다.");
+	});
+
+</script>
+
+<!-- 접속 후 팝업창 띄우기 -->
+<script type="text/javascript">
+    function cookieIdentify() {
+            alert(getCookie('id')+"님, 환영합니다.");
+    }
+    
+    var getCookie = function(name) {
+        var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return value? value[2] : null;
+    };
+</script>
+
+
 </head>
-<body>
+<body onload="cookieIdentify()">
 
 	<div id="colorlib-page">
 		<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
 		<aside id="colorlib-aside" role="complementary" class="js-fullheight">
 			<nav id="colorlib-main-menu" role="navigation">
 				<ul>
+					<li><p id="user"></p></li>
+					<li/>
 					<li class="colorlib-active"><a href="index.html">Home</a></li>
 					<li><a href="#" onclick="recentSearch()">최근검색</a></li>
 					<li><a href="#" onclick="wishlist()">찜하기</a></li>
