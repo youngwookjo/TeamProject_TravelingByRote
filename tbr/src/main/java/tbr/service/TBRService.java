@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.val;
+import tbr.exception.AsyncException;
 import tbr.model.dao.MemberRepository;
 import tbr.model.dao.PlaceRepository;
 import tbr.model.dto.MemberDTO;
@@ -30,9 +31,9 @@ public class TBRService {
 	MemberRepository memberRepo;
 
 	// * DB
-	public long getIds() {
+	public long getIds() throws AsyncException {
 		long start = System.currentTimeMillis(); // 실행 시간 측정
-
+		try {
 		// (1) Resource Id 추출
 		HashMap<String, String> data = new HashMap<>(); // Jsoup param 조정을 위한 map
 		data.put("langtype", "KOR");
@@ -62,6 +63,10 @@ public class TBRService {
 
 		// (2) 세부 info 추출 -> 자세한 크롤링 내용 getInfos 참고
 		placeRepo.saveAll(list.stream().map(this::getInfos).collect(Collectors.toList()));
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("Error While Making DB");
+		}
 		return System.currentTimeMillis() - start;
 	}
 
@@ -105,17 +110,16 @@ public class TBRService {
 		return placeRepo.findById(id);
 	}
 
+	public List<List<Object>> findPlaceByDistance(BigDecimal id, double distance) {
+		return placeRepo.findPlaceByDistance(id, distance).stream()
+					.map(v -> Arrays.asList(placeRepo.findById(new BigDecimal(v[0].toString())), v[1]))
+					.collect(Collectors.toList());
+	}
+	
 	public List<List<Object>> findPlaceByDistance(BigDecimal id, BigDecimal typeId, double distance) {
-		if (typeId == null) {
-			return placeRepo.findPlaceByDistance(id, distance).stream()
+		return placeRepo.findPlaceByDistance(id, typeId, distance).stream()
 					.map(v -> Arrays.asList(placeRepo.findById(new BigDecimal(v[0].toString())), v[1]))
 					.collect(Collectors.toList());
-		} else {
-			return placeRepo.findPlaceByDistance(id, typeId, distance).stream()
-					.map(v -> Arrays.asList(placeRepo.findById(new BigDecimal(v[0].toString())), v[1]))
-					.collect(Collectors.toList());
-		}
-
 	}
 
 	// * Member
@@ -123,11 +127,11 @@ public class TBRService {
 		return memberRepo.existsById(id);
 	}
 
-	public boolean loginMember(MemberDTO m) throws Exception {
+	public boolean loginMember(MemberDTO m) {
 		return checkMember(m.getId()) ? memberRepo.findById(m.getId()).get().getPw().equals(m.getPw()) : false;
 	}
 
-	public boolean addMember(MemberDTO m) throws Exception {
+	public boolean addMember(MemberDTO m) {
 		if (!checkMember(m.getId())) {
 			memberRepo.save(m);
 			return true;
@@ -135,7 +139,7 @@ public class TBRService {
 		return false;
 	}
 
-	public boolean updateMember(MemberDTO m) throws Exception {
+	public boolean updateMember(MemberDTO m) {
 		if (checkMember(m.getId())) {
 			memberRepo.findById(m.getId()).get().setPw(m.getPw());
 			memberRepo.save(m);

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Privacy</title>
+<title>Travel by Rote</title>
 <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -43,6 +43,7 @@ h4 {
 <script type="text/javascript">
 	$(document).ready(function() { 
 		$('#user').text(getCookie('id')+"님, 환영합니다.");
+		$('#infoid').text(getCookie('id'));
 	});
     let getCookie = function(name) {
         const value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
@@ -96,18 +97,10 @@ h4 {
 						<div class="col-lg-6 col-xl-3 d-flex mb-4">
 							<div class="info bg-light p-4">
 								<p>
-									<span>ID:</span> tester1
+									<span>ID:</span> <span id="infoid"></span>
 								</p>
 							</div>
 						</div>
-						<div class="col-lg-6 col-xl-3 d-flex mb-4">
-							<div class="info bg-light p-4">
-								<p>
-									<span>Password:</span> <a href="tel://1234567920">secretkey1</a>
-								</p>
-							</div>
-						</div>
-
 					</div>
 					<div class="row block-9">
 						<div class="col-lg-6 d-flex">
@@ -116,11 +109,11 @@ h4 {
 								<p3>비밀번호 변경</p3>
 								<hr>
 								<div class="form-group">
-									<input type="text" name="id" class="form-control"
-										placeholder="현재 ID">
+									<input type="password" name="oldpw" class="form-control"
+										placeholder="기존 Password">
 								</div>
 								<div class="form-group">
-									<input type="text" name="pw" class="form-control"
+									<input type="password" name="newpw" class="form-control"
 										placeholder="신규 Password">
 								</div>
 
