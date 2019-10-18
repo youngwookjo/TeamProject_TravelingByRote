@@ -142,7 +142,7 @@ public class TBRController {
          if (id.length() == 0 || pw.length() == 0) {
             u = new Cookie("msg", "empty_space");
             throw new Exception("입력하지 않은 영역");
-         } else if (service.UpdateMember(new MemberDTO(id, pw))) {
+         } else if (service.updateMember(new MemberDTO(id, pw))) {
             u = new Cookie("msg", "update_complete");
             System.out.println("업데이트 성공");
          }

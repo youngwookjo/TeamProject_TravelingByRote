@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Home</title>
+<title>Travel by Rote</title>
 <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -55,54 +55,35 @@ h4 {
 		detail = (v) => {
 			$("#result").load("detail.html")
 		}
-<<<<<<< HEAD
-		
-=======
-        
-        
->>>>>>> origin/interim_youjin
 </script>
 
-<!-- 화면 우측 상단에 접속정보 띄우기 -->
-<script>
+<script type="text/javascript">
+	// 화면 우측 상단에 접속정보 띄우기
 	$(document).ready(function() { 
 		$('#user').text(getCookie('id')+"님, 환영합니다.");
 	});
-
-</script>
-
-<!-- 접속 후 팝업창 띄우기 -->
-<script type="text/javascript">
-    function cookieIdentify() {
-            alert(getCookie('id')+"님, 환영합니다.");
-    }
-    
-    var getCookie = function(name) {
-        var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+	// 접속 후 팝업창 띄우기
+    // function cookieIdentify() {
+    //         alert(getCookie('id')+"님, 환영합니다.");
+    // }
+    let getCookie = function(name) {
+        const value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
         return value? value[2] : null;
     };
 </script>
 
 
 </head>
-<<<<<<< HEAD
-<body onload="cookieIdentify()">
 
-=======
+<!-- <body onload="cookieIdentify()"> -->
 <body>
->>>>>>> origin/interim_youjin
 	<div id="colorlib-page">
 		<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
 		<aside id="colorlib-aside" role="complementary" class="js-fullheight">
 			<nav id="colorlib-main-menu" role="navigation">
 				<ul>
-<<<<<<< HEAD
-					<li><p id="user"></p></li>
-					<li/>
-					<li class="colorlib-active"><a href="index.html">Home</a></li>
-=======
+					<li style="height: 32px;"><p id="user"></p></li>
 					<li><a href="menu.html">Home</a></li>
->>>>>>> origin/interim_youjin
 					<li><a href="#" onclick="recentSearch()">최근검색</a></li>
 					<li><a href="#" onclick="wishlist()">찜하기</a></li>
 					<li><a href="privacy.html">회원정보</a></li>
@@ -113,7 +94,7 @@ h4 {
 			<div class="colorlib-footer">
 				<h2 id="colorlib-logo" class="mb-4">
 					<a href="menu.html"
-						style="background-image: url(images/bg_1.jpg);">KeyWord <span>Search</span></a>
+						style="background-image: url(images/bg_1.jpg);">Login<br>to Travel<br>  <span>by Rote.</span></a>
 				</h2>
 				<div class="mb-4"></div>
 				<p class="pfooter">
