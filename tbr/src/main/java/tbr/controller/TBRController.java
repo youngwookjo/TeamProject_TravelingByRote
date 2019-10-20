@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import tbr.exception.AsyncException;
@@ -156,7 +157,7 @@ public class TBRController {
 	}
 
 	// * DB
-	// http://127.0.0.1:8000/data_collect
+	// http://127.0.0.1:8000/dataCollect
 	@GetMapping("/dataCollect")
 	public String dataCollect() throws AsyncException {
 		System.out.println("/dataCollect");
@@ -174,6 +175,59 @@ public class TBRController {
 		System.out.println("ERROR 발생");
 		response.addCookie(new Cookie("msg", e.getMessage()));
 		return new RedirectView("error.html");
+	}
+
+	// * Admin
+	@PostMapping("/loginAdmin")
+	public RedirectView loginAdmin(HttpServletResponse response, @RequestParam("id") String id,
+			@RequestParam("pw") String pw) throws SyncException, Exception {
+		if (id.length() == 0 || pw.length() == 0) {
+			throw new SyncException("empty_space");
+		} else if (service.loginAdmin(id, pw)) {
+			System.out.println("로그인 성공");
+			response.addCookie(new Cookie("id", id));
+		} else {
+			throw new SyncException("not_exist_member");
+		}
+		return new RedirectView("admin_main.html");
+	}
+	
+	@GetMapping("/logoutAdmin")
+	public RedirectView logoutAdmin(HttpServletResponse response, HttpServletRequest request) {
+		Cookie c = null;
+		String id = Arrays.stream(
+						request.getCookies())
+							.filter(v -> v.getName().equals("id"))
+							.map(v -> v.getValue())
+							.reduce("", ((x, y) -> x + y));
+		if (id.equals("admin")) {
+			System.out.println("관리자 로그아웃 성공");
+			response.addCookie(new Cookie("msg", "logout_complete"));
+			c = new Cookie("id", "");
+			c.setMaxAge(0);
+			response.addCookie(c);
+		} else {
+			System.out.println("관리자 로그인 기록 없음");
+		}
+		return new RedirectView("admin.html");
+	}
+	
+	//http://127.0.0.1:8000/getAllUser
+	@GetMapping("/getAllUser")
+	public Iterable<MemberDTO> getAllUser() {
+		return service.getAllMember();
+	}
+
+	// 회원 검색
+	@GetMapping("/searchAccount")
+	public List<MemberDTO> searchAccount(@RequestParam("id") String id) {
+		return service.searchMember(id);
+	}
+
+	// 회원 삭제
+	@GetMapping("/deleteAccount")
+	public String deleteAccount(@RequestParam("id") String id) {
+		return service.deleteMember(id);
 	}
 
 }

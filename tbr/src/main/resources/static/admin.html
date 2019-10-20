@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style type="text/css">
+    div {
+        width: 800px; height: 420px;
+        border: 1px solid; padding: 10px;
+    }
+    img{
+        width: 400px;
+        height: 400px;
+    }
+    #float {float: left; padding: 10px;}
+</style>
+<title>관리자 화면</title>
+</head>
+<body>
+    
+    <h3>관리자 화면</h3>
+    
+    <div>
+    <img src="images/person_3.jpg" id="float">
+        <form action="/loginAdmin" method="post">
+        ID:<br>
+        <input type="text" name="id" placeholder="ID" required="required" ><br>
+        Password:<br>
+        <input type="password" name="pw" placeholder="password" required="required">
+        <input type="submit" value="login">
+    </form>
+    </div>
+    
+</body>
+</html>
