@@ -1,7 +1,7 @@
 package tbr.controller;
 
-import java.util.Arrays;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -12,7 +12,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -184,6 +183,66 @@ public class TBRController {
 	@GetMapping("/dataCollect")
 	public String dataCollect() {
 		return "실행 시간 : " + service.getIds() + "ms";
+	}
+	
+	
+	@PostMapping("/loginAdmin")
+	public ModelAndView loginAdmin(HttpServletResponse response,
+			@RequestParam("id") String id,
+			@RequestParam("pw") String pw) {
+		String vn = "redirect:/admin.html";
+		Cookie c, c2 = null;
+		try {
+			if(id.length() == 0 || pw.length() == 0) {
+				c = new Cookie("msg", "empty_space");
+				throw new Exception("입력하지 않은 영역"); // 활용하면 로그인/가입 시 길이 검증도 가능
+			}
+			else if (service.loginAdmin(new MemberDTO(id, pw))) {
+				c = new Cookie("msg", "login_complete");
+				c2 = new Cookie("id", id);
+				System.out.println("로그인 성공");
+				vn = "redirect:/admin_main.html";
+			} else {
+				c = new Cookie("msg", "not_exist_member");
+				System.out.println("로그인 실패 : 존재하지 않는 멤버");
+			}
+		} catch (Exception e) {
+			c = new Cookie("msg", "unexpected_error");
+			System.out.println("에러 발생");
+			e.printStackTrace();
+		}
+		if(c != null) {
+			response.addCookie(c);			
+		}
+		if(c2 != null) {			
+			response.addCookie(c2);
+		}
+		return new ModelAndView(vn);
+	}	
+	
+	// Admin : 회원정보 조회(전체)
+	@GetMapping("/getAllUser")
+	public Iterable<MemberDTO> getAllUser() {
+		return service.getAllMember();
+	}
+
+	// Admin : 회원정보 조회(Containing)
+	@GetMapping("/searchAccount")
+	public List<MemberDTO> searchAccount(@RequestParam("id") String id) {
+		return service.searchId(id);
+	}
+
+	// 8. admin page : 회원 삭제
+	@GetMapping("/deleteAccount")
+	public String deleteAccount(@RequestParam("id") String id) {
+		String result = "오류 발생";
+		try {
+			service.deleteId(id);
+			result = "회원 삭제 성공";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }

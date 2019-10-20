@@ -17,383 +17,81 @@
 <link rel="stylesheet" href="css/animate.css">
 <link rel="stylesheet" href="css/style.css">
     
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <!--    menu.html에서 던진 파라미터를 받는 로직-->
     <script>
-        var urlParams = new URLSearchParams(window.location.search);
-        
-        $(document).ready(function() { 
-		  $("#write").text(getKwd("kwd"));
-	   });
-             
         let getKwd = function(kwd) {
             const value = new URLSearchParams(window.location.search).get(kwd);
             return value;
         };
-        
+        var kwdinput = getKwd("kwd");
+    </script>
+
+<!-- 받은 파라미터를 input값으로 하여 DB에서 정보 검색한 후 결과값을 drawtable에 던지는 로직 -->
+    <script>
+        let data;
+        (searchbykwd = kwd =>
+         axios
+        .get("http://127.0.0.1:8000/searchByKeyword?kwd=" + kwd)
+        .then(resData => {
+            data = resData.data;
+            console.log(data);
+            drawtable(resData.data);
+        })
+        .catch(error => {
+            console.log("비정상 응답", error);
+        }))(kwdinput);
     </script>
     
+    <!-- drawtable 그린 후 화면에 띄우는 로직 -->
+    <script>
+        var table = "";
+        function drawtable(tdata) {  
+            
+            for (let row of tdata) {
+                table +=
+                    "<div class=\"col-md-12\">" +
+                    "<div class=\"blog-entry ftco-animate d-md-flex fadeInUp ftco-animated\">" +
+                    "<a href=\"#\" onclick=\"detail()\" class=\"img img-2\" " +
+                    "style=\"background-image: url(" + row.img.replace("static/", "") + ");\"></a>" +
+                    "<div class=\"text text-2 pl-md-4\">" +
+                    "<h3 class=\"mb-2\">" +
+                    "<a href=\"#\" onclick=\"detail()\">"+ row.name +"</a>" +
+                    "</h3>" +
+                    "<div class=\"meta-wrap\">" +
+                    "<p class=\"meta\">" +
+                    "<span><a href=\"#\"  onclick=\"recentSearch()\"><i " +
+                    "class=\"icon-folder-o mr-2\"></i>"+ row.typeId +"</a></span> <span><i " +
+                    "class=\"icon-comment2 mr-2\"></i>"+ row.address +"</span>" +
+                    "</p>" +
+                    "</div>" +
+                    "<p class=\"mb-4\">"+ row.description +"</p>" +
+                    "<p>" +
+                    "<a href=\"#\" class=\"btn-custom\">더 보기 <span " +
+                    "class=\"ion-ios-arrow-forward\"></span></a>" +
+                    "</p>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>"
+            }
 
-   <script>
-       
-    let data;
-    searchbykwd = kwd =>
-    axios
-      .get("http://127.0.0.1:8000/searchByKeyword?kwd=" + kwd)
-      .then(resData => {
-        data = resData.data;
-        console.log(data);
-        drawtable("키워드 검색", resData.data);
-      })
-      .catch(error => {
-        console.log("비정상 응답", error);
-      });
-    
+            let table2 = document.createElement('div');
+            table2.innerHTML = table;
 
-       var tdata =getKwd("kwd"); 
-       
-       function drawtable(option, tdata) {
-        document.all.result.innerHTML = "<h3>" + option + "</<h3>";
-        let table = "";
-        for (let row of tdata) {
-          console.log(row);
-          table += "<div class=\"col-md-12\">"
-           +"<div class=\"blog-entry ftco-animate d-md-flex\">"
-           +"<a href=\"#\" onclick=\"detail()\" class=\"img img-2\""
-           +"style=\"background-image: url(\"" 
-           + row.img.replace("static/", "")
-           +"<br>"  + row.address
-           +");\"></a>"
-           +"<div class=\"text text-2 pl-md-4\">"
-           +"<h3 class=\"mb-2\">"
-           +"<a href=\"#\" onclick=\"detail()\">" 
-           +row.name
-           +"</a></h3>"
-           +"<div class=\"meta-wrap\">"
-           +"<p class=\"meta\">"
-           +"<span><a href=\"#\"  onclick=\"recentSearch()\"><i"
-           +"class=\"icon-folder-o mr-2\"></i>"
-           +row.typeId
-           +"</a></span> <span><i class=\"icon-comment2 mr-2\"></i>5 Comment</span>"
-           +"</p></div>"
-             +"<p class=\"mb-4\">"
-           +row.description
-           +"</p><p>"
-           +"<a href=\"#\" class=\"btn-custom\">더 보기 <span"
-           +"class=\"ion-ios-arrow-forward\"></span></a></p></div></div></div>"
+            $(document).ready(function() {
+                $(".row.pt-md-4").append(table2)   
+            });
         }
-        table += "</table>";
-        document.all.result.innerHTML += table;
-      } 
-    
-   
-    
-    </script>    
+        
+    </script>
+
     
 </head>
 
 <body>
-        <div class="row pt-md-4">
-                <div class="col-md-12">
-                    <p id="write"></p>
-                    <div class="blog-entry ftco-animate d-md-flex">
-                        <a href="#" onclick="detail()" class="img img-2"
-                            style="background-image: url(images/image_1.jpg);"></a>
-                        <div class="text text-2 pl-md-4">
-                            <h3 class="mb-2">
-                                    <a href="#" onclick="detail()">해금강</a>
-                            </h3>
-                            <div class="meta-wrap">
-                                <p class="meta">
-                                    <span><a href="#"  onclick="recentSearch()"><i
-                                            class="icon-folder-o mr-2"></i>Travel</a></span> <span><i
-                                        class="icon-comment2 mr-2"></i>5 Comment</span>
-                                </p>
-                            </div>
-                            <p class="mb-4">아름다운 강산이다</p>
-                            <p>
-                                <a href="#" class="btn-custom">더 보기 <span
-                                    class="ion-ios-arrow-forward"></span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            
-                <div class="col-md-12">
-                    <div class="blog-entry ftco-animate d-md-flex">
-                        <a href="detail.html" class="img img-2"
-                            style="background-image: url(images/image_2.jpg);"></a>
-                        <div class="text text-2 pl-md-4">
-                            <h3 class="mb-2">
-                                <a href="detail.html">Great Things Never Came from
-                                    Comfort Zone</a>
-                            </h3>
-                            <div class="meta-wrap">
-                                <p class="meta">
-                                    <span><i class="icon-calendar mr-2"></i>June 28,
-                                        2019</span> <span><a href="detail.html"><i
-                                            class="icon-folder-o mr-2"></i>Travel</a></span> <span><i
-                                        class="icon-comment2 mr-2"></i>5 Comment</span>
-                                </p>
-                            </div>
-                            <p class="mb-4">A small river named Duden flows by their
-                                place and supplies it with the necessary regelialia.</p>
-                            <p>
-                                <a href="#" class="btn-custom">Read More <span
-                                    class="ion-ios-arrow-forward"></span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            
-                <div class="col-md-12">
-                    <div class="blog-entry ftco-animate d-md-flex">
-                        <a href="detail.html" class="img img-2"
-                            style="background-image: url(images/image_3.jpg);"></a>
-                        <div class="text text-2 pl-md-4">
-                            <h3 class="mb-2">
-                                <a href="detail.html">Paths Are Made by Walking</a>
-                            </h3>
-                            <div class="meta-wrap">
-                                <p class="meta">
-                                    <span>Dec 14, 2018</span> <span><a
-                                        href="detail.html">Lifestyle</a></span> <span>5 Comment</span>
-                                </p>
-                            </div>
-                            <p class="mb-4">A small river named Duden flows by their
-                                place and supplies it with the necessary regelialia.</p>
-                            <p>
-                                <a href="#" class="btn-custom">Read More <span
-                                    class="ion-ios-arrow-forward"></span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="blog-entry ftco-animate d-md-flex">
-                        <a href="detail.html" class="img img-2"
-                            style="background-image: url(images/image_4.jpg);"></a>
-                        <div class="text text-2 pl-md-4">
-                            <h3 class="mb-2">
-                                <a href="detail.html">The Secret of Getting Ahead is
-                                    Getting Started</a>
-                            </h3>
-                            <div class="meta-wrap">
-                                <p class="meta">
-                                    <span>Dec 14, 2018</span> <span><a
-                                        href="detail.html">Nature</a></span> <span>5 Comment</span>
-                                </p>
-                            </div>
-                            <p class="mb-4">A small river named Duden flows by their
-                                place and supplies it with the necessary regelialia.</p>
-                            <p>
-                                <a href="#" class="btn-custom">Read More <span
-                                    class="ion-ios-arrow-forward"></span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="blog-entry ftco-animate d-md-flex">
-                        <a href="detail.html" class="img img-2"
-                            style="background-image: url(images/image_5.jpg);"></a>
-                        <div class="text text-2 pl-md-4">
-                            <h3 class="mb-2">
-                                <a href="detail.html">You Can't Blame Gravity for
-                                    Falling in Love</a>
-                            </h3>
-                            <div class="meta-wrap">
-                                <p class="meta">
-                                    <span>Dec 14, 2018</span> <span><a
-                                        href="detail.html">Lifestyle</a></span> <span>5 Comment</span>
-                                </p>
-                            </div>
-                            <p class="mb-4">A small river named Duden flows by their
-                                place and supplies it with the necessary regelialia.</p>
-                            <p>
-                                <a href="#" class="btn-custom">Read More <span
-                                    class="ion-ios-arrow-forward"></span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="blog-entry ftco-animate d-md-flex">
-                        <a href="detail.html" class="img img-2"
-                            style="background-image: url(images/image_6.jpg);"></a>
-                        <div class="text text-2 pl-md-4">
-                            <h3 class="mb-2">
-                                <a href="detail.html">You Can't Blame Gravity for
-                                    Falling in Love</a>
-                            </h3>
-                            <div class="meta-wrap">
-                                <p class="meta">
-                                    <span>Dec 14, 2018</span> <span><a
-                                        href="detail.html">Travel</a></span> <span>5 Comment</span>
-                                </p>
-                            </div>
-                            <p class="mb-4">A small river named Duden flows by their
-                                place and supplies it with the necessary regelialia.</p>
-                            <p>
-                                <a href="#" class="btn-custom">Read More <span
-                                    class="ion-ios-arrow-forward"></span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="blog-entry ftco-animate d-md-flex">
-                        <a href="detail.html" class="img img-2"
-                            style="background-image: url(images/image_7.jpg);"></a>
-                        <div class="text text-2 pl-md-4">
-                            <h3 class="mb-2">
-                                <a href="detail.html">You Can't Blame Gravity for
-                                    Falling in Love</a>
-                            </h3>
-                            <div class="meta-wrap">
-                                <p class="meta">
-                                    <span>Dec 14, 2018</span> <span><a
-                                        href="detail.html">Travel</a></span> <span>5 Comment</span>
-                                </p>
-                            </div>
-                            <p class="mb-4">A small river named Duden flows by their
-                                place and supplies it with the necessary regelialia.</p>
-                            <p>
-                                <a href="#" class="btn-custom">Read More <span
-                                    class="ion-ios-arrow-forward"></span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="blog-entry ftco-animate d-md-flex">
-                        <a href="detail.html" class="img img-2"
-                            style="background-image: url(images/image_8.jpg);"></a>
-                        <div class="text text-2 pl-md-4">
-                            <h3 class="mb-2">
-                                <a href="detail.html">You Can't Blame Gravity for
-                                    Falling in Love</a>
-                            </h3>
-                            <div class="meta-wrap">
-                                <p class="meta">
-                                    <span><i class="icon-calendar mr-2"></i>June 28,
-                                        2019</span> <span><a href="detail.html"><i
-                                            class="icon-folder-o mr-2"></i>Travel</a></span> <span><i
-                                        class="icon-comment2 mr-2"></i>5 Comment</span>
-                                </p>
-                            </div>
-                            <p class="mb-4">A small river named Duden flows by their
-                                place and supplies it with the necessary regelialia.</p>
-                            <p>
-                                <a href="#" class="btn-custom">Read More <span
-                                    class="ion-ios-arrow-forward"></span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="blog-entry ftco-animate d-md-flex">
-                        <a href="detail.html" class="img img-2"
-                            style="background-image: url(images/image_9.jpg);"></a>
-                        <div class="text text-2 pl-md-4">
-                            <h3 class="mb-2">
-                                <a href="detail.html">You Can't Blame Gravity for
-                                    Falling in Love</a>
-                            </h3>
-                            <div class="meta-wrap">
-                                <p class="meta">
-                                    <span><i class="icon-calendar mr-2"></i>June 28,
-                                        2019</span> <span><a href="detail.html"><i
-                                            class="icon-folder-o mr-2"></i>Travel</a></span> <span><i
-                                        class="icon-comment2 mr-2"></i>5 Comment</span>
-                                </p>
-                            </div>
-                            <p class="mb-4">A small river named Duden flows by their
-                                place and supplies it with the necessary regelialia.</p>
-                            <p>
-                                <a href="#" class="btn-custom">Read More <span
-                                    class="ion-ios-arrow-forward"></span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="blog-entry ftco-animate d-md-flex">
-                        <a href="detail.html" class="img img-2"
-                            style="background-image: url(images/image_10.jpg);"></a>
-                        <div class="text text-2 pl-md-4">
-                            <h3 class="mb-2">
-                                <a href="detail.html">You Can't Blame Gravity for
-                                    Falling in Love</a>
-                            </h3>
-                            <div class="meta-wrap">
-                                <p class="meta">
-                                    <span>Dec 14, 2018</span> <span><a
-                                        href="detail.html">Lifestyle</a></span> <span>5 Comment</span>
-                                </p>
-                            </div>
-                            <p class="mb-4">A small river named Duden flows by their
-                                place and supplies it with the necessary regelialia.</p>
-                            <p>
-                                <a href="#" class="btn-custom">Read More <span
-                                    class="ion-ios-arrow-forward"></span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="blog-entry ftco-animate d-md-flex">
-                        <a href="detail.html" class="img img-2"
-                            style="background-image: url(images/image_11.jpg);"></a>
-                        <div class="text text-2 pl-md-4">
-                            <h3 class="mb-2">
-                                <a href="detail.html">You Can't Blame Gravity for
-                                    Falling in Love</a>
-                            </h3>
-                            <div class="meta-wrap">
-                                <p class="meta">
-                                    <span><i class="icon-calendar mr-2"></i>June 28,
-                                        2019</span> <span><a href="detail.html"><i
-                                            class="icon-folder-o mr-2"></i>Travel</a></span> <span><i
-                                        class="icon-comment2 mr-2"></i>5 Comment</span>
-                                </p>
-                            </div>
-                            <p class="mb-4">A small river named Duden flows by their
-                                place and supplies it with the necessary regelialia.</p>
-                            <p>
-                                <a href="#" class="btn-custom">Read More <span
-                                    class="ion-ios-arrow-forward"></span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="blog-entry ftco-animate d-md-flex">
-                        <a href="detail.html" class="img img-2"
-                            style="background-image: url(images/image_12.jpg);"></a>
-                        <div class="text text-2 pl-md-4">
-                            <h3 class="mb-2">
-                                <a href="detail.html">You Can't Blame Gravity for
-                                    Falling in Love</a>
-                            </h3>
-                            <div class="meta-wrap">
-                                <p class="meta">
-                                    <span><i class="icon-calendar mr-2"></i>June 28,
-                                        2019</span> <span><a href="detail.html"><i
-                                            class="icon-folder-o mr-2"></i>Travel</a></span> <span><i
-                                        class="icon-comment2 mr-2"></i>5 Comment</span>
-                                </p>
-                            </div>
-                            <p class="mb-4">A small river named Duden flows by their
-                                place and supplies it with the necessary regelialia.</p>
-                            <p>
-                                <a href="#" class="btn-custom">Read More <span
-                                    class="ion-ios-arrow-forward"></span></a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+        <div class="row pt-md-4"></div>
             <!-- END-->
 
             <div class="row">
