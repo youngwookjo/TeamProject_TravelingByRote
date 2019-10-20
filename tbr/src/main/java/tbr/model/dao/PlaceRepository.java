@@ -34,24 +34,25 @@ public interface PlaceRepository extends CrudRepository<PlaceDTO, BigDecimal>{
 			"where distance < :distance and distance > 0\r\n" + 
 			"order by distance";
 	
-	List<PlaceDTO> findPlaceByTypeId(BigDecimal typeId);
 	// type id 검색
+	List<PlaceDTO> findPlaceByTypeId(BigDecimal typeId);
 	
-	List<PlaceDTO> findPlaceByNameContainingOrAddressContainingOrDescriptionContaining(String kwd1, String kwd2, String kwd3);
 	// 키워드 검색 (이름, 주소, 설명)
+	List<PlaceDTO> findPlaceByNameContainingOrAddressContainingOrDescriptionContaining(String kwd1, String kwd2, String kwd3);
 	
 	// JPA를 통해 특정 컬럼 조회 : http://blog.naver.com/idrukawa/220940108211
 	// SPRING DATA + JPQL, named parmeter : https://www.baeldung.com/spring-data-jpa-query
+	// 거리 검색 (type 구분)
 	@Query(value = DISTANCE, nativeQuery = true)
 	List<Object[]> findPlaceByDistance(
 			@Param("id") BigDecimal id,
 			@Param("typeId") BigDecimal typeId,
 			@Param("distance") double distance);
-	// 거리 검색 (type 구분)
+
+	// 거리 검색 (type 구분 없이)
 	@Query(value = DISTANCEALL, nativeQuery = true)
 	List<Object[]> findPlaceByDistance(
 			@Param("id") BigDecimal id,
 			@Param("distance") double distance);
-	// 거리 검색 (type 구분 없이)
 
 }

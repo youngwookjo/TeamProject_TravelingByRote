@@ -3,6 +3,7 @@ package tbr.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tbr.exception.AsyncException;
+import tbr.model.dto.InstaPostDTO;
 import tbr.model.dto.PlaceDTO;
 import tbr.service.TBRSearchService;
 
@@ -82,6 +84,34 @@ public class TBRSearchController {
 		System.out.println("/dataCollect");
 		try {
 			return "실행 시간 : " + service.getIds() + "ms";			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}
+	}
+	
+	@GetMapping("/instaCollect")
+	public String instaCollect() throws AsyncException {
+		System.out.println("/instaCollect");
+		try {
+			return "실행 시간 : " + service.getSocialData() + "ms";
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}
+	}
+	
+	// * Insta
+	// http://127.0.0.1:8000/instaKwdSearch?kwd=대한민국
+	@GetMapping("/instaKwdSearch")
+	public List<InstaPostDTO> instaKwdSearch(@RequestParam String kwd) throws AsyncException {
+		System.out.println("/instaKwdSearch");
+		try {
+			return service.getSearchHit(kwd);
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new AsyncException("ERROR");

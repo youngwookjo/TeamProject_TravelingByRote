@@ -1,13 +1,16 @@
 package tbr.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.elasticsearch.search.SearchHit;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -15,17 +18,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tbr.exception.AsyncException;
-import tbr.model.dao.MemberRepository;
 import tbr.model.dao.PlaceRepository;
-import tbr.model.dto.MemberDTO;
+import tbr.model.dto.InstaPostDTO;
 import tbr.model.dto.PlaceDTO;
+import tbr.model.es.ESHighLevelClient;
 import tbr.util.Util;
 
 @Service
 public class TBRSearchService {
 	@Autowired
 	PlaceRepository placeRepo;
+	@Autowired
+	ESHighLevelClient esClient;
 
+	String index = "insta_post";
+	String[] locList = {"국내여행"};
+//	String[] locList = "국내여행,서울여행,인천여행,경기도여행,충북여행,충남여행,강원도여행,전북여행,전남여행,대전여행,광주여행,부산여행,제주여행,울산여행,경북여행,경남여행,대구여행".split(",");
+	
 	// * DB
 	public long getIds() throws AsyncException {
 		long start = System.currentTimeMillis(); // 실행 시간 측정
@@ -96,7 +105,42 @@ public class TBRSearchService {
 		p.setAddress(map.getOrDefault("address", "NULL").replace("(@ko)", ""));
 		return p;
 	}
-
+	
+	public long getSocialData() throws IOException {
+		long start = System.currentTimeMillis(); // 실행 시간 측정
+		System.out.println("// 인스타 크롤링 시작");
+		List<InstaPostDTO> list = new ArrayList<>();
+		for(String loc : locList) {
+			list.addAll(getInstaPosts(loc));
+		}
+		System.out.println("// 인스타 크롤링 종료");
+		System.out.println("// 엘라스틱 저장 시작");
+		esClient.connect();
+		try {
+			esClient.bulk(index, list);
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("Elastic_Search_Error");
+		} finally {			
+			esClient.close();
+		}
+		System.out.println("// DB 저장 종료");
+		return System.currentTimeMillis() - start;
+	}
+	
+	public List<InstaPostDTO> getInstaPosts(String tag) throws IOException {
+		ArrayList<InstaPostDTO> list = new ArrayList<>();
+		Jsoup.connect("https://www.instazu.com/tag/" + tag).get()
+			.select(".box-photo").forEach(v -> list.add(
+					new InstaPostDTO(tag,
+							v.selectFirst("img").attr("src"),
+							v.selectFirst(".photo-description").text(),
+							Integer.parseInt(v.selectFirst(".likes_photo").text().replace("k", "000")),
+							Integer.parseInt(v.selectFirst(".comments_photo").text())
+							)));
+		return list;
+	}
+	
 	// * Place
 	public List<PlaceDTO> findPlaceByTypeId(BigDecimal typeId) {
 		return placeRepo.findPlaceByTypeId(typeId);
@@ -120,6 +164,28 @@ public class TBRSearchService {
 		return placeRepo.findPlaceByDistance(id, typeId, distance).stream()
 					.map(v -> Arrays.asList(placeRepo.findById(new BigDecimal(v[0].toString())), v[1]))
 					.collect(Collectors.toList());
+	}
+	
+	// * InstaPost
+	public List<InstaPostDTO> getSearchHit(String kwd) throws IOException {
+		List<InstaPostDTO> list = new ArrayList<>();
+		Map<String, Object> map = null;
+		esClient.connect();
+		try {
+			for(SearchHit hit : esClient.search(index, kwd)) {
+				map = hit.getSourceAsMap();
+				list.add(
+						new InstaPostDTO(
+								map.get("loc_type").toString(), map.get("img").toString(), map.get("text").toString(),
+								Integer.parseInt(map.get("likes").toString()), Integer.parseInt(map.get("comments").toString())));
+			};
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("ES_ERROR");
+		} finally {			
+			esClient.close();
+		}
+		return list;
 	}
 
 }
