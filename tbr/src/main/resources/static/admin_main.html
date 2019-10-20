@@ -47,7 +47,7 @@
 			.then(resData => {
 				console.log(resData.data);
 				document.all.table.innerHTML = "<h3>전체 회원 리스트</<h3>"
-				let table = "<table border=1><tr><td><b>아이디</b></td><td><b>비밀번호</b></td></tr>"
+				let table = "<table border=1><tr><td><b>ID</b></td><td><b>PW</b></td></tr>"
 				for(let row of resData.data) {
 					console.log(row);
 					table += "<tr><td>" + row.id + "</td><td>" + row.pw + "</td></tr>"
@@ -61,7 +61,7 @@
 			.then(resData => {
 				console.log(resData.data);
 				document.all.table.innerHTML = "<h3>회원 검색</<h3>"
-				let table = "<table border=1><tr><td><b>ID</b></td><td><b>비밀번호</b></td></tr>"
+				let table = "<table border=1><tr><td><b>ID</b></td><td><b>ID</b></td></tr>"
 				for(let row of resData.data) {
 					console.log(row);
 					table += "<tr><td>" + row.id + "</td><td>" + row.pw + "</td></tr>"

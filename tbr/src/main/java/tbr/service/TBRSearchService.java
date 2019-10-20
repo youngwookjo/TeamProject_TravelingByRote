@@ -22,11 +22,9 @@ import tbr.model.dto.PlaceDTO;
 import tbr.util.Util;
 
 @Service
-public class TBRService {
+public class TBRSearchService {
 	@Autowired
 	PlaceRepository placeRepo;
-	@Autowired
-	MemberRepository memberRepo;
 
 	// * DB
 	public long getIds() throws AsyncException {
@@ -122,60 +120,6 @@ public class TBRService {
 		return placeRepo.findPlaceByDistance(id, typeId, distance).stream()
 					.map(v -> Arrays.asList(placeRepo.findById(new BigDecimal(v[0].toString())), v[1]))
 					.collect(Collectors.toList());
-	}
-
-	// * Member
-	public boolean checkMember(String id) {
-		return memberRepo.existsById(id);
-	}
-
-	public boolean loginMember(MemberDTO m) {
-		return checkMember(m.getId()) ? memberRepo.findById(m.getId()).get().getPw().equals(m.getPw()) : false;
-	}
-
-	public boolean addMember(MemberDTO m) {
-		if (!checkMember(m.getId())) {
-			memberRepo.save(m);
-			return true;
-		}
-		return false;
-	}
-
-	public boolean updateMember(MemberDTO m) {
-		if (checkMember(m.getId())) {
-			memberRepo.findById(m.getId()).get().setPw(m.getPw());
-			memberRepo.save(m);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	// * Admin
-	public boolean loginAdmin(String id, String pw) {
-		if (id.equals("admin") && pw.equals("admin")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public Iterable<MemberDTO> getAllMember(){
-		return memberRepo.findAll();
-	}
-	
-	public List<MemberDTO> searchMember(String id) {
-		return memberRepo.findMemberByIdContaining(id);
-	}
-	
-	public String deleteMember(String id) {
-		try {
-			memberRepo.deleteById(id);
-			return "회원 삭제 성공";
-		}catch(Exception e) {
-			return "회원 삭제 실패, 오류 발생";
-		}
-		
 	}
 
 }

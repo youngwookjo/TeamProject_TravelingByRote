@@ -1,6 +1,5 @@
 package tbr.controller;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,20 +14,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import tbr.exception.AsyncException;
 import tbr.exception.SyncException;
 import tbr.model.dto.MemberDTO;
-import tbr.model.dto.PlaceDTO;
-import tbr.service.TBRService;
+import tbr.service.TBRUserService;
 
 @CrossOrigin(origins = { "http://127.0.0.1:8000", "http://localhost:8000" })
 @RestController
-public class TBRController {
+public class TBRUserController {
 	@Autowired
-	TBRService service;
+	TBRUserService service;
 
 	// * LOGIN & OUT
 	@PostMapping("/login")
@@ -102,75 +99,6 @@ public class TBRController {
 		return new RedirectView("privacy.html");
 	}
 
-	// * SEARCH
-	// http://127.0.0.1:8000/searchByType/typeId=38
-	@GetMapping("/searchByType")
-	public List<PlaceDTO> searchByType(@RequestParam BigDecimal typeId) throws AsyncException {
-		System.out.println("/searchByType");
-		try {
-			return service.findPlaceByTypeId(typeId);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new AsyncException("ERROR");
-		}
-	}
-
-	// http://127.0.0.1:8000/searchByKeyword?kwd=산
-	@GetMapping("/searchByKeyword")
-	public List<PlaceDTO> searchByKeyword(@RequestParam String kwd) throws AsyncException {
-		System.out.println("/searchByKeyword : " + kwd);
-		if(kwd.length() == 0) {
-			throw new AsyncException("no search keyword");
-		}
-		try {
-			return service.findPlaceByKwd(kwd);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new AsyncException("ERROR");
-		}
-	}
-
-	// http://127.0.0.1:8000/searchByDistanceAndType?id=319571&distance=10
-	@GetMapping("/searchByDistance")
-	public List<List<Object>> searchByDistance(@RequestParam BigDecimal id, @RequestParam double distance)
-			throws AsyncException {
-		System.out.println("/searchByDistance");
-		try {
-			return service.findPlaceByDistance(id, distance);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new AsyncException("ERROR");
-		}
-	}
-	
-	// http://127.0.0.1:8000/searchByDistanceAndType?id=319571&typeId=12&distance=10
-	@GetMapping("/searchByDistanceAndType")
-	public List<List<Object>> searchByDistance(@RequestParam BigDecimal id, @RequestParam BigDecimal typeId,
-			@RequestParam double distance) throws AsyncException {
-		System.out.println("/searchByDistanceAndType");
-		try {
-			return service.findPlaceByDistance(id, typeId, distance);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new AsyncException("ERROR");
-		}
-	}
-
-	// * DB
-	// http://127.0.0.1:8000/dataCollect
-	// 최초 구동 시 spring.jpa.hibernate.ddl-auto=create 설정 확인
-	// + mySQL UTF-8 관련 인코딩 문제 해결해야함
-	@GetMapping("/dataCollect")
-	public String dataCollect() throws AsyncException {
-		System.out.println("/dataCollect");
-		try {
-			return "실행 시간 : " + service.getIds() + "ms";			
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new AsyncException("ERROR");
-		}
-	}
-	
 	// * Handler (동기 기술로 구현되는 것들을 SyncException으로 받음)
 	@ExceptionHandler(SyncException.class)
 	public RedirectView handling(SyncException e, HttpServletResponse response) {
@@ -179,66 +107,6 @@ public class TBRController {
 		return new RedirectView("error.html");
 	}
 	
-	// * Admin
-	@PostMapping("/loginAdmin")
-	public ModelAndView loginAdmin(HttpServletResponse response,
-			@RequestParam("id") String id,
-			@RequestParam("pw") String pw) {
-		String vn = "redirect:/admin.html";
-		Cookie c, c2 = null;
-		try {
-			if(id.length() == 0 || pw.length() == 0) {
-				c = new Cookie("msg", "empty_space");
-				throw new Exception("입력하지 않은 영역"); // 활용하면 로그인/가입 시 길이 검증도 가능
-			}
-			else if (service.loginAdmin(new MemberDTO(id, pw))) {
-				c = new Cookie("msg", "login_complete");
-				c2 = new Cookie("id", id);
-				System.out.println("로그인 성공");
-				vn = "redirect:/admin_main.html";
-			} else {
-				c = new Cookie("msg", "not_exist_member");
-				System.out.println("로그인 실패 : 존재하지 않는 멤버");
-			}
-		} catch (Exception e) {
-			c = new Cookie("msg", "unexpected_error");
-			System.out.println("에러 발생");
-			e.printStackTrace();
-		}
-		if(c != null) {
-			response.addCookie(c);			
-		}
-		if(c2 != null) {			
-			response.addCookie(c2);
-		}
-		return new ModelAndView(vn);
-	}	
-	
-	// 회원정보 조회(전체)
-	@GetMapping("/getAllUser")
-	public Iterable<MemberDTO> getAllUser() {
-		return service.getAllMembers();
-	}
-
-	// 회원정보 조회(Containing)
-	@GetMapping("/searchAccount")
-	public List<MemberDTO> searchAccount(@RequestParam("id") String id) {
-		return service.findMemberById(id);
-	}
-
-	// 회원 삭제
-	@GetMapping("/deleteAccount")
-	public String deleteAccount(@RequestParam("id") String id) {
-		String result = "오류 발생";
-		try {
-			service.deleteId(id);
-			result = "회원 삭제 성공";
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
 	// * Admin
 	@PostMapping("/loginAdmin")
 	public RedirectView loginAdmin(HttpServletResponse response, @RequestParam("id") String id,
@@ -272,6 +140,42 @@ public class TBRController {
 			System.out.println("관리자 로그인 기록 없음");
 		}
 		return new RedirectView("admin.html");
+	}
+	
+	// 회원정보 조회(전체)
+	@GetMapping("/getAllUser")
+	public Iterable<MemberDTO> getAllUser() {
+		try {
+			return service.getAllMember();
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("ERROR");
+		}
+		return null;
+	}
+
+	// 회원정보 조회(Containing)
+	@GetMapping("/searchAccount")
+	public List<MemberDTO> searchAccount(@RequestParam("id") String id) {
+		try {
+			return service.searchMember(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("ERROR");
+		}
+		return null;
+	}
+
+	// 회원 삭제
+	@GetMapping("/deleteAccount")
+	public String deleteAccount(@RequestParam("id") String id) throws AsyncException {
+		try {
+			service.deleteMember(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("ERROR");
+		}
+		return "회원 삭제 성공";
 	}
 
 }
