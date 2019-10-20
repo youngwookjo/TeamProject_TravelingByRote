@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -15,7 +14,6 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import lombok.val;
 import tbr.exception.AsyncException;
 import tbr.model.dao.MemberRepository;
 import tbr.model.dao.PlaceRepository;
@@ -151,6 +149,23 @@ public class TBRService {
 		} else {
 			return false;
 		}
+	}
+
+	// Admin
+	public boolean loginAdmin(MemberDTO m) throws Exception {
+		return checkMember(m.getId()) ? memberRepo.findById(m.getId()).get().getPw().equals(m.getPw()) : false;
+	}
+	
+	public Iterable<MemberDTO> getAllMembers(){
+		return memberRepo.findAll();
+	}
+	
+	public List<MemberDTO> findMemberById(String id) {
+		return memberRepo.findMemberByIdContaining(id);
+	}
+	
+	public void deleteId(String id) {
+		memberRepo.deleteById(id);
 	}
 
 }

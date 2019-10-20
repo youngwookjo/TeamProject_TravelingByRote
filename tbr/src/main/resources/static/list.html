@@ -5,8 +5,6 @@
 <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-
 <link
 	href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700"
 	rel="stylesheet">
@@ -18,139 +16,102 @@
 	rel="stylesheet">
 <link rel="stylesheet" href="css/animate.css">
 <link rel="stylesheet" href="css/style.css">
-</head>
-
-<body> 
-
-
-	<div id="result" class="row pt-md-4">
-		<div class="col-md-12">
-			<div class="blog-entry ftco-animate d-md-flex">
-				<a href="#" onclick="detail()" class="img img-2"
-					style="background-image: url(http://tong.visitkorea.or.kr/cms/resource/23/2026123_image2_1.jpg);"></a>
-				<div class="text text-2 pl-md-4">
-					<h3 class="mb-2">
-						<a href="#"  onclick="detail()">해금강</a>
-					</h3>
-					<br>
-					<h6>금강산은 서울에 있습니다</h6>
-					<div class="meta-wrap">
-						<p class="meta">
-							<span><a href="#" onclick="recentSearch()"><i
-									class="icon-folder-o mr-2"></i>Travel</a></span> <span><i
-								class="icon-comment2 mr-2"></i>5 Comment</span>
-						</p>
-					</div>
-					<p class="mb-4">아름다운 강산이다</p>
-					<p>
-						<a href="#" class="btn-custom">더 보기 <span
-							class="ion-ios-arrow-forward"></span></a>
-					</p>
-				</div>
-			</div>
-		</div>
-
-
-		
-
-	</div>
-	
-	<div>
-		<input id="kwdinput" type="text" />
-		<button onclick="searchbykwd(document.all.kwdinput.value)">키워드 검색</button>
-	</div>
-	<!-- END-->
-
-	<div class="row">
-		<div class="col">
-			<div class="block-27">
-				<ul>
-					<li><a href="#">&lt;</a></li>
-					<li class="active"><span>1</span></li>
-					<li><a href="#">2</a></li>
-					<li><a href="#">3</a></li>
-					<li><a href="#">4</a></li>
-					<li><a href="#">5</a></li>
-					<li><a href="#">&gt;</a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	
-	<script>
-    let data;
     
-    //키워드검색
-    searchbykwd = kwd =>
-    axios
-      .get("http://127.0.0.1:8000/searchByKeyword?kwd=" + kwd)
-      .then(resData => {
-        data = resData.data
-        console.log(data);
-        drawtable("키워드 검색", resData.data);
-      })
-      .catch(error => {
-        console.log("비정상 응답", error);
-      });
-    
-     /* function typeIdSelect(value) {
-    	 value = (value === 12)? "관광지" : 
-    	 value = (value === 14)? "문화시설" : 
-    	 value = (value === 15)? "축제공연행사" : 
-    	 value = (value === 25)? "여행코스" : 
-    	 value = (value === 28)? "레포츠" : 
-    	 value = (value === 32)? "숙박" : 
-    	 value = (value === 38)? "쇼핑" : 
-    	 value = (value === 39)? "음식점" : "";
-        return value
-    	 }  */
-    
-    //테이블그려줌
-       function drawtable(option, tdata) {
-        let table = "";
-        for (let row of tdata) {
-          console.log(row);
-          table += "<div class=\"col-md-12\">"
-           +"<div class=\"blog-entry ftco-animate d-md-flex fadeInUp ftco-animated\">"
-           +"<a href=\"#\" onclick=\"detail()\" class=\"img img-2\""
-           +" style=\"background-image: url(" 
-           + row.img.replace("static/", "")
-           +");\"></a>"
-           +"<div class=\"text text-2 pl-md-4\">"
-           +"<h3 class=\"mb-2\">"
-           +"<a href=\"#\" onclick=\"detail()\">" 
-           +row.name
-           +"</a></h3><h6>"
-           + row.address  
-           +"</h6>"
-           +"<div class=\"meta-wrap\">"
-           +"<p class=\"meta\">"
-           +"<span><a href=\"#\"  onclick=\"recentSearch()\"><i"
-           +"class=\"icon-folder-o mr-2\"></i>"
-           +row.typeId
-           +"</a></span> <span><i class=\"icon-comment2 mr-2\"></i>5 Comment</span>"
-           +"</p></div>"
-       	   +"<p class=\"mb-4\">"
-           +row.description
-           +"<p>"
-           +"<a href=\"#\" class=\"btn-custom\">더 보기 <span"
-           +"class=\"ion-ios-arrow-forward\"></span></a>"
-           +"</p></div></div></div>"
-        }
-        document.all.result.innerHTML += table;
-      }
-       
-     
 
-
-    
-   
-    
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!--    menu.html에서 던진 파라미터를 받는 로직-->
+    <script>
+        let getKwd = function(kwd) {
+            const value = new URLSearchParams(window.location.search).get(kwd);
+            return value;
+        };
+        var kwdinput = getKwd("kwd");
     </script>
 
+<!-- 받은 파라미터를 input값으로 하여 DB에서 정보 검색한 후 결과값을 drawtable에 던지는 로직 -->
+    <script>
+        let data;
+        (searchbykwd = kwd =>
+         axios
+        .get("http://127.0.0.1:8000/searchByKeyword?kwd=" + kwd)
+        .then(resData => {
+            data = resData.data;
+            console.log(data);
+            drawtable(resData.data);
+        })
+        .catch(error => {
+            console.log("비정상 응답", error);
+        }))(kwdinput);
+    </script>
+    
+    <!-- drawtable 그린 후 화면에 띄우는 로직 -->
+    <script>
+        var table = "";
+        function drawtable(tdata) {  
+            
+            for (let row of tdata) {
+                table +=
+                    "<div class=\"col-md-12\">" +
+                    "<div class=\"blog-entry ftco-animate d-md-flex fadeInUp ftco-animated\">" +
+                    "<a href=\"#\" onclick=\"detail()\" class=\"img img-2\" " +
+                    "style=\"background-image: url(" + row.img.replace("static/", "") + ");\"></a>" +
+                    "<div class=\"text text-2 pl-md-4\">" +
+                    "<h3 class=\"mb-2\">" +
+                    "<a href=\"#\" onclick=\"detail()\">"+ row.name +"</a>" +
+                    "</h3>" +
+                    "<div class=\"meta-wrap\">" +
+                    "<p class=\"meta\">" +
+                    "<span><a href=\"#\"  onclick=\"recentSearch()\"><i " +
+                    "class=\"icon-folder-o mr-2\"></i>"+ row.typeId +"</a></span> <span><i " +
+                    "class=\"icon-comment2 mr-2\"></i>"+ row.address +"</span>" +
+                    "</p>" +
+                    "</div>" +
+                    "<p class=\"mb-4\">"+ row.description +"</p>" +
+                    "<p>" +
+                    "<a href=\"#\" class=\"btn-custom\">더 보기 <span " +
+                    "class=\"ion-ios-arrow-forward\"></span></a>" +
+                    "</p>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>"
+            }
 
-   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="js/jquery.min.js"></script>
+            let table2 = document.createElement('div');
+            table2.innerHTML = table;
+
+            $(document).ready(function() {
+                $(".row.pt-md-4").append(table2)   
+            });
+        }
+        
+    </script>
+
+    
+</head>
+
+<body>
+        <div class="row pt-md-4"></div>
+            <!-- END-->
+
+            <div class="row">
+                <div class="col">
+                    <div class="block-27">
+                        <ul>
+                            <li><a href="#">&lt;</a></li>
+                            <li class="active"><span>1</span></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li><a href="#">&gt;</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+	<script src="js/jquery.min.js"></script>
 	<script src="js/jquery-migrate-3.0.1.min.js"></script>
 	<script src="js/popper.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
@@ -163,7 +124,6 @@
 	<script src="js/jquery.animateNumber.min.js"></script>
 	<script src="js/scrollax.min.js"></script>
 	<script src="js/main.js"></script>
-
 
 </body>
 </html>
