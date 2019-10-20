@@ -151,21 +151,31 @@ public class TBRService {
 		}
 	}
 
-	// Admin
-	public boolean loginAdmin(MemberDTO m) throws Exception {
-		return checkMember(m.getId()) ? memberRepo.findById(m.getId()).get().getPw().equals(m.getPw()) : false;
+	// * Admin
+	public boolean loginAdmin(String id, String pw) {
+		if (id.equals("admin") && pw.equals("admin")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
-	public Iterable<MemberDTO> getAllMembers(){
+	public Iterable<MemberDTO> getAllMember(){
 		return memberRepo.findAll();
 	}
 	
-	public List<MemberDTO> findMemberById(String id) {
+	public List<MemberDTO> searchMember(String id) {
 		return memberRepo.findMemberByIdContaining(id);
 	}
 	
-	public void deleteId(String id) {
-		memberRepo.deleteById(id);
+	public String deleteMember(String id) {
+		try {
+			memberRepo.deleteById(id);
+			return "회원 삭제 성공";
+		}catch(Exception e) {
+			return "회원 삭제 실패, 오류 발생";
+		}
+		
 	}
 
 }

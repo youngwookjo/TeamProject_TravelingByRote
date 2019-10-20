@@ -239,4 +239,39 @@ public class TBRController {
 		return result;
 	}
 
+	// * Admin
+	@PostMapping("/loginAdmin")
+	public RedirectView loginAdmin(HttpServletResponse response, @RequestParam("id") String id,
+			@RequestParam("pw") String pw) throws SyncException, Exception {
+		if (id.length() == 0 || pw.length() == 0) {
+			throw new SyncException("empty_space");
+		} else if (service.loginAdmin(id, pw)) {
+			System.out.println("로그인 성공");
+			response.addCookie(new Cookie("id", id));
+		} else {
+			throw new SyncException("not_exist_member");
+		}
+		return new RedirectView("admin_main.html");
+	}
+	
+	@GetMapping("/logoutAdmin")
+	public RedirectView logoutAdmin(HttpServletResponse response, HttpServletRequest request) {
+		Cookie c = null;
+		String id = Arrays.stream(
+						request.getCookies())
+							.filter(v -> v.getName().equals("id"))
+							.map(v -> v.getValue())
+							.reduce("", ((x, y) -> x + y));
+		if (id.equals("admin")) {
+			System.out.println("관리자 로그아웃 성공");
+			response.addCookie(new Cookie("msg", "logout_complete"));
+			c = new Cookie("id", "");
+			c.setMaxAge(0);
+			response.addCookie(c);
+		} else {
+			System.out.println("관리자 로그인 기록 없음");
+		}
+		return new RedirectView("admin.html");
+	}
+
 }
