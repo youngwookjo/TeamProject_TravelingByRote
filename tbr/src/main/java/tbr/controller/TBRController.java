@@ -117,7 +117,7 @@ public class TBRController {
 	// http://127.0.0.1:8000/searchByKeyword?kwd=산
 	@GetMapping("/searchByKeyword")
 	public List<PlaceDTO> searchByKeyword(@RequestParam String kwd) throws AsyncException {
-		System.out.println("/searchByKeyword");
+		System.out.println("/searchByKeyword : " + kwd);
 		if(kwd.length() == 0) {
 			throw new AsyncException("no search keyword");
 		}
@@ -156,7 +156,9 @@ public class TBRController {
 	}
 
 	// * DB
-	// http://127.0.0.1:8000/data_collect
+	// http://127.0.0.1:8000/dataCollect
+	// 최초 구동 시 spring.jpa.hibernate.ddl-auto=create 설정 확인
+	// + mySQL UTF-8 관련 인코딩 문제 해결해야함
 	@GetMapping("/dataCollect")
 	public String dataCollect() throws AsyncException {
 		System.out.println("/dataCollect");

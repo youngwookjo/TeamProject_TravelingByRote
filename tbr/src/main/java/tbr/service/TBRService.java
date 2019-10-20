@@ -33,6 +33,7 @@ public class TBRService {
 	// * DB
 	public long getIds() throws AsyncException {
 		long start = System.currentTimeMillis(); // 실행 시간 측정
+		System.out.println("// 크롤링 시작");
 		try {
 		// (1) Resource Id 추출
 		HashMap<String, String> data = new HashMap<>(); // Jsoup param 조정을 위한 map
@@ -60,13 +61,16 @@ public class TBRService {
 				continue;
 			}
 		} while (els.size() != 0); // 더 이상 긁을 게 없으면 Stop
+		System.out.println("// 크롤링 종료");
 
+		System.out.println("// DB 저장 시작");
 		// (2) 세부 info 추출 -> 자세한 크롤링 내용 getInfos 참고
 		placeRepo.saveAll(list.stream().map(this::getInfos).collect(Collectors.toList()));
 		} catch(Exception e) {
 			e.printStackTrace();
 			throw new AsyncException("Error While Making DB");
 		}
+		System.out.println("// DB 저장 종료");
 		return System.currentTimeMillis() - start;
 	}
 
