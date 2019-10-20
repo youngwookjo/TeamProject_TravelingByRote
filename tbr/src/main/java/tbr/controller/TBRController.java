@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import tbr.exception.AsyncException;
@@ -178,7 +179,7 @@ public class TBRController {
 		return new RedirectView("error.html");
 	}
 	
-	
+	// * Admin
 	@PostMapping("/loginAdmin")
 	public ModelAndView loginAdmin(HttpServletResponse response,
 			@RequestParam("id") String id,
@@ -213,19 +214,19 @@ public class TBRController {
 		return new ModelAndView(vn);
 	}	
 	
-	// Admin : 회원정보 조회(전체)
+	// 회원정보 조회(전체)
 	@GetMapping("/getAllUser")
 	public Iterable<MemberDTO> getAllUser() {
-		return service.getAllMember();
+		return service.getAllMembers();
 	}
 
-	// Admin : 회원정보 조회(Containing)
+	// 회원정보 조회(Containing)
 	@GetMapping("/searchAccount")
 	public List<MemberDTO> searchAccount(@RequestParam("id") String id) {
-		return service.searchId(id);
+		return service.findMemberById(id);
 	}
 
-	// 8. admin page : 회원 삭제
+	// 회원 삭제
 	@GetMapping("/deleteAccount")
 	public String deleteAccount(@RequestParam("id") String id) {
 		String result = "오류 발생";
