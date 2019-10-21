@@ -2,6 +2,7 @@ package tbr.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,13 @@ public class TBRSearchController {
 			e.printStackTrace();
 			throw new AsyncException("ERROR");
 		}
+	}
+	
+	//http://127.0.0.1:8000/searchById?id=2360786
+	@GetMapping("/searchById")
+	public Optional<PlaceDTO> searchById(@RequestParam BigDecimal id) {
+		System.out.println("/searchById");
+		 return service.findPlaceById(id);
 	}
 
 	// * DB

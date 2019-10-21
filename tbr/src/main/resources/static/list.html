@@ -16,10 +16,16 @@
 	rel="stylesheet">
 <link rel="stylesheet" href="css/animate.css">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b1f1d90d0ff37888e118abbeaf1469c6"></script>
+
+
 <!--    menu.html에서 던진 파라미터를 받는 로직-->
     <script>
         let getKwd = function(kwd) {
@@ -28,22 +34,48 @@
         };
         var kwdinput = getKwd("kwd");
     </script>
+    
+<!-- menu.html 에서 insta 파라미터 받는 로직 -->
+     <script>
+        let getinsta = function(insta) {
+            const value = new URLSearchParams(window.location.search).get(insta);
+            return value;
+        };
+        var instainput = getinsta("insta");
+    </script>
 
 <!-- 받은 파라미터를 input값으로 하여 DB에서 정보 검색한 후 결과값을 drawtable에 던지는 로직 -->
     <script>
         let data;
         (searchbykwd = kwd =>
-         axios
-        .get("http://127.0.0.1:8000/searchByKeyword?kwd=" + kwd)
-        .then(resData => {
-            data = resData.data;
-            console.log(data);
-            drawtable(resData.data);
-        })
-        .catch(error => {
-            console.log("비정상 응답", error);
-        }))(kwdinput);
+        	axios
+            .get("http://127.0.0.1:8000/searchByKeyword?kwd=" + kwd)
+            .then(resData => {
+                data = resData.data;
+                console.log(data);
+                drawtable(resData.data);
+            })
+            .catch(error => {
+                console.log("비정상 응답", error);
+            }))(kwdinput);
+         
+        
+        
+        function typeIdSelect(value) {
+       	 value = (value === 12)? "관광지" : 
+       	 value = (value === 14)? "문화시설" : 
+       	 value = (value === 15)? "축제공연행사" : 
+       	 value = (value === 25)? "여행코스" : 
+       	 value = (value === 28)? "레포츠" : 
+       	 value = (value === 32)? "숙박 시설" : 
+       	 value = (value === 38)? "쇼핑" : 
+       	 value = (value === 39)? "음식점" : "";
+           return value
+       	 };
     </script>
+    
+    
+    
     
     <!-- drawtable 그린 후 화면에 띄우는 로직 -->
     <script>
@@ -51,27 +83,25 @@
         function drawtable(tdata) {  
             
             for (let row of tdata) {
+            	var typeId = typeIdSelect(row.typeId);
                 table +=
                     "<div class=\"col-md-12\">" +
                     "<div class=\"blog-entry ftco-animate d-md-flex fadeInUp ftco-animated\">" +
-                    "<a href=\"#\" onclick=\"detail()\" class=\"img img-2\" " +
+                    "<a href=\"#\" onclick=\"searchbyid("+ row.id + ")\" class=\"img img-2\" " +
                     "style=\"background-image: url(" + row.img.replace("static/", "") + ");\"></a>" +
                     "<div class=\"text text-2 pl-md-4\">" +
                     "<h3 class=\"mb-2\">" +
-                    "<a href=\"#\" onclick=\"detail()\">"+ row.name +"</a>" +
+                    "<a href=\"#\" onclick=\"searchbyid("+ row.id + ")\">"+ row.name +"</a>" +
                     "</h3>" +
                     "<div class=\"meta-wrap\">" +
                     "<p class=\"meta\">" +
                     "<span><a href=\"#\"  onclick=\"recentSearch()\"><i " +
-                    "class=\"icon-folder-o mr-2\"></i>"+ row.typeId +"</a></span> <span><i " +
-                    "class=\"icon-comment2 mr-2\"></i>"+ row.address +"</span>" +
+                    "class=\"icon-folder-o mr-2\"></i>"+ typeId +"</a></span> <span><i " +
+                    "class=\"fa fa-home\"></i>&nbsp;"+ row.address +"</span>" +
                     "</p>" +
-                    "</div>" +
-                    "<p class=\"mb-4\">"+ row.description +"</p>" +
-                    "<p>" +
-                    "<a href=\"#\" class=\"btn-custom\">더 보기 <span " +
-                    "class=\"ion-ios-arrow-forward\"></span></a>" +
-                    "</p>" +
+                    "</div>" + 
+                    "<details>   <summary >더 보기</summary>"+
+                    "<p class=\"mb-4\">"+ row.description +"</p> </details>" +
                     "</div>" +
                     "</div>" +
                     "</div>"
@@ -81,17 +111,178 @@
             table2.innerHTML = table;
 
             $(document).ready(function() {
+            	$(".row.pt-md-3").hide() 
                 $(".row.pt-md-4").append(table2)   
             });
         }
         
+    </script>
+    
+    
+    <script>
+    var lat;
+    var lon;
+	let data2;
+	
+	searchbyid = id =>
+    axios
+      .get("http://localhost:8000/searchById?id=" + id)
+      .then(resData => {
+        data2 = resData.data
+        lat = data2.lat;
+        lon = data2.lon;
+        console.log(data2);
+        drawtable2("키워드 검색", data2);
+      })
+      .catch(error => {
+        console.log("비정상 응답", error);
+      });
+    
+	
+	
+	function drawtable2(option, tdata) {
+        let table = "";
+        
+        var typeId2 = typeIdSelect(tdata.typeId);
+          console.log(tdata);
+          table += "<h1 class=\"mb-3\">"+ tdata.name +"</h1>"
+          +"<h5>"+ typeId2 + " </h5> "
+      	  +"<h5>"+ tdata.address + "</h5>"
+          +"<p> <img src="+tdata.img.replace("static/", "") 
+          +" alt=\"\" class=\"img-fluid\"> </p>"
+          +"<p>" + tdata.description + "</p>"
+          +"<div id=\"map\" style=\"width:100%;height:350px;\"></div>"
+          
+
+
+        let table2 = document.createElement('div');
+        table2.innerHTML = table; 
+        
+
+        $(document).ready(function() {
+        $(".row.pt-md-4").hide() 
+        $(".row.pt-md-5").prepend(table2)
+        makeMap();
+        }); 
+      }
+	
+	
+	
+	
+	
+    let data3;
+    (searchbykwd = kwd =>
+      axios
+        .get("http://127.0.0.1:8000/instaKwdSearch?kwd=" + kwd)
+        .then(resData => {
+          data3 = resData.data;
+          console.log(data3);
+          drawtable3(data3);
+        })
+        .catch(error => {
+          console.log("비정상 응답", error);
+        }))(instainput);
+	
+		
+    function drawtable3(tdata) {
+        let table = "";
+        for (let row of tdata) {
+          console.log(row);
+          table +=
+        	  "<div class=\"col-md-12\">" +
+              "<div class=\"blog-entry ftco-animate d-md-flex fadeInUp ftco-animated\">" +
+              "<a href=\"#\" class=\"img img-2\" " +
+              "style=\"background-image: url(" + row.img.replace("static/", "") + ");\"></a>" +
+              "<div class=\"text text-2 pl-md-4\">" +
+              "<h3 class=\"mb-2\">" +
+              "<a href=\"#\">"+ row.locType +"</a>" +
+              "</h3>" +
+              "<div class=\"meta-wrap\">" +
+              "<p class=\"meta\">" +
+              "<span><a href=\"#\"  onclick=\"recentSearch()\"><i " +
+              "class=\"glyphicon glyphicon-thumbs-up\"></i>&nbsp;"+  row.likes +"</a></span> <span><i " +
+              "class=\"icon-comment2 mr-1\"></i>&nbsp;"+  row.comments +"</span>" +
+              "</p>" +
+              "</div>" + 
+              "<p class=\"mb-4\">"+ row.text +"</p>"+
+              "</div>" +
+              "</div>" +
+              "</div>"
+              
+        }
+        let table2 = document.createElement('div');
+        table2.innerHTML = table;
+        
+        $(document).ready(function() {
+        	$(".row.pt-md-3").hide() 
+            $(".row.pt-md-4").append(table2)   
+        });
+      }
+	
+	
+	
+	
+      //지도 생성 로직
+	function makeMap(){
+	var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+    mapOption = { 
+        center: new kakao.maps.LatLng(lat, lon), // 지도의 중심좌표
+        level: 3 // 지도의 확대 레벨
+    };
+
+
+
+	var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+	
+	
+
+	//1. 지도 범위 재설정 하기
+	// 버튼을 클릭하면 아래 배열의 좌표들이 모두 보이게 지도 범위를 재설정합니다 
+	var points = [
+    new kakao.maps.LatLng(lat, lon)
+	];
+
+	// 지도를 재설정할 범위정보를 가지고 있을 LatLngBounds 객체를 생성합니다
+	var bounds = new kakao.maps.LatLngBounds();    
+
+	var i, marker;
+	for (i = 0; i < points.length; i++) {
+    // 배열의 좌표들이 잘 보이게 마커를 지도에 추가합니다
+    marker =     new kakao.maps.Marker({ position : points[i] });
+    marker.setMap(map);
+    
+    // LatLngBounds 객체에 좌표를 추가합니다
+    bounds.extend(points[i]);
+	}
+
+
+	//2. 지도에 컨트롤 올리기
+	// 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+	var mapTypeControl = new kakao.maps.MapTypeControl();
+
+	// 지도에 컨트롤을 추가해야 지도위에 표시됩니다
+	// kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+	map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+	// 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+	var zoomControl = new kakao.maps.ZoomControl();
+	map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+	};
+    
     </script>
 
     
 </head>
 
 <body>
+
+
+		<div class="row pt-md-3">
+			<img src="images/main.jpg">
+		</div>
         <div class="row pt-md-4"></div>
+        <div class="row pt-md-5"></div>
             <!-- END-->
 
             <div class="row">
