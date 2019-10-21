@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -31,9 +33,10 @@ public class TBRSearchService {
 	@Autowired
 	ESHighLevelClient esClient;
 
-	String index = "insta_post";
-	String[] locList = {"국내여행"};
-//	String[] locList = "국내여행,서울여행,인천여행,경기도여행,충북여행,충남여행,강원도여행,전북여행,전남여행,대전여행,광주여행,부산여행,제주여행,울산여행,경북여행,경남여행,대구여행".split(",");
+	String indexName = "insta_post";
+	String[] locList = {"국내여행","서울여행","인천여행","경기도여행","충북여행","충남여행",
+						"강원도여행","전북여행","전남여행","대전여행","광주여행", "제주여행",
+						"부산여행","울산여행","경북여행","경남여행","대구여행"};
 	
 	// * DB
 	public long getIds() throws AsyncException {
@@ -108,23 +111,95 @@ public class TBRSearchService {
 	
 	public long getSocialData() throws IOException {
 		long start = System.currentTimeMillis(); // 실행 시간 측정
+
 		System.out.println("// 인스타 크롤링 시작");
 		List<InstaPostDTO> list = new ArrayList<>();
 		for(String loc : locList) {
+			System.out.println(loc);
 			list.addAll(getInstaPosts(loc));
 		}
 		System.out.println("// 인스타 크롤링 종료");
-		System.out.println("// 엘라스틱 저장 시작");
+		System.out.println("// 엘라스틱 서치 저장 시작");
+		
 		esClient.connect();
 		try {
-			esClient.bulk(index, list);
+			System.out.println("// 인덱스 생성");
+			try {
+				System.out.println(esClient.deleteIndex(indexName) ? "// 초기화를 위한 삭제 진행" : false);			
+			} catch (Exception e) {
+				System.out.println("// 존재하지 않는 인덱스");
+			}
+			// https://www.elastic.co/guide/en/elasticsearch/plugins/7.1/analysis-nori-tokenizer.html
+			// mapping
+			Map<String, Object> locType = new HashMap<>();
+			Map<String, Object> img = new HashMap<>();
+			Map<String, Object> text = new HashMap<>();
+			Map<String, Object> likes = new HashMap<>();
+			Map<String, Object> comments = new HashMap<>();
+			locType.put("type", "keyword");
+			img.put("type", "keyword");
+			text.put("type", "text");
+			text.put("analyzer", "korean");
+			likes.put("type", "integer");
+			comments.put("type", "integer");
+			Map<String, Object> properties = new HashMap<>();
+			properties.put("loc_type", locType);
+			properties.put("img", img);
+			properties.put("text", text);
+			properties.put("likes", likes);
+			properties.put("comments", comments);
+			Map<String, Object> mappings = new HashMap<>();
+			mappings.put("properties", properties);
+			
+			// settings		
+			Map<String, Object> nori_user_dict = new HashMap<>();
+			nori_user_dict.put("type", "nori_tokenizer");
+			nori_user_dict.put("decompound_mode", "mixed");
+			// $ES_HOME/config/userdict_ko.txt
+			nori_user_dict.put("user_dictionary", "userdict_ko.txt");
+			Map<String, Object> tokenizer = new HashMap<>();
+			tokenizer.put("nori_user_dict", nori_user_dict);
+			
+			Map<String, Object> korean = new HashMap<>();
+			korean.put("type", "custom");
+			korean.put("tokenizer", "nori_user_dict");
+			korean.put("filter", Arrays.asList("nori_readingform", "lowercase", "nori_part_of_speech_basic"));
+			Map<String, Object> analyzer = new HashMap<>();
+			analyzer.put("korean", korean);
+			
+			Map<String, Object> nori_part_of_speech_basic = new HashMap<>();
+			nori_part_of_speech_basic.put("type", "nori_part_of_speech");
+			nori_part_of_speech_basic.put("stoptags", Arrays.asList("E","IC","J","MAG","MAJ","MM","SP","SSC","SSO","SC","SE","XPN","XSA","XSN","XSV","UNA","NA","VSV"));
+			Map<String, Object> filter = new HashMap<>();
+			filter.put("nori_part_of_speech_basic", nori_part_of_speech_basic);
+
+			Map<String, Object> analysis = new HashMap<>();
+			analysis.put("tokenizer", tokenizer);
+			analysis.put("analyzer", analyzer);
+			analysis.put("filter", filter);
+
+			Map<String, Object> indexMap = new HashMap<>();
+			indexMap.put("analysis", analysis);
+
+			Map<String, Object> settings = new HashMap<>();
+			settings.put("number_of_shards", 2);
+			settings.put("number_of_replicas", 0);
+			settings.put("index", indexMap);
+			
+			Map<String, Object> source = new HashMap<>();
+			source.put("settings", settings);
+			source.put("mappings", mappings);
+			
+			esClient.createIndex(indexName, source);
+			
+			esClient.bulk(indexName, list);
 		} catch (Exception e) {
 			e.printStackTrace();
 			new AsyncException("Elastic_Search_Error");
 		} finally {			
 			esClient.close();
 		}
-		System.out.println("// DB 저장 종료");
+		System.out.println("// 엘라스틱 서치 저장 종료");
 		return System.currentTimeMillis() - start;
 	}
 	
@@ -138,6 +213,7 @@ public class TBRSearchService {
 							Integer.parseInt(v.selectFirst(".likes_photo").text().replace("k", "000")),
 							Integer.parseInt(v.selectFirst(".comments_photo").text())
 							)));
+		System.out.println(list.size());
 		return list;
 	}
 	
@@ -167,12 +243,12 @@ public class TBRSearchService {
 	}
 	
 	// * InstaPost
-	public List<InstaPostDTO> getSearchHit(String kwd) throws IOException {
+	public List<InstaPostDTO> searchInstaByKwd(String kwd) throws IOException {
 		List<InstaPostDTO> list = new ArrayList<>();
 		Map<String, Object> map = null;
 		esClient.connect();
 		try {
-			for(SearchHit hit : esClient.search(index, kwd)) {
+			for(SearchHit hit : esClient.searchByKwd(indexName, kwd)) {
 				map = hit.getSourceAsMap();
 				list.add(
 						new InstaPostDTO(
@@ -187,5 +263,104 @@ public class TBRSearchService {
 		}
 		return list;
 	}
-
+	
+	public List<InstaPostDTO> searchInstaByLoc(String loc) throws IOException {
+		List<InstaPostDTO> list = new ArrayList<>();
+		Map<String, Object> map = null;
+		esClient.connect();
+		try {
+			for(SearchHit hit : esClient.searchByLoc(indexName, loc)) {
+				map = hit.getSourceAsMap();
+				list.add(
+						new InstaPostDTO(
+								map.get("loc_type").toString(), map.get("img").toString(), map.get("text").toString(),
+								Integer.parseInt(map.get("likes").toString()), Integer.parseInt(map.get("comments").toString())));
+			};
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("ES_ERROR");
+		} finally {			
+			esClient.close();
+		}
+		return list;
+	}
+	
+	public List<InstaPostDTO> searchInstaByLocAndKwd(String loc, String kwd) throws IOException {
+		List<InstaPostDTO> list = new ArrayList<>();
+		Map<String, Object> map = null;
+		esClient.connect();
+		try {
+			for(SearchHit hit : esClient.searchByLocAndKwd(indexName, loc, kwd)) {
+				map = hit.getSourceAsMap();
+				list.add(
+						new InstaPostDTO(
+								map.get("loc_type").toString(), map.get("img").toString(), map.get("text").toString(),
+								Integer.parseInt(map.get("likes").toString()), Integer.parseInt(map.get("comments").toString())));
+			};
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("ES_ERROR");
+		} finally {			
+			esClient.close();
+		}
+		return list;
+	}
+	
+	public Object[] getTagListFromAll() throws IOException {
+		esClient.connect();
+		try {
+			return esClient.getAllFrequencyList(indexName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("ES_ERROR");
+		} finally {			
+			esClient.close();
+		}
+		return null;
+	}
+	
+	public Object[] getTagListByKwd(String kwd) throws IOException {
+		esClient.connect();
+		try {
+			return esClient.getFrequencyList(indexName, StreamSupport
+					.stream(esClient.searchByKwd(indexName, kwd).spliterator(), false)
+					.map(v -> v.getId()).toArray(String[]::new), Arrays.asList(kwd).stream().toArray(String[]::new));
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("ES_ERROR");
+		} finally {			
+			esClient.close();
+		}
+		return null;
+	}
+	
+	public Object[] getTagListByLoc(String loc) throws IOException {
+		esClient.connect();
+		try {
+			return esClient.getFrequencyList(indexName, StreamSupport
+					.stream(esClient.searchByLoc(indexName, loc).spliterator(), false)
+					.map(v -> v.getId()).toArray(String[]::new), Arrays.asList(loc).stream().toArray(String[]::new));
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("ES_ERROR");
+		} finally {			
+			esClient.close();
+		}
+		return null;
+	}
+	
+	public Object[] getTagListByLocAndKwd(String loc, String kwd) throws IOException {
+		esClient.connect();
+		try {
+			return esClient.getFrequencyList(indexName, StreamSupport
+					.stream(esClient.searchByLocAndKwd(indexName, loc, kwd).spliterator(), false)
+					.map(v -> v.getId()).toArray(String[]::new), Arrays.asList(loc, kwd).stream().toArray(String[]::new));
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("ES_ERROR");
+		} finally {			
+			esClient.close();
+		}
+		return null;
+	}
 }

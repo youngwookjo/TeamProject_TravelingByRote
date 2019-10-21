@@ -90,6 +90,7 @@ public class TBRSearchController {
 		}
 	}
 	
+	// http://127.0.0.1:8000/instaCollect
 	@GetMapping("/instaCollect")
 	public String instaCollect() throws AsyncException {
 		System.out.println("/instaCollect");
@@ -109,7 +110,91 @@ public class TBRSearchController {
 	public List<InstaPostDTO> instaKwdSearch(@RequestParam String kwd) throws AsyncException {
 		System.out.println("/instaKwdSearch");
 		try {
-			return service.getSearchHit(kwd);
+			return service.searchInstaByKwd(kwd);
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}
+	}
+	
+	// http://127.0.0.1:8000/instaLocSearch?loc=경남
+	@GetMapping("/instaLocSearch")
+	public List<InstaPostDTO> instaLocSearch(@RequestParam String loc) throws AsyncException {
+		System.out.println("/instaLocSearch");
+		try {
+			return service.searchInstaByLoc(loc);
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}
+	}
+	
+	// http://127.0.0.1:8000/instaLocAndKwdSearch?loc=경남&kwd=핑크
+	@GetMapping("/instaLocAndKwdSearch")
+	public List<InstaPostDTO> instaLocAndKwdSearch(@RequestParam String loc, @RequestParam String kwd) throws AsyncException {
+		System.out.println("/instaLocAndKwdSearch");
+		try {
+			return service.searchInstaByLocAndKwd(loc, kwd);
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}
+	}
+	
+	// http://127.0.0.1:8000/instaTagListFromAll
+	@GetMapping("/instaTagListFromAll")
+	public Object[] instaTagListFromAll() throws AsyncException {
+		System.out.println("/instaTagListByKwd");
+		try {
+			return service.getTagListFromAll();
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}
+	}
+	
+	// http://127.0.0.1:8000/instaTagListByKwd?kwd=가을
+	@GetMapping("/instaTagListByKwd")
+	public Object[] instaTagListByKwd(@RequestParam String kwd) throws AsyncException {
+		System.out.println("/instaTagListByKwd");
+		try {
+			return service.getTagListByKwd(kwd);
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}
+	}
+	
+	// http://127.0.0.1:8000/instaTagListByLoc?loc=서울
+	@GetMapping("/instaTagListByLoc")
+	public Object[] instaTagListByLoc(@RequestParam String loc) throws AsyncException {
+		System.out.println("/instaTagListByLoc");
+		try {
+			return service.getTagListByLoc(loc);
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}
+	}
+	
+	// http://127.0.0.1:8000/instaTagListByLocAndKwd?loc=서울&kwd=가을
+	@GetMapping("/instaTagListByLocAndKwd")
+	public Object[] instaTagListByLoc(@RequestParam String loc, @RequestParam String kwd) throws AsyncException {
+		System.out.println("/instaTagListByLocAndKwd");
+		try {
+			return service.getTagListByLocAndKwd(loc, kwd);
 		} catch (AsyncException e) {
 			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
