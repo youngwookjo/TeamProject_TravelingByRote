@@ -75,6 +75,16 @@ h4 {
     };
 </script>
 
+<!--    menu.html에서 던진 파라미터를 받는 로직-->
+<script>
+        let getKwd = function(kwd) {
+            const value = new URLSearchParams(window.location.search).get(kwd);
+            return value;
+        };
+        var kwdinput = getKwd("kwd");
+
+    </script>
+
 <!--키워드 입력하고 엔터시 submit 기능-->
 <script>
 function check(form){
@@ -84,6 +94,63 @@ function check(form){
       return false;
    }
 }
+</script>
+
+<!-- 카테고리란 채우는 로직 -->
+<script>
+	
+	(function categoryDecision(){
+		let data;
+		console.log(kwdinput);
+		if(kwdinput== null){
+        axios
+          .get("http://127.0.0.1:8000/countTypeId")
+          .then(resData => {
+            data = resData.data;
+            console.log(resData.data);
+            drawCategory(resData.data);
+          })
+          .catch(error => {
+            console.log("비정상 응답", error);
+          })
+		}else{
+		axios
+          .get("http://127.0.0.1:8000/countTypeIdKwd?kwd=" + kwdinput)
+          .then(resData => {
+            data = resData.data;
+            console.log(resData.data);
+            drawCategory(resData.data);
+          })
+          .catch(error => {
+            console.log("비정상 응답", error);
+          })
+		}
+	})(kwdinput);
+
+	// typeId별 한글명 찾아주는 로직
+	var typeIdSelect = function (value) {
+        value = (value === 12)? "관광지" : 
+        value = (value === 14)? "문화시설" : 
+        value = (value === 15)? "축제공연행사" : 
+        value = (value === 25)? "여행코스" : 
+        value = (value === 28)? "레포츠" : 
+        value = (value === 32)? "숙박 시설" : 
+        value = (value === 38)? "쇼핑" : 
+        value = (value === 39)? "음식점" : "";
+        return value
+        };
+
+	var table = "";
+	function drawCategory(tdata){
+		for(let row of tdata){
+			table += '<li><a href="/menu.html?typeId='+ row[0] +'&kwd='+ kwdinput +'">'+ 
+			typeIdSelect(row[0]) +
+			' <span>('+ row[1] +')</span></a></li>'
+		}
+	let tableHTML = document.createElement('div');
+        tableHTML.innerHTML = table;
+		$(".categories#typeId").append(tableHTML)
+	}
 </script>
     
   
@@ -139,20 +206,18 @@ function check(form){
 						<div class="col-xl-4 sidebar ftco-animate bg-light pt-5">
 							<div class="sidebar-box pt-md-4">
 								<h4>키워드 검색</h4>
-								<form action="menu.html" mehtod="GET" onsubmit="return check(form)" class="search-form" >
+								<form action="menu.html" mehtod="GET" onsubmit="return check(form)" class="search-form">
 									<div class="form-group">
 										<span class="icon icon-search"></span> 
-                                        <input type="text" class="form-control" name="kwd">
+										<input type="text" class="form-control" name="kwd">
+										<input type="hidden" name="typeId" value="null">
 									</div>
 								</form>
 							</div>
 							<div class="sidebar-box ftco-animate">
 								<h3 class="sidebar-heading">카테고리</h3>
-								<ul class="categories">
-									<li><a href="#">키워드 <span>(6)</span></a></li>
-									<li><a href="#" onclick="recentSearch()">최근검색 <span>(8)</span></a></li>
-									<li><a href="#" onclick="wishlist()">찜하기 <span>(2)</span></a></li>
-									<li><a href="#">인스타 <span>(2)</span></a></li>
+								<ul class="categories" id="typeId">
+	
 								</ul>
 							</div>
 

@@ -2,8 +2,6 @@ package tbr.model.dao;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -33,12 +31,20 @@ public interface PlaceRepository extends CrudRepository<PlaceDTO, BigDecimal>{
 			"	  )dt\r\n" + 
 			"where distance < :distance and distance > 0\r\n" + 
 			"order by distance";
+	final String CATEGORYALL = "select type_id, count(*) from place group by type_id";
+	
+	final String CATEGORYKWD = "select type_id, count(*) from place where address or name or description like %:kwd% group by type_id";
+	
+	final String KWDTYPEID = "select * from place where address or name or description like %:kwd% and type_id = :typeId";
 	
 	// type id 검색
 	List<PlaceDTO> findPlaceByTypeId(BigDecimal typeId);
 	
 	// 키워드 검색 (이름, 주소, 설명)
 	List<PlaceDTO> findPlaceByNameContainingOrAddressContainingOrDescriptionContaining(String kwd1, String kwd2, String kwd3);
+	
+	// 키워드+typeId 검색(이름, 주소, 설명, typeId)
+	List<PlaceDTO> findPlaceByTypeIdEqualsAndNameContainingOrAddressContainingOrDescriptionContaining(BigDecimal typeId, String kwd1, String kwd2, String kwd3);
 	
 	// JPA를 통해 특정 컬럼 조회 : http://blog.naver.com/idrukawa/220940108211
 	// SPRING DATA + JPQL, named parmeter : https://www.baeldung.com/spring-data-jpa-query
@@ -54,5 +60,14 @@ public interface PlaceRepository extends CrudRepository<PlaceDTO, BigDecimal>{
 	List<Object[]> findPlaceByDistance(
 			@Param("id") BigDecimal id,
 			@Param("distance") double distance);
+	
+	// 카테고리별 갯수 검색(parameter 없음)
+	@Query(value = CATEGORYALL, nativeQuery = true)
+	List<Object[]> findCountByTypeId();
+	
+	// 카테고리별 갯수 검색(keyword가 parameter로 들어감)
+	@Query(value = CATEGORYKWD, nativeQuery = true)
+	List<Object[]> findCountByTypeIdKwd(
+			@Param("kwd") String kwd);
 
 }

@@ -3,7 +3,6 @@ package tbr.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -116,6 +115,48 @@ public class TBRSearchController {
 			e.printStackTrace();
 			throw new AsyncException("ERROR");
 		}
+	}
+	
+	// * DB: DB내 존재하는 모든 typeId와 카운팅 횟수 return 로직
+	@GetMapping("/countTypeId")
+	public List<List<Object>> countTypeId() throws AsyncException {
+		System.out.println("/countTypeId");
+		try {
+			return service.typeId();
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}	
+	}
+	
+	// * DB: 키워드 입력 후 결과값 내 typeId와 카운팅 횟수 return 로직
+	@GetMapping("/countTypeIdKwd")
+	public List<List<Object>> countTypeIdKwd(@RequestParam("kwd") String kwd) throws AsyncException {
+		System.out.println("/countTypeIdKwd:"+ kwd);
+		try {
+			return service.typeIdKwd(kwd);
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}	
+	}
+	
+	// * DB: 키워드&typeId 값 입력 후 결과값 return 로직
+	// http://127.0.0.1:8000/kwdTypeIdIn?kwd=서울&typeId=12
+	@GetMapping("/kwdTypeIdIn")
+	public List<PlaceDTO> kwdTypeIdIn(@RequestParam BigDecimal typeId, @RequestParam String kwd) throws AsyncException {
+		try {
+			return service.kwdTypeIdIn(typeId, kwd);
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}	
 	}
 
 }

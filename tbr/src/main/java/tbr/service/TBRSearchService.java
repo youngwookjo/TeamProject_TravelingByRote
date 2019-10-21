@@ -187,5 +187,25 @@ public class TBRSearchService {
 		}
 		return list;
 	}
+	
+	// * DB: DB내 존재하는 모든 typeId와 카운팅 횟수 return 로직
+	public List<List<Object>> typeId(){
+		return placeRepo.findCountByTypeId().stream()
+				.map(v -> Arrays.asList(v[0], v[1]))
+				.collect(Collectors.toList());
+	}
 
+	// * DB: 키워드 입력 후 결과값 내 typeId와 카운팅 횟수 return 로직
+	public List<List<Object>> typeIdKwd(String kwd){
+		System.out.println(kwd+ " in service");
+		return placeRepo.findCountByTypeIdKwd(kwd).stream()
+				.map(v -> Arrays.asList(v[0], v[1]))
+				.collect(Collectors.toList());
+	}
+
+	// * DB: 키워드 입력 후 결과값 내 typeId와 카운팅 횟수 return 로직
+	public List<PlaceDTO> kwdTypeIdIn(BigDecimal typeId, String kwd){
+		System.out.println(kwd + typeId + " in service");
+		return placeRepo.findPlaceByTypeIdEqualsAndNameContainingOrAddressContainingOrDescriptionContaining(typeId, kwd, kwd, kwd);
+	}
 }
