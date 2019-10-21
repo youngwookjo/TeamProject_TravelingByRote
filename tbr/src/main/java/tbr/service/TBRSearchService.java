@@ -32,8 +32,8 @@ public class TBRSearchService {
 	ESHighLevelClient esClient;
 
 	String index = "insta_post";
-	String[] locList = {"국내여행"};
-//	String[] locList = "국내여행,서울여행,인천여행,경기도여행,충북여행,충남여행,강원도여행,전북여행,전남여행,대전여행,광주여행,부산여행,제주여행,울산여행,경북여행,경남여행,대구여행".split(",");
+//	String[] locList = {"국내여행"};
+	String[] locList = "국내여행,서울여행,인천여행,경기도여행,충북여행,충남여행,강원도여행,전북여행,전남여행,대전여행,광주여행,부산여행,제주여행,울산여행,경북여행,경남여행,대구여행".split(",");
 	
 	// * DB
 	public long getIds() throws AsyncException {

@@ -33,6 +33,16 @@
 			$('#viewLoading').hide(); 
 		})
 		
+			function updateInstaDB() {
+			$('#viewLoading').show();
+			axios.get("http://127.0.0.1:8000/instaCollect")
+			.then(resData => {
+				let phrase = "<p>" + "instaDB 업데이트 완료, " + resData.data + "</p>"
+				$('#viewLoading').hide();
+				$("#table").append(phrase);
+			})
+		}
+		
 		function updateDB() {
 			$('#viewLoading').show();
 			axios.get("http://localhost:8000/dataCollect")
@@ -79,7 +89,7 @@
 			});			
 		}
 	</script>
-
+	<button onclick="updateInstaDB()">instaDB 업데이트</button>
     <button onclick="updateDB()">DB 업데이트</button>
     <button onclick="searchAll()">전체 회원 리스트</button>
 	<input id="name" type="text">
