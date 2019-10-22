@@ -9304,3 +9304,16 @@ textarea.form-control {
   100% {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -136px; } }
+    
+    .screen_out {display:block;overflow:hidden;position:absolute;left:-9999px;width:1px;height:1px;font-size:0;line-height:0;text-indent:-9999px}
+    .wrap_content {overflow:hidden;height:330px}
+    .wrap_map {width:50%;height:300px;float:left;position:relative}
+    .wrap_roadview {width:50%;height:300px;float:left;position:relative}
+    .wrap_button {position:absolute;left:15px;top:12px;z-index:2}
+    .btn_comm {float:left;display:block;width:70px;height:27px;background:url(http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/sample_button_control.png) no-repeat}
+    .btn_linkMap {background-position:0 0;}
+    .btn_resetMap {background-position:-69px 0;}
+    .btn_linkRoadview {background-position:0 0;}
+    .btn_resetRoadview {background-position:-69px 0;}
+    
+
