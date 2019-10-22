@@ -21,7 +21,7 @@ public class TBRSearchController {
 	TBRSearchService service;
 
 	// * SEARCH
-	// http://127.0.0.1:8000/searchByType/typeId=38
+	// http://127.0.0.1:8000/searchByType?typeId=38
 	@GetMapping("/searchByType")
 	public List<PlaceDTO> searchByType(@RequestParam BigDecimal typeId) throws AsyncException {
 		System.out.println("/searchByType");

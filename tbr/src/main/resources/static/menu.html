@@ -83,6 +83,12 @@ h4 {
         };
         var kwdinput = getKwd("kwd");
 
+		let typeId = function(typeId) {
+            const value = new URLSearchParams(window.location.search).get(typeId);
+            return value;
+        };
+        var typeIdinput = getKwd("typeId");
+
     </script>
 
 <!--키워드 입력하고 엔터시 submit 기능-->
@@ -98,34 +104,64 @@ function check(form){
 
 <!-- 카테고리란 채우는 로직 -->
 <script>
-	
-	(function categoryDecision(){
+	$(document).ready(categoryDecision(typeIdinput, kwdinput));
+	function categoryDecision(typeIdinput, kwdinput){
 		let data;
-		console.log(kwdinput);
-		if(kwdinput== null){
-        axios
+		console.log(typeIdinput, kwdinput);
+		if(typeIdinput!=null && kwdinput!=null){
+			//키워드 검색 이후 카테고리까지 클릭했을 때
+			console.log("메뉴 : typeId O & kwd O");
+			axios
+			.get("http://127.0.0.1:8000/countTypeIdKwd?kwd=" + kwdinput)
+			.then(resData => {
+				data = resData.data;
+				console.log(resData.data);
+				drawCategoryXOOO(resData.data);
+			})
+			.catch(error => {
+				console.log("비정상 응답", error);
+			})
+		}else if(typeIdinput!=null && kwdinput==null){
+			console.log("메뉴 : typeId O & kwd X");
+		//메인에서 카테고리 하나 클릭했을 때 => 전체 카테고리 유지
+		axios
           .get("http://127.0.0.1:8000/countTypeId")
           .then(resData => {
             data = resData.data;
             console.log(resData.data);
-            drawCategory(resData.data);
+            drawCategoryXXOX(resData.data);
           })
           .catch(error => {
             console.log("비정상 응답", error);
           })
-		}else{
+		}else if(typeIdinput==null && kwdinput!=null){
+		//키워드 검색만 하고 카테고리 선택 전
+		console.log("메뉴 : typeId X & kwd O");
 		axios
           .get("http://127.0.0.1:8000/countTypeIdKwd?kwd=" + kwdinput)
           .then(resData => {
             data = resData.data;
             console.log(resData.data);
-            drawCategory(resData.data);
+            drawCategoryXOOO(resData.data);
           })
           .catch(error => {
             console.log("비정상 응답", error);
           })
+		}else{
+			//아무값도 없을 때(첫화면)
+			console.log("메뉴 : typeId X & kwd X");
+			axios
+			.get("http://127.0.0.1:8000/countTypeId")
+			.then(resData => {
+				data = resData.data;
+				console.log(resData.data);
+				drawCategoryXXOX(resData.data);
+			})
+			.catch(error => {
+				console.log("비정상 응답", error);
+			})
 		}
-	})(kwdinput);
+	}
 
 	// typeId별 한글명 찾아주는 로직
 	var typeIdSelect = function (value) {
@@ -141,7 +177,18 @@ function check(form){
         };
 
 	var table = "";
-	function drawCategory(tdata){
+	function drawCategoryXXOX(tdata){
+		for(let row of tdata){
+			table += '<li><a href="/menu.html?typeId='+ row[0] +'">'+ 
+			typeIdSelect(row[0]) +
+			' <span>('+ row[1] +')</span></a></li>'
+		}
+	let tableHTML = document.createElement('div');
+        tableHTML.innerHTML = table;
+		$(".categories#typeId").append(tableHTML)
+	}
+
+	function drawCategoryXOOO(tdata){
 		for(let row of tdata){
 			table += '<li><a href="/menu.html?typeId='+ row[0] +'&kwd='+ kwdinput +'">'+ 
 			typeIdSelect(row[0]) +
@@ -209,8 +256,8 @@ function check(form){
 								<form action="menu.html" mehtod="GET" onsubmit="return check(form)" class="search-form">
 									<div class="form-group">
 										<span class="icon icon-search"></span> 
+										<!-- <input type="hidden" name="typeId"> -->
 										<input type="text" class="form-control" name="kwd">
-										<input type="hidden" name="typeId" value="null">
 									</div>
 								</form>
 							</div>

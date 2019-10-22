@@ -41,10 +41,15 @@ public interface PlaceRepository extends CrudRepository<PlaceDTO, BigDecimal>{
 	List<PlaceDTO> findPlaceByTypeId(BigDecimal typeId);
 	
 	// 키워드 검색 (이름, 주소, 설명)
-	List<PlaceDTO> findPlaceByNameContainingOrAddressContainingOrDescriptionContaining(String kwd1, String kwd2, String kwd3);
+	List<PlaceDTO> findPlaceByNameContainingOrAddressContaining(String kwd1, String kwd2);
+	List<PlaceDTO> findPlaceByDescriptionContaining(String kwd);
 	
 	// 키워드+typeId 검색(이름, 주소, 설명, typeId)
-	List<PlaceDTO> findPlaceByTypeIdEqualsAndNameContainingOrAddressContainingOrDescriptionContaining(BigDecimal typeId, String kwd1, String kwd2, String kwd3);
+	List<PlaceDTO> findPlaceByTypeIdAndAddressContaining(BigDecimal typeId, String kwd);
+	List<PlaceDTO> findPlaceByTypeIdAndDescriptionContaining(BigDecimal typeId, String kwd);
+	List<PlaceDTO> findPlaceByTypeIdAndNameContaining(BigDecimal typeId, String kwd);
+	
+	
 	
 	// JPA를 통해 특정 컬럼 조회 : http://blog.naver.com/idrukawa/220940108211
 	// SPRING DATA + JPQL, named parmeter : https://www.baeldung.com/spring-data-jpa-query

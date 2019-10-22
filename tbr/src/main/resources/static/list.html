@@ -38,11 +38,39 @@
 
 <!-- 받은 파라미터를 input값으로 하여 DB에서 정보 검색한 후 결과값을 drawtable에 던지는 로직 -->
     <script>
-        (function resultDecision(){
+        $(document).ready(resultDecision(typeIdinput, kwdinput));
+        function resultDecision(typeIdinput, kwdinput){
             let data;
-            console.log(kwdinput, typeIdinput);
-            if(typeIdinput='null'){
-                // 키워드 검색 결과 값
+            console.log(typeIdinput, kwdinput);
+            if(typeIdinput!=null && kwdinput!=null){
+                //키워드 검색 이후 카테고리까지 클릭했을 때
+                console.log("리스트 : typeId O & kwd O");
+                axios
+                .get("http://127.0.0.1:8000/kwdTypeIdIn?typeId=" + typeIdinput + "&kwd=" + kwdinput)
+                .then(resData => {
+                    data = resData.data;
+                    console.log(data);
+                    drawtable(resData.data);
+                })
+                .catch(error => {
+                    console.log("비정상 응답", error);
+                })
+            }else if(typeIdinput!=null && kwdinput==null){
+                // 메인에서 카테고리 하나 클릭했을 때 => 전체 카테고리 유지
+                console.log("리스트 : typeId O & kwd X");
+                axios
+                .get("http://127.0.0.1:8000/searchByType?typeId=" + typeIdinput)
+                .then(resData => {
+                    data = resData.data;
+                    console.log(data);
+                    drawtable(resData.data);
+                })
+                .catch(error => {
+                    console.log("비정상 응답", error);
+                })
+            }else if(typeIdinput==null && kwdinput!=null){
+                // 키워드 검색만 하고 카테고리 선택 전
+                console.log("리스트 : typeId X & kwd O");
                 axios
                 .get("http://127.0.0.1:8000/searchByKeyword?kwd=" + kwdinput)
                 .then(resData => {
@@ -52,22 +80,12 @@
                 })
                 .catch(error => {
                     console.log("비정상 응답", error);
-                })
+                })        
             }else{
-                // 키워드+typeId 검색 결과 값
-                axios
-                .get("http://127.0.0.1:8000/kwdTypeIdIn?kwd=" + kwdinput + "&typeId=" + typeIdinput)
-                .then(resData => {
-                    data = resData.data;
-                    console.log(data);
-                    drawtable(resData.data);
-                })
-                .catch(error => {
-                    console.log("비정상 응답", error);
-                })
+                //아무값도 없을 때(첫화면)
+                console.log("리스트 : typeId X & kwd X");
             }
-        })(kwdinput, typeIdInput);
-        
+        }
     </script>
     
     <!-- drawtable 그린 후 화면에 띄우는 로직 -->

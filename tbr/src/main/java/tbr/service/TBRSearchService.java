@@ -147,7 +147,10 @@ public class TBRSearchService {
 	}
 
 	public List<PlaceDTO> findPlaceByKwd(String kwd) {
-		return placeRepo.findPlaceByNameContainingOrAddressContainingOrDescriptionContaining(kwd, kwd, kwd);
+		List<PlaceDTO> result = new ArrayList<>();
+		placeRepo.findPlaceByNameContainingOrAddressContaining(kwd, kwd).stream().forEach( v -> {result.add(v);});
+		placeRepo.findPlaceByDescriptionContaining(kwd).stream().forEach( v -> {result.add(v);});
+		return result;
 	}
 
 	public Optional<PlaceDTO> findPlaceById(BigDecimal id) {
@@ -206,6 +209,12 @@ public class TBRSearchService {
 	// * DB: 키워드 입력 후 결과값 내 typeId와 카운팅 횟수 return 로직
 	public List<PlaceDTO> kwdTypeIdIn(BigDecimal typeId, String kwd){
 		System.out.println(kwd + typeId + " in service");
-		return placeRepo.findPlaceByTypeIdEqualsAndNameContainingOrAddressContainingOrDescriptionContaining(typeId, kwd, kwd, kwd);
+		List<PlaceDTO> result = new ArrayList<>();
+		placeRepo.findPlaceByTypeIdAndAddressContaining(typeId, kwd).stream().forEach( v -> {result.add(v);});
+		placeRepo.findPlaceByTypeIdAndDescriptionContaining(typeId, kwd).stream().forEach( v -> {result.add(v);});
+		placeRepo.findPlaceByTypeIdAndNameContaining(typeId, kwd).stream().forEach( v -> {result.add(v);});
+		return result;
+		
 	}
+	
 }
