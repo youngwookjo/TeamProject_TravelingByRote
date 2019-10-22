@@ -339,7 +339,8 @@ public class TBRSearchService {
 		try {
 			return esClient.getFrequencyList(indexName, StreamSupport
 					.stream(esClient.searchByLoc(indexName, loc).spliterator(), false)
-					.map(v -> v.getId()).toArray(String[]::new), Arrays.asList(loc).stream().toArray(String[]::new));
+					.map(v -> v.getId()).toArray(String[]::new), Arrays.asList(loc, loc.replace("도", "")).stream()
+					.collect(Collectors.toSet()).stream().toArray(String[]::new));
 		} catch (Exception e) {
 			e.printStackTrace();
 			new AsyncException("ES_ERROR");
@@ -354,7 +355,8 @@ public class TBRSearchService {
 		try {
 			return esClient.getFrequencyList(indexName, StreamSupport
 					.stream(esClient.searchByLocAndKwd(indexName, loc, kwd).spliterator(), false)
-					.map(v -> v.getId()).toArray(String[]::new), Arrays.asList(loc, kwd).stream().toArray(String[]::new));
+					.map(v -> v.getId()).toArray(String[]::new), Arrays.asList(kwd, loc, loc.replace("도", "")).stream()
+					.collect(Collectors.toSet()).stream().toArray(String[]::new));
 		} catch (Exception e) {
 			e.printStackTrace();
 			new AsyncException("ES_ERROR");

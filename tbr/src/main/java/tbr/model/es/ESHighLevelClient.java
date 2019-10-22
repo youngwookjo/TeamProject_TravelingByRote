@@ -81,7 +81,7 @@ public class ESHighLevelClient {
 	
 	// https://www.elastic.co/guide/en/elasticsearch/client/java-rest/master/java-rest-high-search.html
 	public long countAll(String index) throws IOException {
-		System.out.println(index);
+		System.out.println("* countAll : " + index);
 		CountRequest request = new CountRequest(index);
 		SearchSourceBuilder builder = new SearchSourceBuilder(); 
 		builder.query(QueryBuilders.matchAllQuery()); 
@@ -92,8 +92,7 @@ public class ESHighLevelClient {
 	}
 	
 	public SearchHits searchByKwd(String index, String kwd) throws IOException {
-		System.out.println(index);
-		System.out.println(kwd);
+		System.out.println("* searchByKwd : " + index + " / kwd : " + kwd);
 		SearchRequest searchRequest = new SearchRequest(index);
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder
@@ -105,8 +104,7 @@ public class ESHighLevelClient {
 	}
 
 	public SearchHits searchByLoc(String index, String loc) throws IOException {
-		System.out.println(index);
-		System.out.println(loc);
+		System.out.println("* searchByLoc : " + index + " / loc : " + loc);
 		SearchRequest searchRequest = new SearchRequest(index);
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder
@@ -118,9 +116,7 @@ public class ESHighLevelClient {
 	}
 	
 	public SearchHits searchByLocAndKwd(String index, String loc, String kwd) throws IOException {
-		System.out.println(index);
-		System.out.println(loc);
-		System.out.println(kwd);
+		System.out.println(index + " / kwd : " + kwd + " loc : " + loc);
 		SearchRequest searchRequest = new SearchRequest(index);
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder
