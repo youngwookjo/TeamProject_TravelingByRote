@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.elasticsearch.search.SearchHit;
 import org.jsoup.Jsoup;
@@ -215,6 +216,43 @@ public class TBRSearchService {
 		placeRepo.findPlaceByTypeIdAndNameContaining(typeId, kwd).stream().forEach( v -> {result.add(v);});
 		return result;
 		
+	}
+	
+	public List<InstaPostDTO> searchInstaByLoc(String loc) throws IOException {
+		List<InstaPostDTO> list = new ArrayList<>();
+		Map<String, Object> map = null;
+		esClient.connect();
+		try {
+			for(SearchHit hit : esClient.searchByLoc(indexName, loc)) {   //
+				map = hit.getSourceAsMap();
+				list.add(
+						new InstaPostDTO(
+								map.get("loc_type").toString(), map.get("img").toString(), map.get("text").toString(),
+								Integer.parseInt(map.get("likes").toString()), Integer.parseInt(map.get("comments").toString())));
+			};
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("ES_ERROR");
+		} finally {			
+			esClient.close();
+		}
+		return list;
+	}
+	
+	public Object[] getTagListByLoc(String loc) throws IOException {
+		esClient.connect();
+		try {
+			return esClient.getFrequencyList(indexName, StreamSupport  //
+					.stream(esClient.searchByLoc(indexName, loc).spliterator(), false)  //
+					.map(v -> v.getId()).toArray(String[]::new), Arrays.asList(loc, loc.replace("도", "")).stream()
+					.collect(Collectors.toSet()).stream().toArray(String[]::new));
+		} catch (Exception e) {
+			e.printStackTrace();
+			new AsyncException("ES_ERROR");
+		} finally {			
+			esClient.close();
+		}
+		return null;
 	}
 	
 }

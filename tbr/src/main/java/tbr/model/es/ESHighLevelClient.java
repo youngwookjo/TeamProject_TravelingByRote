@@ -70,4 +70,53 @@ public class ESHighLevelClient {
 		return searchResponse.getHits();
 	}
 	
+	////이하 영욱씨 코드 카피
+	public SearchHits searchByLoc(String index, String loc) throws IOException {
+		System.out.println("* searchByLoc : " + index + " / loc : " + loc);
+		SearchRequest searchRequest = new SearchRequest(index);
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder
+			.query(QueryBuilders.boolQuery().must(QueryBuilders.termQuery("loc_type", loc + "여행")))
+			.size(1000);
+//			.sort("likes", SortOrder.DESC).sort("comments", SortOrder.DESC);
+		searchRequest.source(searchSourceBuilder);
+		return client.search(searchRequest, RequestOptions.DEFAULT).getHits();
+	}
+	
+	public Object[] getFrequencyList(String index, String[] idArray) throws IOException {
+		long count = countAll(index);
+		System.out.println(index + " : " + count);
+		TermVectorsRequest request = null;
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		String key = null;
+		int value = 0;
+		for(String id : idArray) {
+			request = new TermVectorsRequest(index, id);			
+			request.setFields("text");
+			request.setFieldStatistics(false); 
+			request.setPositions(false); 
+			request.setOffsets(false); 
+			request.setPayloads(false);
+			for(TermVector tv : client.termvectors(request, RequestOptions.DEFAULT).getTermVectorsList()) {
+				for(Term term : tv.getTerms()) {
+					key = term.getTerm();
+					value = term.getTermFreq();
+					if(map.containsKey(key)) {
+						map.put(key, map.get(key) + value);
+					} else {
+						map.put(key, value);
+					}
+				}
+			}
+		}
+		return map.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+				.filter(v -> v.getKey().length() > 1)
+				.filter(v -> !(v.getKey().
+						contains("추천") || v.getKey().contains("여행") || v.getKey().contains("스타")
+						|| v.getKey().contains("그램") || v.getKey().contains("국내")))
+				.limit(20)
+				.toArray();
+	}
+	
 }

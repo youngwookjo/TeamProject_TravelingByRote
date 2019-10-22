@@ -19,6 +19,7 @@ import tbr.service.TBRSearchService;
 public class TBRSearchController {
 	@Autowired
 	TBRSearchService service;
+	
 
 	// * SEARCH
 	// http://127.0.0.1:8000/searchByType?typeId=38
@@ -159,4 +160,36 @@ public class TBRSearchController {
 		}	
 	}
 
+	// http://127.0.0.1:8000/idsearch?id=1012988
+	@GetMapping("/idsearch")
+	public Object[] idSearch(@RequestParam BigDecimal id) {
+		System.out.println("/idsearch : " + id);
+		System.out.println("// DB, INSTA, TAG");
+		Object[] result = new Object[3];
+		System.out.println("// STEP 1 : DB");
+		try {
+			result[0] = service.findPlaceById(id);			
+		} catch (Exception e) {
+			throw new AsyncException("RDBMS(mySQL) 관련 오류");
+		}
+		// ID 별 위치 정보 처리
+		String loc = service.findPlaceById(id).get().getAddress().split(" ")[0]
+				.replace("특별시", "").replace("광역시", "").replace("특별자치도", "")
+				.replaceAll("\\S북도", "북").replaceAll("\\S남도", "남")
+				.replace("세종특별자치시", "충남");
+		System.out.println(loc);
+		System.out.println("// STEP 2 : INSTA");
+		try {
+			result[1] = service.searchInstaByLoc(loc);		//	
+		} catch (Exception e) {
+			throw new AsyncException("Elastic Search (Insta) 관련 오류");
+		}
+		System.out.println("// STEP 3 : TAG");
+		try {
+			result[2] = service.getTagListByLoc(loc);			//
+		} catch (Exception e) {
+			throw new AsyncException("Elastic Search (Tag) 관련 오류");
+		}
+		return result;
+	}
 }

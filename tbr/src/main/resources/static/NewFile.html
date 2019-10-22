@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Home</title>
+<meta charset="utf-8">
+<meta name="viewport"
+   content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link
+   href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700"
+   rel="stylesheet">
+<link
+   href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i&display=swap"
+   rel="stylesheet">
+<link
+   href="https://fonts.googleapis.com/css?family=Abril+Fatface&display=swap"
+   rel="stylesheet">
+<link rel="stylesheet" href="css/animate.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet"
+   href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet"
+   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link
+   href="https://fonts.googleapis.com/css?family=Noto+Serif+KR&display=swap"
+   rel="stylesheet">
+<link rel="stylesheet"
+   href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script
+   src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript"
+   src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b1f1d90d0ff37888e118abbeaf1469c6"></script>
+<!--    menu.html에서 던진 파라미터를 받는 로직-->
+<style>
+.material-icons {
+   vertical-align: -14%
+}
+
+h5, .h5 {
+   font-size: 1.25rem;
+}
+
+.card-body {
+   flex: 1 1 auto;
+   padding: 1.25rem;
+}
+
+div {
+   display: block;
+}
+
+.rounded {
+   border-radius: .5rem !important;
+}
+
+* {
+   box-sizing: border-box;
+}
+
+.wrap {
+   position: absolute;
+   left: 0;
+   bottom: 40px;
+   width: 288px;
+   height: 132px;
+   margin-left: -144px;
+   text-align: left;
+   overflow: hidden;
+   font-size: 12px;
+   font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
+   line-height: 1.5;
+}
+
+.wrap * {
+   padding: 0;
+   margin: 0;
+}
+
+.wrap .info {
+   width: 286px;
+   height: 120px;
+   border-radius: 5px;
+   border-bottom: 2px solid #ccc;
+   border-right: 1px solid #ccc;
+   overflow: hidden;
+   background: #fff;
+}
+
+.wrap .info:nth-child(1) {
+   border: 0;
+   box-shadow: 0px 1px 2px #888;
+}
+
+.info .title {
+   padding: 5px 0 0 10px;
+   height: 30px;
+   background: #eee;
+   border-bottom: 1px solid #ddd;
+   font-size: 18px;
+   font-weight: bold;
+}
+
+.info .close {
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   color: #888;
+   width: 17px;
+   height: 17px;
+   background:
+      url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');
+}
+
+.info .close:hover {
+   cursor: pointer;
+}
+
+.info .body {
+   position: relative;
+   overflow: hidden;
+}
+
+.info .desc {
+   position: relative;
+   margin: 13px 0 0 90px;
+   height: 75px;
+}
+
+.desc .ellipsis {
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+}
+
+.desc .jibun {
+   font-size: 11px;
+   color: #888;
+   margin-top: -2px;
+}
+
+.info .img {
+   position: absolute;
+   top: 6px;
+   left: 5px;
+   width: 73px;
+   height: 71px;
+   border: 1px solid #ddd;
+   color: #888;
+   overflow: hidden;
+}
+
+.info:after {
+   content: '';
+   position: absolute;
+   margin-left: -12px;
+   left: 50%;
+   bottom: 0;
+   width: 22px;
+   height: 12px;
+   background:
+      url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')
+}
+
+.info .link {
+   color: #5085BB;
+}
+
+* {
+   box-sizing: border-box
+}
+
+body {
+   font-family: Verdana, sans-serif;
+   margin: 0
+}
+
+.mySlides {
+   display: none
+}
+
+img {
+   vertical-align: middle;
+}
+
+/* Slideshow container */
+.slideshow-container {
+   max-width: 1000px;
+   position: relative;
+   margin: auto;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+   cursor: pointer;
+   position: absolute;
+   top: 50%;
+   width: auto;
+   padding: 16px;
+   margin-top: -22px;
+   color: white;
+   font-weight: bold;
+   font-size: 18px;
+   transition: 0.6s ease;
+   border-radius: 0 3px 3px 0;
+   user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+   right: 0;
+   border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+   background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Caption text */
+.text {
+   color: #f2f2f2;
+   font-size: 15px;
+   padding: 8px 12px;
+   position: absolute;
+   bottom: 8px;
+   width: 100%;
+   text-align: center;
+}
+
+/* Number text (1/3 etc) */
+.numbertext {
+   color: #f2f2f2;
+   font-size: 12px;
+   padding: 8px 12px;
+   position: absolute;
+   top: 0;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+   cursor: pointer;
+   height: 15px;
+   width: 15px;
+   margin: 0 2px;
+   background-color: #bbb;
+   border-radius: 50%;
+   display: inline-block;
+   transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+   background-color: #717171;
+}
+
+/* Fading animation */
+.fade {
+   -webkit-animation-name: fade;
+   -webkit-animation-duration: 1.5s;
+   animation-name: fade;
+   animation-duration: 1.5s;
+}
+
+@
+-webkit-keyframes fade {
+   from {opacity: .4
+}
+
+to {
+   opacity: 1
+}
+
+}
+@
+keyframes fade {
+   from {opacity: .4
+}
+
+to {
+   opacity: 1
+}
+
+}
+
+/* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+   .prev, .next, .text {
+      font-size: 11px
+   }
+}
+</style>
+
+
+
+
+
+
+<script>
+        let getKwd = function(kwd) {
+            const value = new URLSearchParams(window.location.search).get(kwd);
+            return value;
+        };
+        var kwdinput = getKwd("kwd");
+    </script>
+
+<!-- menu.html 에서 insta 파라미터 받는 로직 -->
+<script>
+        let getinsta = function(insta) {
+            const value = new URLSearchParams(window.location.search).get(insta);
+            return value;
+        };
+        var instainput = getinsta("insta");
+    </script>
+
+<!-- 받은 파라미터를 input값으로 하여 DB에서 정보 검색한 후 결과값을 drawtable에 던지는 로직 -->
+<script>
+        let data;
+        (searchbykwd = kwd =>
+           axios
+            .get("http://127.0.0.1:8000/searchByKeyword?kwd=" + kwd)
+            .then(resData => {
+                data = resData.data;
+                console.log(data);
+                drawtable(resData.data);
+            })
+            .catch(error => {
+                console.log("비정상 응답", error);
+            }))(kwdinput);
+         
+        
+        
+        function typeIdSelect(value) {
+           value = (value === 12)? "관광지" : 
+           value = (value === 14)? "문화시설" : 
+           value = (value === 15)? "축제공연행사" : 
+           value = (value === 25)? "여행코스" : 
+           value = (value === 28)? "레포츠" : 
+           value = (value === 32)? "숙박 시설" : 
+           value = (value === 38)? "쇼핑" : 
+           value = (value === 39)? "음식점" : "";
+           return value
+           };
+    </script>
+
+<!-- drawtable 그린 후 화면에 띄우는 로직 -->
+<script>
+        var table = "";
+        function drawtable(tdata) {  
+            
+            for (let row of tdata) {
+               var typeId = typeIdSelect(row.typeId);
+                table +=
+                    "<div class=\"col-md-12\">" +
+                    "<div class=\"blog-entry ftco-animate d-md-flex fadeInUp ftco-animated\">" +
+                    "<a href=\"#\" onclick=\"searchbyid("+ row.id + ")\" class=\"img img-2\" " +
+                    "style=\"background-image: url(" + row.img.replace("static/", "") + ");\"></a>" +
+                    "<div class=\"text text-2 pl-md-4\">" +
+                    "<h3 class=\"mb-2\">" +
+                    "<a href=\"#\" onclick=\"searchbyid("+ row.id + ")\">"+ row.name +"</a>" +
+                    "</h3>" +
+                    "<div class=\"meta-wrap\">" +
+                    "<p class=\"meta\">" +
+                    "<span><a href=\"#\"  onclick=\"recentSearch()\"><i " +
+                    "class=\"icon-folder-o mr-2\"></i>"+ typeId +"</a></span> <span><i " +
+                    "class=\"icon-comment2 mr-2\"></i>"+ row.address +"</span>" +
+                    "</p>" +
+                    "</div>" + 
+                    "<details>   <summary >더 보기</summary>"+
+                    "<p class=\"mb-4\">"+ row.description +"</p> </details>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>"
+            }
+
+            let table2 = document.createElement('div');
+            table2.innerHTML = table;
+
+            $(document).ready(function() {
+               $(".row.pt-md-3").hide() 
+                $(".row.pt-md-4").append(table2)   
+            });
+        }
+        
+    </script>
+
+<script>
+    var lat1;
+    var lon1;
+    var name;
+   let data2;
+   
+   searchbyid = id =>
+    axios
+      .get("http://localhost:8000/searchById?id=" + id)
+      .then(resData => {
+        data2 = resData.data
+        lat1 = data2.lat;
+        lon1 = data2.lon;
+        name = data2.name;
+        console.log(data2);
+        drawtable2("키워드 검색", data2);
+      })
+      .catch(error => {
+        console.log("비정상 응답", error);
+      });
+    
+   
+   
+   function drawtable2(option, tdata) {
+        let table = "";
+        
+        var typeId2 = typeIdSelect(tdata.typeId);
+          console.log(tdata);
+          table += "<div><div class=\"card border-0 shadow mb-4\">"
+          +"<div class=\"card-body\">"+"<div>"+"<h1 class=\"mb-3\">"+ tdata.name 
+          +"</h1><hr>"+"<h5>"+"<i class=\"material-icons\">local_offer</i>" + typeId2 + 
+           "</h5>" +"<h5><i class=\"material-icons\"> near_me </i>"+ tdata.address + 
+            "</h5></div></div>" + "<img class=\"card-body\" src="+tdata.img.replace("static/", "") 
+          +" alt=\"Bootstrap Full Width Picture Page Backgrounds\">" + "<div class=\"card-body\">"
+          +"<h4 style=\"text-align: left\"><i class=\"material-icons\"> arrow_right </i>설명</h4><hr>"+"<p>" + tdata.description + "</p>"
+           +"</div>"
+          +"</div>"
+          +"<div class=\"wrap_content\">"
+          +"<div class=\"wrap_map\">"
+          +"<div class=\"card border-0 shadow mb-4\" id=\"map\" style=\"width:100%;height:100%\"></div>"
+           +"</div>"
+           +"<div class=\"wrap_roadview\">"
+          +"<div class=\"card border-0 shadow mb-4\" id=\"roadview\" style=\"width:100%;height:100%\"></div>" 
+          +"</div> </div>"
+
+        let table2 = document.createElement('div');
+        table2.innerHTML = table; 
+        
+        $(document).ready(function() {
+        $(".row.pt-md-4").hide() 
+        $(".row.pt-md-5").prepend(table2)
+        makeMap();
+        }); 
+      }
+   
+    let data3;
+    (searchbykwd = kwd =>
+      axios
+        .get("http://127.0.0.1:8000/instaKwdSearch?kwd=" + kwd)
+        .then(resData => {
+          data3 = resData.data;
+          console.log(data3);
+          drawtable3(data3);
+        })
+        .catch(error => {
+          console.log("비정상 응답", error);
+        }))(instainput);
+   
+      
+    function drawtable3(tdata) {
+        let table = "";
+        for (let row of tdata) {
+          console.log(row);
+          table +=
+             "<div class=\"col-md-12\">" +
+              "<div class=\"blog-entry ftco-animate d-md-flex fadeInUp ftco-animated\">" +
+              "<a href=\"#\" class=\"img img-2\" " +
+              "style=\"background-image: url(" + row.img.replace("static/", "") + ");\"></a>" +
+              "<div class=\"text text-2 pl-md-4\">" +
+              "<h3 class=\"mb-2\">" +
+              "<a href=\"#\">"+ row.locType +"</a>" +
+              "</h3>" +
+              "<div class=\"meta-wrap\">" +
+              "<p class=\"meta\">" +
+              "<span><a href=\"#\"  onclick=\"recentSearch()\"><i " +
+              "class=\"glyphicon glyphicon-thumbs-up\"></i>&nbsp;"+  row.likes +"</a></span> <span><i " +
+              "class=\"glyphicon glyphicon-thumbs-down\"></i>&nbsp;"+  row.comments +"</span>" +
+              "</p>" +
+              "</div>" + 
+              "<p class=\"mb-4\">"+ row.text +"</p>"+
+              "</div>" +
+              "</div>" +
+              "</div>"
+              
+        }
+        let table2 = document.createElement('div');
+        table2.innerHTML = table;
+        
+        $(document).ready(function() {
+           $(".row.pt-md-3").hide() 
+            $(".row.pt-md-4").append(table2)   
+        });
+      }
+
+    
+    
+      //지도 생성 로직
+   function makeMap(){
+      var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+       mapCenter = new kakao.maps.LatLng(lat1, lon1), // 지도의 중심 좌표
+       mapOption = {
+           center: mapCenter, // 지도의 중심 좌표
+           level: 4 // 지도의 확대 레벨
+       };
+
+   // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+   var map = new kakao.maps.Map(mapContainer, mapOption);
+
+   // 지도에 올릴 마커를 생성합니다.
+   var mMarker = new kakao.maps.Marker({
+       position: mapCenter, // 지도의 중심좌표에 올립니다.
+       map: map // 생성하면서 지도에 올립니다.
+   });
+   
+   // 지도에 올릴 장소명 인포윈도우 입니다.
+   var mLabel = new kakao.maps.InfoWindow({
+       position: mapCenter, // 지도의 중심좌표에 올립니다.
+       content: name // 인포윈도우 내부에 들어갈 컨텐츠 입니다.
+   });
+   mLabel.open(map, mMarker); // 지도에 올리면서, 두번째 인자로 들어간 마커 위에 올라가도록 설정합니다.
+
+
+   //로드뷰
+   var rvContainer = document.getElementById('roadview'); // 로드뷰를 표시할 div
+   var rv = new kakao.maps.Roadview(rvContainer); // 로드뷰 객체 생성
+   var rc = new kakao.maps.RoadviewClient(); // 좌표를 통한 로드뷰의 panoid를 추출하기 위한 로드뷰 help객체 생성
+   var rvResetValue = {} //로드뷰의 초기화 값을 저장할 변수
+   rc.getNearestPanoId(mapCenter, 50, function(panoId) {
+       rv.setPanoId(panoId, mapCenter);//좌표에 근접한 panoId를 통해 로드뷰를 실행합니다.
+       rvResetValue.panoId = panoId;
+   });
+
+   // 로드뷰 초기화 이벤트
+   kakao.maps.event.addListener(rv, 'init', function() {
+
+       // 로드뷰에 올릴 마커를 생성합니다.
+       var rMarker = new kakao.maps.Marker({
+           position: mapCenter,
+           map: rv //map 대신 rv(로드뷰 객체)로 설정하면 로드뷰에 올라갑니다.
+       });
+
+
+       // 로드뷰 마커가 중앙에 오도록 로드뷰의 viewpoint 조정 합니다.
+       var projection = rv.getProjection(); // viewpoint(화면좌표)값을 추출할 수 있는 projection 객체를 가져옵니다.
+       
+       // 마커의 position과 altitude값을 통해 viewpoint값(화면좌표)를 추출합니다.
+       var viewpoint = projection.viewpointFromCoords(rMarker.getPosition(), rMarker.getAltitude());
+       rv.setViewpoint(viewpoint); //로드뷰에 뷰포인트를 설정합니다.
+
+       //각 뷰포인트 값을 초기화를 위해 저장해 놓습니다.
+       rvResetValue.pan = viewpoint.pan;
+       rvResetValue.tilt = viewpoint.tilt;
+       rvResetValue.zoom = viewpoint.zoom;
+   });
+   
+      };
+
+   //지도 이동 이벤트 핸들러
+   function moveKakaoMap(self){
+       
+       var center = map.getCenter(), 
+           lat = center.getlat();
+           lng = center.getLng();
+
+       self.href = 'https://map.kakao.com/link/map/' + encodeURIComponent(name) + ',' + lat + ',' + lng; //Kakao 지도로 보내는 링크
+   }
+
+   //지도 초기화 이벤트 핸들러
+   function resetKakaoMap(){
+       map.setCenter(mapCenter); //지도를 초기화 했던 값으로 다시 셋팅합니다.
+       map.setLevel(mapOption.level);
+   }
+
+   //로드뷰 이동 이벤트 핸들러
+   function moveKakaoRoadview(self){
+       var panoId = rv.getPanoId(); //현 로드뷰의 panoId값을 가져옵니다.
+       var viewpoint = rv.getViewpoint(); //현 로드뷰의 viewpoint(pan,tilt,zoom)값을 가져옵니다.
+       self.href = 'https://map.kakao.com/?panoid='+panoId+'&pan='+viewpoint.pan+'&tilt='+viewpoint.tilt+'&zoom='+viewpoint.zoom; //Kakao 지도 로드뷰로 보내는 링크
+   }
+
+   //로드뷰 초기화 이벤트 핸들러
+   function resetRoadview(){
+       //초기화를 위해 저장해둔 변수를 통해 로드뷰를 초기상태로 돌립니다.
+       rv.setViewpoint({
+           pan: rvResetValue.pan, tilt: rvResetValue.tilt, zoom: rvResetValue.zoom
+       });
+       rv.setPanoId(rvResetValue.panoId);
+   }
+    
+    </script>
+
+
+</head>
+
+<body>
+   <div class="row pt-md-3">
+      <img src="images/main.jpg">
+   </div>
+   <div class="row pt-md-4"></div>
+   <div class="row pt-md-5"></div>
+   <!-- END-->
+
+   <div class="card border-0 shadow mb-4">
+
+      <div class="mySlides fade, card-body">
+         <div class="numbertext">1 / 3</div>
+         <img src=/images/author.jpg style="width:100%"
+            alt="Bootstrap Full Width Picture Page Backgrounds"
+            class="card-body">
+         <div class="w3-container w3-white">
+            <p>
+               <b>Lorem Ipsum</b>
+            </p>
+            <p>Praesent tincidunt sed tellus ut rutrum. Sed vitae justo
+               condimentum, porta lectus vitae, ultricies congue gravida diam non
+               fringilla.</p>
+         </div>
+      </div>
+
+      <div class="mySlides fade, card-body">
+         <div class="numbertext">2 / 3</div>
+         <img src=/images/author.jpg style="width:100%"
+            alt="Bootstrap Full Width Picture Page Backgrounds">
+         <div class="w3-container w3-white">
+            <p>
+               <b>Lorem Ipsum</b>
+            </p>
+            <p>Praesent tincidunt sed tellus ut rutrum. Sed vitae justo
+               condimentum, porta lectus vitae, ultricies congue gravida diam non
+               fringilla.</p>
+         </div>
+      </div>
+
+      <div class="mySlides fade, card-body">
+         <div class="numbertext">3 / 3</div>
+         <img src=/images/author.jpg style="width:100%"
+            alt="Bootstrap Full Width Picture Page Backgrounds"
+            class="card-body">
+         <div class="w3-container w3-white">
+            <p>
+               <b>Lorem Ipsum</b>
+            </p>
+            <p>Praesent tincidunt sed tellus ut rutrum. Sed vitae justo
+               condimentum, porta lectus vitae, ultricies congue gravida diam non
+               fringilla.</p>
+         </div>
+      </div>
+
+      <a class="prev" onclick="plusSlides(-1)">&#10094;</a> <a class="next"
+         onclick="plusSlides(1)">&#10095;</a> <br>
+
+      <div style="text-align: center">
+         <span class="dot" onclick="currentSlide(1)"></span> <span class="dot"
+            onclick="currentSlide(2)"></span> <span class="dot"
+            onclick="currentSlide(3)"></span>
+      </div>
+   </div>
+
+
+
+   <script>
+      var slideIndex = 1;
+      showSlides(slideIndex);
+
+      function plusSlides(n) {
+         showSlides(slideIndex += n);
+      }
+
+      function currentSlide(n) {
+         showSlides(slideIndex = n);
+      }
+
+      function showSlides(n) {
+         var i;
+         var slides = document.getElementsByClassName("mySlides");
+         var dots = document.getElementsByClassName("dot");
+         if (n > slides.length) {
+            slideIndex = 1
+         }
+         if (n < 1) {
+            slideIndex = slides.length
+         }
+         for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+         }
+         for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" active", "");
+         }
+         slides[slideIndex - 1].style.display = "block";
+         dots[slideIndex - 1].className += " active";
+      }
+   </script>
+
+
+
+
+
+
+
+   <script src="js/jquery.min.js"></script>
+   <script src="js/jquery-migrate-3.0.1.min.js"></script>
+   <script src="js/popper.min.js"></script>
+   <script src="js/bootstrap.min.js"></script>
+   <script src="js/jquery.easing.1.3.js"></script>
+   <script src="js/jquery.waypoints.min.js"></script>
+   <script src="js/jquery.stellar.min.js"></script>
+   <script src="js/owl.carousel.min.js"></script>
+   <script src="js/jquery.magnific-popup.min.js"></script>
+   <script src="js/aos.js"></script>
+   <script src="js/jquery.animateNumber.min.js"></script>
+   <script src="js/scrollax.min.js"></script>
+   <script src="js/main.js"></script>
+
+</body>
+</html>
