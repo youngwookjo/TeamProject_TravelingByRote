@@ -34,6 +34,13 @@
 <link rel="stylesheet" href="css/flaticon.css">
 <link rel="stylesheet" href="css/icomoon.css">
 <link rel="stylesheet" href="css/style.css">
+<link
+   href="https://fonts.googleapis.com/css?family=Noto+Serif+KR&display=swap"
+   rel="stylesheet">
+<link rel="stylesheet"
+   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet"
+   href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 <style>
 h4 {
@@ -45,7 +52,8 @@ h4 {
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b1f1d90d0ff37888e118abbeaf1469c6"></script>
 <script>
 		$(document).ready(function(){
-		$("#result").load("list.html")        
+		$("#result").load("list.html")
+		myInsta();
 		});
     
 		recentSearch = (v) => {
@@ -85,13 +93,46 @@ function check(form){
       return false;
    }
 }
+function myInsta() {
+	  setTimeout(function(){instaTagListFromAll();}, 3000);
+	}
+
+	
+      let data4;
+      instaTagListFromAll = () =>
+        axios
+          .get("http://127.0.0.1:8000/instaTagListFromAll")
+          .then(resData => {
+            data4 = resData.data;
+            console.log(data4);
+             drawtable4(data4); 
+          })
+          .catch(error => {
+            console.log("비정상 응답", error);
+          });
+       function drawtable4(tdata) {
+        let table = "";
+        for (let row of tdata) {
+            table +=
+        		"<a href=\"menu.html?insta="+ Object.keys(row) +"\" class=\"tag-cloud-link\">"+Object.keys(row)+"</a>" 
+        }
+
+         let table2 = document.createElement('div');
+        table2.innerHTML = table; 
+
+         $(document).ready(function() {
+         $("#tag").append(table2)
+        });  
+     }
+	
 </script>
+
     
   
 </head>
 
 <!-- <body onload="cookieIdentify()"> -->
-<body>
+<body style="font-family: 'Noto Serif KR', serif !important;">
 	<div id="colorlib-page">
 		<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
 		<aside id="colorlib-aside" role="complementary" class="js-fullheight">
@@ -160,15 +201,8 @@ function check(form){
 
 							<div class="sidebar-box ftco-animate">
 								<h3 class="sidebar-heading">Tag</h3>
-								<ul class="tagcloud">
+								<ul class="tagcloud" id=tag>
 
-									<a href="menu.html?insta=힐링" class="tag-cloud-link">힐링</a>
-									<a href="menu.html?insta=축제" class="tag-cloud-link">축제</a>
-									<a href="menu.html?insta=경남" class="tag-cloud-link">경남</a>
-									<a href="menu.html?insta=사랑" class="tag-cloud-link">사랑</a>
-									<a href="menu.html?insta=부산" class="tag-cloud-link">부산</a>
-									<a href="menu.html?insta=제주도" class="tag-cloud-link">제주도</a>
-									<a href="menu.html?insta=맛집" class="tag-cloud-link">맛집</a>
 								</ul>
 							</div>
 
