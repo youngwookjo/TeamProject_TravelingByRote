@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -23,6 +22,7 @@ import tbr.exception.AsyncException;
 import tbr.model.dao.PlaceRepository;
 import tbr.model.dto.InstaPostDTO;
 import tbr.model.dto.PlaceDTO;
+import tbr.model.dto.TagDTO;
 import tbr.model.es.ESHighLevelClient;
 import tbr.util.Util;
 
@@ -306,7 +306,7 @@ public class TBRSearchService {
 		return list;
 	}
 	
-	public Object[] getTagListFromAll() throws IOException {
+	public List<TagDTO> getTagListFromAll() throws IOException {
 		esClient.connect();
 		try {
 			return esClient.getAllFrequencyList(indexName);
@@ -319,12 +319,12 @@ public class TBRSearchService {
 		return null;
 	}
 	
-	public Object[] getTagListByKwd(String kwd) throws IOException {
+	public List<TagDTO> getTagListByKwd(String kwd) throws IOException {
 		esClient.connect();
 		try {
 			return esClient.getFrequencyList(indexName, StreamSupport
-					.stream(esClient.searchByKwd(indexName, kwd).spliterator(), false)
-					.map(v -> v.getId()).toArray(String[]::new), Arrays.asList(kwd).stream().toArray(String[]::new));
+						.stream(esClient.searchByKwd(indexName, kwd).spliterator(), false)
+						.map(v -> v.getId()).toArray(String[]::new), Arrays.asList(kwd).stream().toArray(String[]::new));
 		} catch (Exception e) {
 			e.printStackTrace();
 			new AsyncException("ES_ERROR");
@@ -334,7 +334,7 @@ public class TBRSearchService {
 		return null;
 	}
 	
-	public Object[] getTagListByLoc(String loc) throws IOException {
+	public List<TagDTO> getTagListByLoc(String loc) throws IOException {
 		esClient.connect();
 		try {
 			return esClient.getFrequencyList(indexName, StreamSupport
@@ -350,7 +350,7 @@ public class TBRSearchService {
 		return null;
 	}
 	
-	public Object[] getTagListByLocAndKwd(String loc, String kwd) throws IOException {
+	public List<TagDTO> getTagListByLocAndKwd(String loc, String kwd) throws IOException {
 		esClient.connect();
 		try {
 			return esClient.getFrequencyList(indexName, StreamSupport

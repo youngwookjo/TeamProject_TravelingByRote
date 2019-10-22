@@ -6,6 +6,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -28,6 +31,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import tbr.model.dto.InstaPostDTO;
+import tbr.model.dto.TagDTO;
 
 @Component
 public class ESHighLevelClient {
@@ -129,7 +133,7 @@ public class ESHighLevelClient {
 		return client.search(searchRequest, RequestOptions.DEFAULT).getHits();
 	}
 	
-	public Object[] getAllFrequencyList(String index) throws IOException {
+	public List<TagDTO> getAllFrequencyList(String index) throws IOException {
 		long count = countAll(index);
 		System.out.println(index + " : " + count);
 		TermVectorsRequest request = null;
@@ -157,15 +161,15 @@ public class ESHighLevelClient {
 		}
 		return map.entrySet().stream()
 				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
 				.filter(v -> v.getKey().length() > 1)
 				.filter(v -> !(v.getKey().
 						contains("추천") || v.getKey().contains("여행") || v.getKey().contains("스타")
 						|| v.getKey().contains("그램") || v.getKey().contains("국내")))
-				.limit(20)
-				.toArray();
+				.limit(20).map(v -> new TagDTO(v.getKey(), v.getValue()+"")).collect(Collectors.toList());
 	}
 	
-	public Object[] getFrequencyList(String index, String[] idArray) throws IOException {
+	public List<TagDTO> getFrequencyList(String index, String[] idArray) throws IOException {
 		long count = countAll(index);
 		System.out.println(index + " : " + count);
 		TermVectorsRequest request = null;
@@ -193,15 +197,15 @@ public class ESHighLevelClient {
 		}
 		return map.entrySet().stream()
 				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
 				.filter(v -> v.getKey().length() > 1)
 				.filter(v -> !(v.getKey().
 						contains("추천") || v.getKey().contains("여행") || v.getKey().contains("스타")
 						|| v.getKey().contains("그램") || v.getKey().contains("국내")))
-				.limit(20)
-				.toArray();
+				.limit(20).map(v -> new TagDTO(v.getKey(), v.getValue()+"")).collect(Collectors.toList());
 	}
 	
-	public Object[] getFrequencyList(String index, String[] idArray, String[] words) throws IOException {
+	public List<TagDTO> getFrequencyList(String index, String[] idArray, String[] words) throws IOException {
 		long count = countAll(index);
 		System.out.println(index + " : " + count);
 		TermVectorsRequest request = null;
@@ -235,7 +239,6 @@ public class ESHighLevelClient {
 						contains("추천") || v.getKey().contains("여행") || v.getKey().contains("스타")
 						|| v.getKey().contains("그램") || v.getKey().contains("국내")))
 				.filter(v -> !Arrays.asList(words).contains(v.getKey()))
-				.limit(20)
-				.toArray();
+				.limit(20).map(v -> new TagDTO(v.getKey(), v.getValue()+"")).collect(Collectors.toList());
 	}
 }

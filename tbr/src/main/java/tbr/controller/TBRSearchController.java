@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tbr.exception.AsyncException;
 import tbr.model.dto.InstaPostDTO;
 import tbr.model.dto.PlaceDTO;
+import tbr.model.dto.TagDTO;
 import tbr.service.TBRSearchService;
 import tbr.util.Util;
 
@@ -140,7 +141,7 @@ public class TBRSearchController {
 		return result;
 	}
 	
-	// http://127.0.0.1:8000/distancesearch?id=1012988&km=4
+	// http://127.0.0.1:8000/distsearch?id=1012988&km=4
 	@GetMapping("/distsearch")
 	public Object[] distSearch(@RequestParam BigDecimal id, @RequestParam double km) {
 		System.out.println("/distanceSearch : " + id + " km : " + km);
@@ -173,7 +174,7 @@ public class TBRSearchController {
 		return result;
 	}
 	
-	// http://127.0.0.1:8000/distanceandtypesearch?id=1012988&typeId=39&km=10
+	// http://127.0.0.1:8000/distandtypesearch?id=1012988&typeId=39&km=10
 	@GetMapping("/distandtypesearch")
 	public Object[] distAndTypeSearch(@RequestParam BigDecimal id, @RequestParam BigDecimal typeId, @RequestParam double km) {
 		System.out.println("/distanceandtypesearch : " + id + " km : " + km);
@@ -342,7 +343,7 @@ public class TBRSearchController {
 	
 	// http://127.0.0.1:8000/instaTagListFromAll
 	@GetMapping("/instaTagListFromAll")
-	public Object[] instaTagListFromAll() throws AsyncException {
+	public List<TagDTO> instaTagListFromAll() throws AsyncException {
 		System.out.println("/instaTagListByKwd");
 		try {
 			return service.getTagListFromAll();
@@ -356,7 +357,7 @@ public class TBRSearchController {
 	
 	// http://127.0.0.1:8000/instaTagListByKwd?kwd=가을
 	@GetMapping("/instaTagListByKwd")
-	public Object[] instaTagListByKwd(@RequestParam String kwd) throws AsyncException {
+	public List<TagDTO> instaTagListByKwd(@RequestParam String kwd) throws AsyncException {
 		System.out.println("/instaTagListByKwd");
 		try {
 			return service.getTagListByKwd(kwd);
@@ -370,7 +371,7 @@ public class TBRSearchController {
 	
 	// http://127.0.0.1:8000/instaTagListByLoc?loc=서울
 	@GetMapping("/instaTagListByLoc")
-	public Object[] instaTagListByLoc(@RequestParam String loc) throws AsyncException {
+	public List<TagDTO> instaTagListByLoc(@RequestParam String loc) throws AsyncException {
 		System.out.println("/instaTagListByLoc");
 		try {
 			return service.getTagListByLoc(loc);
@@ -384,7 +385,7 @@ public class TBRSearchController {
 	
 	// http://127.0.0.1:8000/instaTagListByLocAndKwd?loc=서울&kwd=가을
 	@GetMapping("/instaTagListByLocAndKwd")
-	public Object[] instaTagListByLoc(@RequestParam String loc, @RequestParam String kwd) throws AsyncException {
+	public List<TagDTO> instaTagListByLoc(@RequestParam String loc, @RequestParam String kwd) throws AsyncException {
 		System.out.println("/instaTagListByLocAndKwd");
 		try {
 			return service.getTagListByLocAndKwd(loc, kwd);
