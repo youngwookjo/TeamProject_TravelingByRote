@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Home</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link
+	href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700"
+	rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i&display=swap"
+	rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css?family=Abril+Fatface&display=swap"
+	rel="stylesheet">
+<link rel="stylesheet" href="css/animate.css">
+<link rel="stylesheet" href="css/style.css">
+    
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!--    menu.html에서 던진 파라미터를 받는 로직-->
+    <script>
+        let getKwd = function(kwd) {
+            const value = new URLSearchParams(window.location.search).get(kwd);
+            return value;
+        };
+        var kwdinput = getKwd("kwd");
+    </script>
+
+<!-- 받은 파라미터를 input값으로 하여 DB에서 정보 검색한 후 결과값을 drawtable에 던지는 로직 -->
+    <script>
+        let data;
+        (searchbykwd = kwd =>
+         axios
+         .get("http://127.0.0.1:8000/searchByKeyword?kwd=" + kwd)
+        .then(resData => {
+            data = resData.data;
+            console.log(data);
+            drawtable2(resData.data);
+        })
+        .catch(error => {
+            console.log("비정상 응답", error);
+        }))(kwdinput);
+    </script>
+    
+    <!-- drawtable 그린 후 화면에 띄우는 로직 -->
+    <script>
+        var table = "";
+        function drawtable2(tdata) {  
+            
+            for (let row of tdata) {
+                table +=
+                    "<div class=\"col-md-12\">" +
+                    "<div class=\"blog-entry ftco-animate d-md-flex fadeInUp ftco-animated\">" +
+                    "<h3 class=\"mb-2\">" +
+                    "<a href=\"#\" onclick=\"detail()\">"+ row.locType +"</a>" +
+                    "</h3>" +
+                    "<a href=\"#\" onclick=\"detail()\" class=\"img img-2\" " +
+                    "style=\"background-image: url(" + row.img.replace("static/", "") + ");\"></a>" +
+                    "<div class=\"text text-2 pl-md-4\">" +
+                    "<div class=\"meta-wrap\">" +
+                    "<p class=\"meta\">" +
+                    "<span><a href=\"#\"  onclick=\"recentSearch()\"><i " +
+                    "class=\"icon-folder-o mr-2\"></i>"+ row.text +"</a></span> <span><i " +
+                    "class=\"icon-comment2 mr-2\"></i>"+ row.likes +"</span>" +
+                    "</p>" +
+                    "</div>" +
+                    "<p class=\"mb-4\">"+ row.comments +"</p>" +
+                    "<p>" +
+                    "<a href=\"#\" class=\"btn-custom\">더 보기 <span " +
+                    "class=\"ion-ios-arrow-forward\"></span></a>" +
+                    "</p>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>"
+            }
+
+            let table2 = document.createElement('div');
+            table2.innerHTML = table;
+
+            $(document).ready(function() {
+                $(".row.pt-md-4").append(table2)   
+            });
+        }
+        
+    </script>
+
+    
+</head>
+
+<body>
+        <div class="row pt-md-4"></div>
+            <!-- END-->
+
+            <div class="row">
+                <div class="col">
+                    <div class="block-27">
+                        <ul>
+                            <li><a href="#">&lt;</a></li>
+                            <li class="active"><span>1</span></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li><a href="#">&gt;</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-migrate-3.0.1.min.js"></script>
+	<script src="js/popper.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery.easing.1.3.js"></script>
+	<script src="js/jquery.waypoints.min.js"></script>
+	<script src="js/jquery.stellar.min.js"></script>
+	<script src="js/owl.carousel.min.js"></script>
+	<script src="js/jquery.magnific-popup.min.js"></script>
+	<script src="js/aos.js"></script>
+	<script src="js/jquery.animateNumber.min.js"></script>
+	<script src="js/scrollax.min.js"></script>
+	<script src="js/main.js"></script>
+
+</body>
+</html>
