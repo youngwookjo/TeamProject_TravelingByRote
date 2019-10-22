@@ -263,11 +263,24 @@ public class TBRSearchController {
 	}
 	
 	//http://127.0.0.1:8000/searchById?id=2360786
-	   @GetMapping("/searchById")
-	   public Optional<PlaceDTO> searchById(@RequestParam BigDecimal id) {
-	      System.out.println("/searchById");
-	       return service.findPlaceById(id);
-	   }
+	@GetMapping("/searchById")
+	public Optional<PlaceDTO> searchById(@RequestParam BigDecimal id) {
+		System.out.println("/searchById");
+		return service.findPlaceById(id);
+	}
+   
+	//http://127.0.0.1:8000/hit?placeId=1012988
+	@GetMapping("/hit")
+	public String hit(@RequestParam BigDecimal placeId) {
+		System.out.println("/hit");
+		try {
+			service.addPlaceHit(placeId);
+			return "OK";
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}
+	}
 
 	// * DB
 	// http://127.0.0.1:8000/dataCollect
@@ -285,6 +298,7 @@ public class TBRSearchController {
 	}
 	
 	// http://127.0.0.1:8000/instaCollect
+	// 최초 구동시 nori plugin 및 userdict 설치 여부 확인
 	@GetMapping("/instaCollect")
 	public String instaCollect() throws AsyncException {
 		System.out.println("/instaCollect");

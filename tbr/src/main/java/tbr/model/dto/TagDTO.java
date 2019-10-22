@@ -7,5 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class TagDTO {
 	String word;
-	String size;
+	int size;
 }

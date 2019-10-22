@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Cloud</title>
+    <link href="https://fonts.googleapis.com/css?family=East+Sea+Dokdo&display=swap" rel="stylesheet">
   </head>
   <body>
     <script src="https://d3js.org/d3.v3.min.js"></script>
@@ -11,7 +12,7 @@
       <input id="kwd" type="text" />
       <button onclick="search(document.all.kwd.value);">검색</button>
       <hr />
-      <button onclick="showCloud(data[2]); setInterval(function(){showCloud(data[2])},2000);">그리기</button>
+      <button onclick="showCloud(data[2]); setInterval(function(){showCloud(data[2])},3000);">그리기</button>
     </div>
 
     <div id="cloud"></div>
@@ -34,28 +35,32 @@
 
       // 클라우드 그리기
         const fill = d3.scale.category20();
-
+		
+        const w = 480;
+        const h = 360;
         const svg = d3
             .select("#cloud")
             .append("svg")
-            .attr("width", 600)
-            .attr("height", 450)
+            .attr("width", w)
+            .attr("height", h)
             .append("g")
-            .attr("transform", "translate(400,300)");
+            .attr("transform", "translate(" + w/2 + "," + h/2 + ")");
           
       function showCloud(data) {
     	  
         d3.layout
           .cloud()
-          .size([800, 600])
+          .size([w, h])
           .words(
-            data.map(function(d) {
+            data.filter(v => v.size >= 10).map(function(d) {
               return { text: d.word, size: d.size };
             })
           )
           .padding(5)
           .rotate(function() {
-            return ~~(Math.random() * 2) * 90;
+            //return ~~(Math.random() * 2) * 90
+            //return Math.random() * 360
+            return ((Math.random() * 2) - 1) * 90;
           })
           .fontSize(function(d) {
             return d.size;
@@ -71,6 +76,7 @@
             .style("fill", function(d, i) {return fill(i);})
             .attr("text-anchor", "middle")
             .attr("font-size", 1)
+            .attr("font-family", "East Sea Dokdo")
             .text(function(d) {return d.text;});
           cloud
             .transition()

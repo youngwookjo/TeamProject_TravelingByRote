@@ -1,6 +1,9 @@
 package tbr.model.es;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -166,7 +169,18 @@ public class ESHighLevelClient {
 				.filter(v -> !(v.getKey().
 						contains("추천") || v.getKey().contains("여행") || v.getKey().contains("스타")
 						|| v.getKey().contains("그램") || v.getKey().contains("국내")))
-				.limit(20).map(v -> new TagDTO(v.getKey(), v.getValue()+"")).collect(Collectors.toList());
+				.filter(v -> {
+					try {
+						// https://www.urlencoder.io/java/
+						// http://docs.oracle.com/cd/E24693_01/server.11203/e10729/appunicode.htm#CACHBDGH
+						System.out.println("걸러냄");
+						return !URLEncoder.encode(v.getKey(), StandardCharsets.UTF_8.toString())
+								.substring(1, 2).startsWith("F");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+						return true;
+					}})
+				.limit(20).map(v -> new TagDTO(v.getKey(), v.getValue())).collect(Collectors.toList());
 	}
 	
 	public List<TagDTO> getFrequencyList(String index, String[] idArray) throws IOException {
@@ -202,7 +216,15 @@ public class ESHighLevelClient {
 				.filter(v -> !(v.getKey().
 						contains("추천") || v.getKey().contains("여행") || v.getKey().contains("스타")
 						|| v.getKey().contains("그램") || v.getKey().contains("국내")))
-				.limit(20).map(v -> new TagDTO(v.getKey(), v.getValue()+"")).collect(Collectors.toList());
+				.filter(v -> {
+					try {
+						return !URLEncoder.encode(v.getKey(), StandardCharsets.UTF_8.toString())
+								.substring(1, 2).startsWith("F");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+						return true;
+					}})
+				.limit(20).map(v -> new TagDTO(v.getKey(), v.getValue())).collect(Collectors.toList());
 	}
 	
 	public List<TagDTO> getFrequencyList(String index, String[] idArray, String[] words) throws IOException {
@@ -239,6 +261,14 @@ public class ESHighLevelClient {
 						contains("추천") || v.getKey().contains("여행") || v.getKey().contains("스타")
 						|| v.getKey().contains("그램") || v.getKey().contains("국내")))
 				.filter(v -> !Arrays.asList(words).contains(v.getKey()))
-				.limit(20).map(v -> new TagDTO(v.getKey(), v.getValue()+"")).collect(Collectors.toList());
+				.filter(v -> {
+					try {
+						return !URLEncoder.encode(v.getKey(), StandardCharsets.UTF_8.toString())
+								.substring(1, 2).startsWith("F");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+						return true;
+					}})
+				.limit(20).map(v -> new TagDTO(v.getKey(), v.getValue())).collect(Collectors.toList());
 	}
 }

@@ -218,6 +218,13 @@ public class TBRSearchService {
 	}
 	
 	// * Place
+	public boolean addPlaceHit(BigDecimal placeId) {
+		PlaceDTO m = placeRepo.findById(placeId).get();
+		m.addHit();
+		placeRepo.save(m);
+		return true;
+	}
+	
 	public List<PlaceDTO> findPlaceByTypeId(BigDecimal typeId) {
 		return placeRepo.findPlaceByTypeId(typeId);
 	}
@@ -365,4 +372,5 @@ public class TBRSearchService {
 		}
 		return null;
 	}
+
 }
