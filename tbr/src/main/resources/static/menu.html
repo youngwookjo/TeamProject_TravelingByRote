@@ -70,10 +70,7 @@ h4 {
         const value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
         return value? value[2] : null;
     };
-</script>
 
-<!--    menu.html에서 던진 파라미터를 받는 로직-->
-<script>
         let getKwd = function(kwd) {
             const value = new URLSearchParams(window.location.search).get(kwd);
             return value;
@@ -91,10 +88,13 @@ h4 {
         return value;
    		};
     	var instainput = getinsta("insta");
-    </script>
 
-<!--키워드 입력하고 엔터시 submit 기능-->
-<script>
+		let getLocId1 = function(locId) {
+        const value = new URLSearchParams(window.location.search).get(locId);
+        return value;
+		};
+		var locIdinput = getLocId1("locId");
+
 	function check(form){
    		if(true){
       		form.submit();
@@ -124,7 +124,7 @@ h4 {
         let table = "";
         for (let row of tdata) {
             table +=
-        		"<a href=\"menu.html?insta="+ Object.keys(row) +"\" class=\"tag-cloud-link\">"+Object.keys(row)+"</a>" 
+        		"<a href=\"menu.html?insta="+ row.word +"\" class=\"tag-cloud-link\">"+row.word+"</a>" 
         }
 
         let table2 = document.createElement('div');
@@ -132,47 +132,49 @@ h4 {
 
         $("#tag").append(table2)  
     }
-</script>
 
-<!-- 카테고리란 채우는 로직 -->
-<script>
-	$(document).ready(categoryDecision(typeIdinput, kwdinput, instainput));
-	function categoryDecision(typeIdinput, kwdinput, instainput){
+	$(document).ready(categoryDecision(typeIdinput, kwdinput, instainput, locIdinput));
+	function categoryDecision(typeIdinput, kwdinput, instainput, locIdinput){
 		
-		console.log(typeIdinput, kwdinput, instainput);
+		console.log(typeIdinput, kwdinput, instainput, locIdinput);
 
-		if(typeIdinput!=null && kwdinput!=null && instainput==null){
+		if(typeIdinput!=null && kwdinput!=null && instainput==null && locIdinput==null){
 			//키워드 검색 이후 카테고리까지 클릭했을 때()
-			console.log("메뉴 : typeId O & kwd O & insta X");
+			console.log("메뉴 : typeId O & kwd O & insta X & locId X");
 			yesKwd(kwdinput);
 			myInsta();
 
-		}else if(typeIdinput!=null && kwdinput==null && instainput==null){
+		}else if(typeIdinput!=null && kwdinput==null && instainput==null && locIdinput==null){
 			//메인에서 카테고리 하나 클릭했을 때 => 전체 카테고리 유지
-			console.log("메뉴 : typeId O & kwd X & insta X");
+			console.log("메뉴 : typeId O & kwd X & insta X & locId X");
 			noKwd();
 			myInsta();
 
-		}else if(typeIdinput==null && kwdinput!=null && instainput==null){
+		}else if(typeIdinput==null && kwdinput!=null && instainput==null && locIdinput==null){
 			//키워드 검색만 하고 카테고리 선택 전(function )
-			console.log("메뉴 : typeId X & kwd O & insta X");
+			console.log("메뉴 : typeId X & kwd O & insta X & locId X");
 			yesKwd(kwdinput);
 		  	// 검색 키워드 쿠키 설정
 		  	setCookie("keyword", kwdinput, 0.5);
 			myInsta();
 
-		}else if(typeIdinput==null && kwdinput==null && instainput==null){
+		}else if(typeIdinput==null && kwdinput==null && instainput==null && locIdinput==null){
 			// 아무값도 없을 때(첫화면)(function )
-			console.log("메뉴 : typeId X & kwd X & insta X");
+			console.log("메뉴 : typeId X & kwd X & insta X & locId X");
 			noKwd();
 			myInsta(); 
 
-		}else if(typeIdinput==null && kwdinput==null && instainput!=null){
+		}else if(typeIdinput==null && kwdinput==null && instainput!=null && locIdinput==null){
 			//인스타 태그 클릭시
-			// 아무값도 없을 때(첫화면)
-			console.log("메뉴 : typeId X & kwd X & insta O");
+			console.log("메뉴 : typeId X & kwd X & insta O & locId X");
 			noKwd();
 			myInsta();  
+
+		}else if(typeIdinput==null && kwdinput==null && instainput==null && locIdinput!=null){
+			console.log("메뉴 : typeId X & kwd X & insta X & locId O");
+			noKwd();
+			myInsta();  
+
 		}
 	}
 
@@ -249,7 +251,6 @@ h4 {
   
 </head>
 
-<!-- <body onload="cookieIdentify()"> -->
 <body style="font-family: 'Noto Serif KR', serif !important;">
 	<div id="colorlib-page">
 		<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
@@ -268,7 +269,7 @@ h4 {
 			<div class="colorlib-footer">
 				<h2 id="colorlib-logo" class="mb-4">
 					<a href="menu.html"
-						style="background-image: url(images/bg_1.jpg);">Login<br>to Travel<br>  <span>by Rote.</span></a>
+						style="background-image: url(images/bg_1.jpg);">Travel<br>  <span>by Rote.</span></a>
 				</h2>
 				<div class="mb-4"></div>
 				<p class="pfooter">
@@ -284,7 +285,6 @@ h4 {
 				</p>
 			</div>
 		</aside>
-		<!-- END COLORLIB-ASIDE -->
 		
 		
 		<div id="colorlib-main">
@@ -318,14 +318,6 @@ h4 {
 								<h3 class="sidebar-heading">Tag</h3>
 								<ul class="tagcloud" id="tag">
 									<!-- 인스타 태그 클라우드 들어오는 자리 -->
-								</ul>
-							</div>
-
-
-							<div class="sidebar-box ftco-animate">
-								<h3 class="sidebar-heading">찜하기 랭킹</h3>
-								<ul class="categories">
-									<li><a href="#">Decob14 2018 <span>(10)</span></a></li>
 								</ul>
 							</div>
 						</div>
