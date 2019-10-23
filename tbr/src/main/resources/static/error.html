@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Error</title>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<script>
+	$(document).ready(function() { 
+		$('#msg').text("Message : " + getCookie('msg'));
+	});
+    let getCookie = function(name) {
+        const value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return value? value[2] : null;
+    }
+</script>
+<body>
+    <div style="width: 320px; margin: auto;">
+        <h1>ERROR PAGE</h1>
+        <h3 id="msg"></h3>
+        <button onclick="history.back()">뒤로 가기</button>
+    </div>
+</body>
+</html>

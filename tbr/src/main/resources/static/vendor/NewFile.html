@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<link
+   href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700"
+   rel="stylesheet">
+<link
+   href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i&display=swap"
+   rel="stylesheet">
+<link
+   href="https://fonts.googleapis.com/css?family=Abril+Fatface&display=swap"
+   rel="stylesheet">
+<link rel="stylesheet" href="css/animate.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet"
+   href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet"
+   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link
+   href="https://fonts.googleapis.com/css?family=Noto+Serif+KR&display=swap"
+   rel="stylesheet">
+<link rel="stylesheet"
+   href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+<style>
+.material-icons {
+   vertical-align: -14%
+}
+
+h5, .h5 {
+   font-size: 1.25rem;
+}
+
+.card-body {
+   flex: 1 1 auto;
+   padding: 1.25rem;
+}
+
+div {
+   display: block;
+}
+
+.rounded {
+   border-radius: .5rem !important;
+}
+
+* {
+   box-sizing: border-box;
+}
+</style>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script
+   src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript"
+   src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b1f1d90d0ff37888e118abbeaf1469c6"></script>
+</head>
+<body style="font-family: 'Noto Serif KR', serif !important;">
+   <div class="col-lg-8">
+      <div class="card border-0 shadow mb-4">
+         <div class="card-body">
+            <div>
+               <h1 class=mb-3>강원심층수</h1>
+               <hr>
+               <h5>
+                  <i class="material-icons"> local_offer </i>관광지
+               </h5>
+               <h5>
+                  <i class="material-icons"> near_me </i>경상북도 강원도 제주동 삼다수협회
+               </h5>
+            </div>
+         </div>
+
+         <img class="card-body" src=/images/author.jpg
+            alt="Bootstrap Full Width Picture Page Backgrounds">
+
+
+         <div class="card-body">
+            <h4>
+               <i class="material-icons"> arrow_right </i> 설명
+            </h4>
+            <hr>
+            <p>이곳은 삼다수협회가 있는곳이다 삼성잠동차 아파치협회에서 나온 로드뷰도로를 이용하여 로드뷰를 생성했으며 앞으로
+               낲온것들에대한 회의내용 샤부라 카다브라협회에서에스퍼 장관은 취재진에게 현재 계획은 약 1000명의 군인이
+               '이슬람국가(IS)의 재기를 막고자 재배치될 것'이라고 말했다. 도널드 트럼프 대통령은 앞서 미군을 본국으로
+               철수시키겠다고 공언했다. 시리아 공습 이후 상황 총정리 터키, 시리아 북부지역서 지상작전 시작 한편, 쿠르드족 측은
+               포위된 시리아의 라스 알 아인 마을에서 모든 전투기를 철수시켰다고 밝혔다. 이는 터키와 쿠르드족간 임시 휴전 협정으로
+               이뤄진 조치로 풀이된다. 앞서 트럼프 대통령이 시리아 북부에서 미군 철수를 선언하자 이 지역 쿠르드족 주도 세력에 대한
+               터키군의 군사공세 발판이 마련됐다</p>
+         </div>
+      </div>
+
+      <div class="card border-0 shadow mb-4" id=map
+         style="width: 100%; height: 350px;"></div>
+   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <script>
+      // 지도 생성 로직
+      var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+      mapOption = {
+         center : new kakao.maps.LatLng(34.1718000440, 126.8621585545), // 지도의 중심좌표
+         level : 3
+      // 지도의 확대 레벨
+      };
+
+      var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+      //1. 지도 범위 재설정 하기
+      // 버튼을 클릭하면 아래 배열의 좌표들이 모두 보이게 지도 범위를 재설정합니다 
+      var points = [ new kakao.maps.LatLng(34.1718000440, 126.8621585545) ];
+
+      // 지도를 재설정할 범위정보를 가지고 있을 LatLngBounds 객체를 생성합니다
+      var bounds = new kakao.maps.LatLngBounds();
+
+      var i, marker;
+      for (i = 0; i < points.length; i++) {
+         // 배열의 좌표들이 잘 보이게 마커를 지도에 추가합니다
+         marker = new kakao.maps.Marker({
+            position : points[i]
+         });
+         marker.setMap(map);
+
+         // LatLngBounds 객체에 좌표를 추가합니다
+         bounds.extend(points[i]);
+      }
+
+      //2. 지도에 컨트롤 올리기
+      // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+      var mapTypeControl = new kakao.maps.MapTypeControl();
+
+      // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
+      // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+      map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+      // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+      var zoomControl = new kakao.maps.ZoomControl();
+      map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+   </script>
+
+   <script src="js/jquery.min.js"></script>
+   <script src="js/jquery-migrate-3.0.1.min.js"></script>
+   <script src="js/popper.min.js"></script>
+   <script src="js/bootstrap.min.js"></script>
+   <script src="js/jquery.easing.1.3.js"></script>
+   <script src="js/jquery.waypoints.min.js"></script>
+   <script src="js/jquery.stellar.min.js"></script>
+   <script src="js/owl.carousel.min.js"></script>
+   <script src="js/jquery.magnific-popup.min.js"></script>
+   <script src="js/aos.js"></script>
+   <script src="js/jquery.animateNumber.min.js"></script>
+   <script src="js/scrollax.min.js"></script>
+   <script src="js/main.js"></script>
+</body>
+</html>
