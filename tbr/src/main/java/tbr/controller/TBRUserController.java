@@ -55,16 +55,6 @@ public class TBRUserController {
 		}
 		return "에러 발생";
 	}
-	@GetMapping("/pokingList")
-	public List<PlaceDTO> pokingList(@RequestParam("id") String memberId) throws AsyncException {
-		try {
-			return service.getPokingList(memberId);
-		} catch (Exception e) {
-			e.printStackTrace();
-			new AsyncException("ERROR");
-		}
-		return null;
-	}
 
 	// * LOGIN & OUT
 	@PostMapping("/login")

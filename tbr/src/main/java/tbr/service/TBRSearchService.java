@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -228,14 +231,20 @@ public class TBRSearchService {
 	}
 
 	public List<PlaceDTO> findPlaceByTypeId(BigDecimal typeId) {
-		return placeRepo.findPlaceByTypeId(typeId);
+		return placeRepo.findPlaceByTypeId(typeId).stream()
+				.sorted((v1, v2) -> Long.compare(v2.getHits(), v1.getHits()))
+				.collect(Collectors.toList());
 	}
 
 	public List<PlaceDTO> findPlaceByKwd(String kwd) {
-		List<PlaceDTO> result = new ArrayList<>();
-		placeRepo.findPlaceByNameContainingOrAddressContaining(kwd, kwd).stream().forEach( v -> {result.add(v);});
-		placeRepo.findPlaceByDescriptionContaining(kwd).stream().forEach( v -> {result.add(v);});
-		return result;
+//		List<PlaceDTO> result = new ArrayList<>();
+		Set<PlaceDTO> resultSet = new HashSet<>();
+		placeRepo.findPlaceByNameContainingOrAddressContaining(kwd, kwd).stream().forEach( v -> {resultSet.add(v);});
+		placeRepo.findPlaceByDescriptionContaining(kwd).stream().forEach( v -> {resultSet.add(v);});
+		return resultSet.stream()
+			.sorted((v1, v2) -> Long.compare(v2.getHits(), v1.getHits()))
+			.collect(Collectors.toList());
+//		return result;
 	}
 
 	public Optional<PlaceDTO> findPlaceById(BigDecimal id) {
@@ -401,7 +410,6 @@ public class TBRSearchService {
 		placeRepo.findPlaceByTypeIdAndDescriptionContaining(typeId, kwd).stream().forEach( v -> {result.add(v);});
 		placeRepo.findPlaceByTypeIdAndNameContaining(typeId, kwd).stream().forEach( v -> {result.add(v);});
 		return result;
-		
 	}
 
 	

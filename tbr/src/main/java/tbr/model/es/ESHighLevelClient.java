@@ -173,7 +173,6 @@ public class ESHighLevelClient {
 					try {
 						// https://www.urlencoder.io/java/
 						// http://docs.oracle.com/cd/E24693_01/server.11203/e10729/appunicode.htm#CACHBDGH
-						System.out.println("걸러냄");
 						return !URLEncoder.encode(v.getKey(), StandardCharsets.UTF_8.toString())
 								.substring(1, 2).startsWith("F");
 					} catch (UnsupportedEncodingException e) {

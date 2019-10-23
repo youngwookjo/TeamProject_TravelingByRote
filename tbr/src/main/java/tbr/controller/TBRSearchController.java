@@ -16,126 +16,166 @@ import tbr.model.dto.PlaceDTO;
 
 import tbr.model.dto.TagDTO;
 import tbr.service.TBRSearchService;
+import tbr.service.TBRUserService;
 import tbr.util.Util;
 
 @CrossOrigin(origins = { "http://127.0.0.1:8000", "http://localhost:8000" })
 @RestController
 public class TBRSearchController {
 	@Autowired
-	TBRSearchService service;
+	TBRSearchService searchService;
+	@Autowired
+	TBRUserService userService;
+	
 
 	// * SET
+	// http://127.0.0.1:8000/pokingsearch?id=t1
+	@GetMapping("/pokingList")
+	public Object[] pokingList(@RequestParam("id") String memberId) throws AsyncException {
+		if(memberId == null || memberId.length() == 0) {
+			throw new AsyncException("NULL");
+		}
+		Util.sleep(0.1);
+		System.out.println("/pokingList : " + memberId);
+		System.out.println("// DB, INSTA, TAG");
+		Object[] result = new Object[3];
+		System.out.println("// STEP 1 : DB");
+		try {
+			result[0] = userService.getPokingList(memberId);
+		} catch (Exception e) {
+			throw new AsyncException("RDBMS(mySQL) 관련 오류");
+		}
+		return result;
+	}
+
+	
 	// http://127.0.0.1:8000/kwdsearch?kwd=여름
 	@GetMapping("/kwdsearch")
 	public Object[] kwdSearch(@RequestParam String kwd) {
+		if(kwd == null || kwd.length() == 0) {
+			throw new AsyncException("NULL");
+		}
 		Util.sleep(0.1);
 		System.out.println("/kwdsearch : " + kwd);
 		System.out.println("// DB, INSTA, TAG");
 		Object[] result = new Object[3];
 		System.out.println("// STEP 1 : DB");
 		try {
-			result[0] = service.findPlaceByKwd(kwd);			
+			result[0] = searchService.findPlaceByKwd(kwd);
 		} catch (Exception e) {
 			throw new AsyncException("RDBMS(mySQL) 관련 오류");
 		}
 		System.out.println("// STEP 2 : INSTA");
 		try {
-			result[1] = service.searchInstaByKwd(kwd);			
+			result[1] = searchService.searchInstaByKwd(kwd);
 		} catch (Exception e) {
 			throw new AsyncException("Elastic Search (Insta) 관련 오류");
 		}
 		System.out.println("// STEP 3 : TAG");
 		try {
-			result[2] = service.getTagListByKwd(kwd);			
+			result[2] = searchService.getTagListByKwd(kwd);
 		} catch (Exception e) {
 			throw new AsyncException("Elastic Search (Tag) 관련 오류");
 		}
 		return result;
 	}
-	
+
 	// http://127.0.0.1:8000/locsearch?loc=서울
 	@GetMapping("/locsearch")
 	public Object[] locSearch(@RequestParam String loc) {
+		if(loc == null || loc.length() == 0) {
+			throw new AsyncException("NULL");
+		}
 		Util.sleep(0.1);
 		System.out.println("/locsearch : " + loc);
 		System.out.println("// DB, INSTA, TAG");
 		Object[] result = new Object[3];
 		System.out.println("// STEP 1 : DB");
 		try {
-			result[0] = service.findPlaceByKwd(loc);			
+			result[0] = searchService.findPlaceByKwd(loc);
 		} catch (Exception e) {
 			throw new AsyncException("RDBMS(mySQL) 관련 오류");
 		}
 		System.out.println("// STEP 2 : INSTA");
 		try {
-			result[1] = service.searchInstaByLoc(loc);			
+			result[1] = searchService.searchInstaByLoc(loc);
 		} catch (Exception e) {
 			throw new AsyncException("Elastic Search (Insta) 관련 오류");
 		}
 		System.out.println("// STEP 3 : TAG");
 		try {
-			result[2] = service.getTagListByLoc(loc);			
+			result[2] = searchService.getTagListByLoc(loc);
 		} catch (Exception e) {
 			throw new AsyncException("Elastic Search (Tag) 관련 오류");
 		}
 		return result;
 	}
-	
+
 	// http://127.0.0.1:8000/kwdandlocsearch?kwd=데이트&loc=서울
 	@GetMapping("/kwdandlocsearch")
 	public Object[] kwdAndLocsearch(@RequestParam String kwd, @RequestParam String loc) {
+		if(loc == null || loc.length() == 0 || kwd == null || kwd.length() == 0) {
+			throw new AsyncException("NULL");
+		}
 		Util.sleep(0.1);
 		System.out.println("/kwdandlocsearch : " + kwd + " " + loc);
 		System.out.println("// DB, INSTA, TAG");
 		Object[] result = new Object[3];
 		System.out.println("// STEP 1 : DB");
 		try {
-			result[0] = service.findPlaceByKwd(kwd);			
+			result[0] = searchService.findPlaceByKwd(kwd);
 		} catch (Exception e) {
 			throw new AsyncException("RDBMS(mySQL) 관련 오류");
 		}
 		System.out.println("// STEP 2 : INSTA");
 		try {
-			result[1] = service.searchInstaByLocAndKwd(loc, kwd);			
+			result[1] = searchService.searchInstaByLocAndKwd(loc, kwd);
 		} catch (Exception e) {
 			throw new AsyncException("Elastic Search (Insta) 관련 오류");
 		}
 		System.out.println("// STEP 3 : TAG");
 		try {
-			result[2] = service.getTagListByLocAndKwd(loc, kwd);			
+			result[2] = searchService.getTagListByLocAndKwd(loc, kwd);
 		} catch (Exception e) {
 			throw new AsyncException("Elastic Search (Tag) 관련 오류");
 		}
 		return result;
 	}
-	
+
 	// http://127.0.0.1:8000/idsearch?id=1012988
 	@GetMapping("/idsearch")
 	public Object[] idSearch(@RequestParam BigDecimal id) {
+		if(id == null) {
+			throw new AsyncException("NULL");
+		}
 		System.out.println("/idsearch : " + id);
+		System.out.println("// HIT++");
+		try {
+			searchService.addPlaceHit(id);
+		} catch (Exception e) {
+			throw new AsyncException("RDBMS(mySQL) Place Hit 관련 오류");
+		}
 		System.out.println("// DB, INSTA, TAG");
 		Object[] result = new Object[3];
 		System.out.println("// STEP 1 : DB");
 		try {
-			result[0] = service.findPlaceById(id);			
+			result[0] = searchService.findPlaceById(id);
 		} catch (Exception e) {
 			throw new AsyncException("RDBMS(mySQL) 관련 오류");
 		}
 		// ID 별 위치 정보 처리
-		String loc = service.findPlaceById(id).get().getAddress().split(" ")[0]
-				.replace("특별시", "").replace("광역시", "").replace("특별자치도", "")
-				.replaceAll("\\S북도", "북").replaceAll("\\S남도", "남")
-				.replace("세종특별자치시", "충남");
+		String loc = searchService.findPlaceById(id).get().getAddress().split(" ")[0].replace("특별시", "").replace("광역시", "")
+				.replace("특별자치도", "").replaceAll("\\S북도", "북").replaceAll("\\S남도", "남").replace("세종특별자치시", "충남");
 		System.out.println(loc);
 		System.out.println("// STEP 2 : INSTA");
 		try {
-			result[1] = service.searchInstaByLoc(loc);			
+			result[1] = searchService.searchInstaByLoc(loc);
 		} catch (Exception e) {
 			throw new AsyncException("Elastic Search (Insta) 관련 오류");
 		}
 		System.out.println("// STEP 3 : TAG");
 		try {
-			result[2] = service.getTagListByLoc(loc);			
+			result[2] = searchService.getTagListByLoc(loc);
 		} catch (Exception e) {
 			throw new AsyncException("Elastic Search (Tag) 관련 오류");
 		}
@@ -150,72 +190,68 @@ public class TBRSearchController {
 		Object[] result = new Object[3];
 		System.out.println("// STEP 1 : DB");
 		try {
-			result[0] = service.findPlaceByDistance(id, km);			
+			result[0] = searchService.findPlaceByDistance(id, km);
 		} catch (Exception e) {
 			throw new AsyncException("RDBMS(mySQL) 관련 오류");
 		}
 		// ID 별 위치 정보 처리
-		String loc = service.findPlaceById(id).get().getAddress().split(" ")[0]
-				.replace("특별시", "").replace("광역시", "").replace("특별자치도", "")
-				.replaceAll("\\S북도", "북").replaceAll("\\S남도", "남")
-				.replace("세종특별자치시", "충남");
+		String loc = searchService.findPlaceById(id).get().getAddress().split(" ")[0].replace("특별시", "").replace("광역시", "")
+				.replace("특별자치도", "").replaceAll("\\S북도", "북").replaceAll("\\S남도", "남").replace("세종특별자치시", "충남");
 		System.out.println(loc);
 		System.out.println("// STEP 2 : INSTA");
 		try {
-			result[1] = service.searchInstaByLoc(loc);			
+			result[1] = searchService.searchInstaByLoc(loc);
 		} catch (Exception e) {
 			throw new AsyncException("Elastic Search (Insta) 관련 오류");
 		}
 		System.out.println("// STEP 3 : TAG");
 		try {
-			result[2] = service.getTagListByLoc(loc);			
+			result[2] = searchService.getTagListByLoc(loc);
 		} catch (Exception e) {
 			throw new AsyncException("Elastic Search (Tag) 관련 오류");
 		}
 		return result;
 	}
-	
+
 	// http://127.0.0.1:8000/distandtypesearch?id=1012988&typeId=39&km=10
 	@GetMapping("/distandtypesearch")
-	public Object[] distAndTypeSearch(@RequestParam BigDecimal id, @RequestParam BigDecimal typeId, @RequestParam double km) {
+	public Object[] distAndTypeSearch(@RequestParam BigDecimal id, @RequestParam BigDecimal typeId,
+			@RequestParam double km) {
 		System.out.println("/distanceandtypesearch : " + id + " km : " + km);
 		System.out.println("// DB, INSTA, TAG");
 		Object[] result = new Object[3];
 		System.out.println("// STEP 1 : DB");
 		try {
-			result[0] = service.findPlaceByDistance(id, typeId, km);			
+			result[0] = searchService.findPlaceByDistance(id, typeId, km);
 		} catch (Exception e) {
 			throw new AsyncException("RDBMS(mySQL) 관련 오류");
 		}
 		// ID 별 위치 정보 처리
-		String loc = service.findPlaceById(id).get().getAddress().split(" ")[0]
-				.replace("특별시", "").replace("광역시", "").replace("특별자치도", "")
-				.replaceAll("\\S북도", "북").replaceAll("\\S남도", "남")
-				.replace("세종특별자치시", "충남");
+		String loc = searchService.findPlaceById(id).get().getAddress().split(" ")[0].replace("특별시", "").replace("광역시", "")
+				.replace("특별자치도", "").replaceAll("\\S북도", "북").replaceAll("\\S남도", "남").replace("세종특별자치시", "충남");
 		System.out.println(loc);
 		System.out.println("// STEP 2 : INSTA");
 		try {
-			result[1] = service.searchInstaByLoc(loc);			
+			result[1] = searchService.searchInstaByLoc(loc);
 		} catch (Exception e) {
 			throw new AsyncException("Elastic Search (Insta) 관련 오류");
 		}
 		System.out.println("// STEP 3 : TAG");
 		try {
-			result[2] = service.getTagListByLoc(loc);			
+			result[2] = searchService.getTagListByLoc(loc);
 		} catch (Exception e) {
 			throw new AsyncException("Elastic Search (Tag) 관련 오류");
 		}
 		return result;
 	}
-	
-	
+
 	// * SEARCH
 	// http://127.0.0.1:8000/searchByType/typeId=38
 	@GetMapping("/searchByType")
 	public List<PlaceDTO> searchByType(@RequestParam BigDecimal typeId) throws AsyncException {
 		System.out.println("/searchByType");
 		try {
-			return service.findPlaceByTypeId(typeId);
+			return searchService.findPlaceByTypeId(typeId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new AsyncException("ERROR");
@@ -226,11 +262,11 @@ public class TBRSearchController {
 	@GetMapping("/searchByKeyword")
 	public List<PlaceDTO> searchByKeyword(@RequestParam String kwd) throws AsyncException {
 		System.out.println("/searchByKeyword : " + kwd);
-		if(kwd.length() == 0) {
+		if (kwd.length() == 0) {
 			throw new AsyncException("no search keyword");
 		}
 		try {
-			return service.findPlaceByKwd(kwd);
+			return searchService.findPlaceByKwd(kwd);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new AsyncException("ERROR");
@@ -243,39 +279,39 @@ public class TBRSearchController {
 			throws AsyncException {
 		System.out.println("/searchByDistance");
 		try {
-			return service.findPlaceByDistance(id, distance);
+			return searchService.findPlaceByDistance(id, distance);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new AsyncException("ERROR");
 		}
 	}
-	
+
 	// http://127.0.0.1:8000/searchByDistanceAndType?id=319571&typeId=12&distance=10
 	@GetMapping("/searchByDistanceAndType")
 	public List<List<Object>> searchByDistance(@RequestParam BigDecimal id, @RequestParam BigDecimal typeId,
 			@RequestParam double distance) throws AsyncException {
 		System.out.println("/searchByDistanceAndType");
 		try {
-			return service.findPlaceByDistance(id, typeId, distance);
+			return searchService.findPlaceByDistance(id, typeId, distance);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new AsyncException("ERROR");
 		}
 	}
-	
-	//http://127.0.0.1:8000/searchById?id=2360786
+
+	// http://127.0.0.1:8000/searchById?id=2360786
 	@GetMapping("/searchById")
 	public Optional<PlaceDTO> searchById(@RequestParam BigDecimal id) {
 		System.out.println("/searchById");
-		return service.findPlaceById(id);
+		return searchService.findPlaceById(id);
 	}
-   
-	//http://127.0.0.1:8000/hit?placeId=1012988
+
+	// http://127.0.0.1:8000/hit?placeId=1012988
 	@GetMapping("/hit")
 	public String hit(@RequestParam BigDecimal placeId) {
 		System.out.println("/hit");
 		try {
-			service.addPlaceHit(placeId);
+			searchService.addPlaceHit(placeId);
 			return "OK";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -291,20 +327,20 @@ public class TBRSearchController {
 	public String dataCollect() throws AsyncException {
 		System.out.println("/dataCollect");
 		try {
-			return "실행 시간 : " + service.getIds() + "ms";			
+			return "실행 시간 : " + searchService.getIds() + "ms";
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new AsyncException("ERROR");
 		}
 	}
-	
+
 	// http://127.0.0.1:8000/instaCollect
 	// 최초 구동시 nori plugin 및 userdict 설치 여부 확인
 	@GetMapping("/instaCollect")
 	public String instaCollect() throws AsyncException {
 		System.out.println("/instaCollect");
 		try {
-			return "실행 시간 : " + service.getSocialData() + "ms";
+			return "실행 시간 : " + searchService.getSocialData() + "ms";
 		} catch (AsyncException e) {
 			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
@@ -312,14 +348,14 @@ public class TBRSearchController {
 			throw new AsyncException("ERROR");
 		}
 	}
-	
+
 	// * Insta
 	// http://127.0.0.1:8000/instaKwdSearch?kwd=대한민국
 	@GetMapping("/instaKwdSearch")
 	public List<InstaPostDTO> instaKwdSearch(@RequestParam String kwd) throws AsyncException {
 		System.out.println("/instaKwdSearch");
 		try {
-			return service.searchInstaByKwd(kwd);
+			return searchService.searchInstaByKwd(kwd);
 		} catch (AsyncException e) {
 			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
@@ -327,13 +363,13 @@ public class TBRSearchController {
 			throw new AsyncException("ERROR");
 		}
 	}
-	
+
 	// http://127.0.0.1:8000/instaLocSearch?loc=경남
 	@GetMapping("/instaLocSearch")
 	public List<InstaPostDTO> instaLocSearch(@RequestParam String loc) throws AsyncException {
 		System.out.println("/instaLocSearch");
 		try {
-			return service.searchInstaByLoc(loc);
+			return searchService.searchInstaByLoc(loc);
 		} catch (AsyncException e) {
 			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
@@ -341,13 +377,14 @@ public class TBRSearchController {
 			throw new AsyncException("ERROR");
 		}
 	}
-	
+
 	// http://127.0.0.1:8000/instaLocAndKwdSearch?loc=경남&kwd=핑크
 	@GetMapping("/instaLocAndKwdSearch")
-	public List<InstaPostDTO> instaLocAndKwdSearch(@RequestParam String loc, @RequestParam String kwd) throws AsyncException {
+	public List<InstaPostDTO> instaLocAndKwdSearch(@RequestParam String loc, @RequestParam String kwd)
+			throws AsyncException {
 		System.out.println("/instaLocAndKwdSearch");
 		try {
-			return service.searchInstaByLocAndKwd(loc, kwd);
+			return searchService.searchInstaByLocAndKwd(loc, kwd);
 		} catch (AsyncException e) {
 			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
@@ -355,13 +392,13 @@ public class TBRSearchController {
 			throw new AsyncException("ERROR");
 		}
 	}
-	
+
 	// http://127.0.0.1:8000/instaTagListFromAll
 	@GetMapping("/instaTagListFromAll")
 	public List<TagDTO> instaTagListFromAll() throws AsyncException {
 		System.out.println("/instaTagListByKwd");
 		try {
-			return service.getTagListFromAll();
+			return searchService.getTagListFromAll();
 		} catch (AsyncException e) {
 			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
@@ -369,13 +406,13 @@ public class TBRSearchController {
 			throw new AsyncException("ERROR");
 		}
 	}
-	
+
 	// http://127.0.0.1:8000/instaTagListByKwd?kwd=가을
 	@GetMapping("/instaTagListByKwd")
 	public List<TagDTO> instaTagListByKwd(@RequestParam String kwd) throws AsyncException {
 		System.out.println("/instaTagListByKwd");
 		try {
-			return service.getTagListByKwd(kwd);
+			return searchService.getTagListByKwd(kwd);
 		} catch (AsyncException e) {
 			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
@@ -383,13 +420,13 @@ public class TBRSearchController {
 			throw new AsyncException("ERROR");
 		}
 	}
-	
+
 	// http://127.0.0.1:8000/instaTagListByLoc?loc=서울
 	@GetMapping("/instaTagListByLoc")
 	public List<TagDTO> instaTagListByLoc(@RequestParam String loc) throws AsyncException {
 		System.out.println("/instaTagListByLoc");
 		try {
-			return service.getTagListByLoc(loc);
+			return searchService.getTagListByLoc(loc);
 		} catch (AsyncException e) {
 			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
@@ -397,13 +434,13 @@ public class TBRSearchController {
 			throw new AsyncException("ERROR");
 		}
 	}
-	
+
 	// http://127.0.0.1:8000/instaTagListByLocAndKwd?loc=서울&kwd=가을
 	@GetMapping("/instaTagListByLocAndKwd")
 	public List<TagDTO> instaTagListByLoc(@RequestParam String loc, @RequestParam String kwd) throws AsyncException {
 		System.out.println("/instaTagListByLocAndKwd");
 		try {
-			return service.getTagListByLocAndKwd(loc, kwd);
+			return searchService.getTagListByLocAndKwd(loc, kwd);
 		} catch (AsyncException e) {
 			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
@@ -417,41 +454,41 @@ public class TBRSearchController {
 	public List<List<Object>> countTypeId() throws AsyncException {
 		System.out.println("/countTypeId");
 		try {
-			return service.typeId();
+			return searchService.typeId();
 		} catch (AsyncException e) {
 			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new AsyncException("ERROR");
-		}	
+		}
 	}
-	
+
 	// * DB: 키워드 입력 후 결과값 내 typeId와 카운팅 횟수 return 로직
 	@GetMapping("/countTypeIdKwd")
 	public List<List<Object>> countTypeIdKwd(@RequestParam("kwd") String kwd) throws AsyncException {
-		System.out.println("/countTypeIdKwd:"+ kwd);
+		System.out.println("/countTypeIdKwd:" + kwd);
 		try {
-			return service.typeIdKwd(kwd);
+			return searchService.typeIdKwd(kwd);
 		} catch (AsyncException e) {
 			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new AsyncException("ERROR");
-		}	
+		}
 	}
-	
+
 	// * DB: 키워드&typeId 값 입력 후 결과값 return 로직
 	// http://127.0.0.1:8000/kwdTypeIdIn?kwd=서울&typeId=12
 	@GetMapping("/kwdTypeIdIn")
 	public List<PlaceDTO> kwdTypeIdIn(@RequestParam BigDecimal typeId, @RequestParam String kwd) throws AsyncException {
 		try {
-			return service.kwdTypeIdIn(typeId, kwd);
+			return searchService.kwdTypeIdIn(typeId, kwd);
 		} catch (AsyncException e) {
 			throw new AsyncException(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new AsyncException("ERROR");
-		}	
+		}
 	}
 
 }
