@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cloud</title>
+  </head>
+  <body>
+    <div id="controller">
+           	장소 : <input id="id" type="text" />
+           	타입 : <select title="타입 선택" name="type" id="type">
+					<option value="" selected="selected">타입선택</option>
+					<option value="12">관광지</option><option value="14">문화시설</option><option value="15">축제공연행사</option><option value="28">레포츠</option><option value="32">숙박</option><option value="38">쇼핑</option><option value="39">음식점</option>		
+				</select>
+      		km : <input id="km" type="number" />
+      <button onclick="dist(document.all.id.value, document.all.type.value, document.all.km.value);">검색</button>
+      <hr />
+    </div>
+
+    <div id="show"></div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      // http://bl.ocks.org/joews/9697914
+      // AXIOS 데이터 받아오기
+    	function dist (id, type, km) {
+    		type == "" ? searchDist(id, km) : searchDistType(id, type, km)
+    	}
+    
+      searchDist = (id, km) =>
+        axios
+          .get("http://127.0.0.1:8000/distsearch?id=" + id + "&km=" + km)
+          .then(resData => {
+            data = resData.data;
+            console.log(data);
+            document.getElementById("show").innerHTML = JSON.stringify(data[0]);
+          })
+          .catch(error => {
+            console.log("비정상 응답", error);
+          });
+        
+        searchDistType = (id, type, km) =>
+        axios
+          .get("http://127.0.0.1:8000/distandtypesearch?id="+id+"&typeId="+type+"&km=" +km)
+          .then(resData => {
+            data = resData.data;
+            console.log(data);
+          })
+          .catch(error => {
+            console.log("비정상 응답", error);
+          });
+
+    </script>
+  </body>
+</html>

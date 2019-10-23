@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cloud</title>
+    <link href="https://fonts.googleapis.com/css?family=East+Sea+Dokdo&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <script src="https://d3js.org/d3.v3.min.js" ></script>
+    <script src="https://rawgit.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js"></script>
+    <div id="controller">
+      <input id="kwd" type="text" />
+      <button onclick="search(document.all.kwd.value);">검색</button>
+      <hr />
+      <button onclick="showCloud(data[2]); setInterval(function(){showCloud(data[2])},3000);">그리기</button>
+    </div>
+
+    <div id="cloud"></div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      // http://bl.ocks.org/joews/9697914
+      // AXIOS 데이터 받아오기
+      let data;
+      search = kwd =>
+        axios
+          .get("http://127.0.0.1:8000/kwdsearch?kwd=" + kwd)
+          .then(resData => {
+            data = resData.data;
+            console.log(data);
+          })
+          .catch(error => {
+            console.log("비정상 응답", error);
+          });
+
+      // 클라우드 그리기
+        const fill = d3.scale.category20();
+		
+        const svg = d3
+            .select("#cloud")
+            .append("svg")
+            .attr("width", 480)
+            .attr("height", 360)
+            .append("g")
+            .attr("transform", "translate(240,180)");
+          
+      function showCloud(data) {
+    	  
+        d3.layout
+          .cloud()
+          .size([480, 360])
+          .words(
+            data.filter(v => v.size >= 10).map(function(d) {
+              return { text: d.word, size: d.size };
+            })
+          )
+          .padding(5)
+          .rotate(function() {
+            return ((Math.random() * 2) - 1) * 90;
+          })
+          .fontSize(function(d) {
+            return d.size;
+          })
+          .on("end", drawCloud)
+          .start();
+
+        function drawCloud(words) {
+          const cloud = svg.selectAll("g text").data(words, function(d) {return d.text;});
+          cloud
+            .enter()
+            .append("text")
+            .style("fill", function(d, i) {return fill(i);})
+            .attr("text-anchor", "middle")
+            .attr("font-size", 1)
+            .attr("font-family", "East Sea Dokdo")
+            .text(function(d) {return d.text;});
+          cloud
+            .transition()
+            .duration(600)
+            .style("font-size", function(d) {
+              return d.size + "px";
+            })
+            .attr("transform", function(d) {
+              return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+            })
+            .style("fill-opacity", 1);
+          cloud
+            .exit()
+            .transition()
+            .duration(200)
+            .style('fill-opacity', 1e-6)
+            .attr('font-size', 1)
+            .remove();
+        }
+      }
+    </script>
+  </body>
+</html>
