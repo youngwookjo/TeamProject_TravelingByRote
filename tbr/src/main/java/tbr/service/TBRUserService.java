@@ -97,6 +97,4 @@ public class TBRUserService {
 	public Optional<MemberDTO> getMember(String id) {
 		return memberRepo.findById(id);
 	}
-
-
 }

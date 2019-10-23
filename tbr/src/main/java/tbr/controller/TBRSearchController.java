@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tbr.exception.AsyncException;
 import tbr.model.dto.InstaPostDTO;
 import tbr.model.dto.PlaceDTO;
+
 import tbr.model.dto.TagDTO;
 import tbr.service.TBRSearchService;
 import tbr.util.Util;
@@ -140,7 +141,7 @@ public class TBRSearchController {
 		}
 		return result;
 	}
-	
+
 	// http://127.0.0.1:8000/distsearch?id=1012988&km=4
 	@GetMapping("/distsearch")
 	public Object[] distSearch(@RequestParam BigDecimal id, @RequestParam double km) {
@@ -409,6 +410,48 @@ public class TBRSearchController {
 			e.printStackTrace();
 			throw new AsyncException("ERROR");
 		}
+	}
+
+	// * DB: DB내 존재하는 모든 typeId와 카운팅 횟수 return 로직
+	@GetMapping("/countTypeId")
+	public List<List<Object>> countTypeId() throws AsyncException {
+		System.out.println("/countTypeId");
+		try {
+			return service.typeId();
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}	
+	}
+	
+	// * DB: 키워드 입력 후 결과값 내 typeId와 카운팅 횟수 return 로직
+	@GetMapping("/countTypeIdKwd")
+	public List<List<Object>> countTypeIdKwd(@RequestParam("kwd") String kwd) throws AsyncException {
+		System.out.println("/countTypeIdKwd:"+ kwd);
+		try {
+			return service.typeIdKwd(kwd);
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}	
+	}
+	
+	// * DB: 키워드&typeId 값 입력 후 결과값 return 로직
+	// http://127.0.0.1:8000/kwdTypeIdIn?kwd=서울&typeId=12
+	@GetMapping("/kwdTypeIdIn")
+	public List<PlaceDTO> kwdTypeIdIn(@RequestParam BigDecimal typeId, @RequestParam String kwd) throws AsyncException {
+		try {
+			return service.kwdTypeIdIn(typeId, kwd);
+		} catch (AsyncException e) {
+			throw new AsyncException(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AsyncException("ERROR");
+		}	
 	}
 
 }

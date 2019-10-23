@@ -8255,7 +8255,7 @@ h1, h2, h3, h4, h5,
         text-decoration: none;
         position: relative;
         padding: 10px 0;
-        font-family: "Poppins", Arial, sans-serif;
+        font-family: 'Noto Serif KR', serif;
         -moz-transition: all 0.3s ease;
         -o-transition: all 0.3s ease;
         -webkit-transition: all 0.3s ease;
@@ -9304,3 +9304,14 @@ textarea.form-control {
   100% {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -136px; } }
+    
+   /*지도,로드뷰*/
+     .screen_out {display:block;overflow:hidden;position:absolute;left:-9999px;width:1px;height:1px;font-size:0;line-height:0;text-indent:-9999px}
+    .wrap_content{overflow:hidden;height:330px}
+    .wrap_map {width:50%;height:300px;float:left;position:relative}
+    .wrap_roadview {width:50%;height:300px;float:left;position:relative}
+    .wrap_button {position:absolute;left:15px;top:12px;z-index:2}
+    .btn_linkMap {background-position:0 0;}
+    .btn_resetMap {background-position:-69px 0;}
+    .btn_linkRoadview {background-position:0 0;}
+    .btn_resetRoadview {background-position:-69px 0;}

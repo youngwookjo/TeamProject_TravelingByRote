@@ -25,6 +25,7 @@ import tbr.exception.AsyncException;
 import tbr.exception.SyncException;
 import tbr.model.dto.MemberDTO;
 import tbr.model.dto.PlaceDTO;
+
 import tbr.service.TBRUserService;
 
 @CrossOrigin(origins = { "http://127.0.0.1:8000", "http://localhost:8000" })
@@ -32,8 +33,8 @@ import tbr.service.TBRUserService;
 public class TBRUserController {
 	@Autowired
 	TBRUserService service;
-	// * Poking
-	
+
+	// * Poking	
 	@GetMapping("/poking")
 	public String poking(@RequestParam("id") String memberId, @RequestParam("place") BigDecimal placeId) throws AsyncException {
 		try {
@@ -54,7 +55,6 @@ public class TBRUserController {
 		}
 		return "에러 발생";
 	}
-	
 	@GetMapping("/pokingList")
 	public List<PlaceDTO> pokingList(@RequestParam("id") String memberId) throws AsyncException {
 		try {
@@ -65,7 +65,7 @@ public class TBRUserController {
 		}
 		return null;
 	}
-	
+
 	// * LOGIN & OUT
 	@PostMapping("/login")
 	public RedirectView loginMember(HttpServletResponse response, @RequestParam("id") String id,
@@ -214,7 +214,7 @@ public class TBRUserController {
 	}
 
 	// http://127.0.0.1:8000/getAccount?id=ts1
-	// 회원정보 조회(Containing)
+	// 회원정보 조회(PK)
 	@GetMapping("/getAccount")
 	public Optional<MemberDTO> getAccount(@RequestParam("id") String id) {
 		try {
@@ -225,7 +225,7 @@ public class TBRUserController {
 		}
 		return null;
 	}
-	
+
 	// 회원정보 조회(Containing)
 	@GetMapping("/searchAccount")
 	public List<MemberDTO> searchAccount(@RequestParam("id") String id) {
